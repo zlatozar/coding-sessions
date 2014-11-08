@@ -1,0 +1,11 @@
+# Maven
+target/
+*.class
+
+# Package Files
+*.jar
+*.war
+*.ear
+
+# VM crash logs
+hs_err_pid*
