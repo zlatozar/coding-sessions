@@ -39,20 +39,20 @@ WARN_STRING  = $(WARN_COLOR)[WARNINGS]$(NO_COLOR)
 CHDIR_SHELL := $(SHELL)
 define chdir
 
-    $(eval _D=$(firstword $(1) $(@D)))
-    $(info $(MAKE): cd $(_D)) $(eval SHELL = cd $(_D); $(CHDIR_SHELL))
+	$(eval _D=$(firstword $(1) $(@D)))
+	$(info $(MAKE): cd $(_D)) $(eval SHELL = cd $(_D); $(CHDIR_SHELL))
 
 endef
 
 define find_class_in_jar
 
-    @ for I in $(shell find . -name "*.jar" |grep target);                 \
-        do                                                                 \
-            $(ECHO) "Looking in $$I ...";                                  \
-            if `jar tvf $$I | grep $(1) &> /dev/null`; then                \
-              $(ECHO) -e "$(OK_COLOR)==> Found '$(1)' in $$I$(NO_COLOR)";  \
-           fi;                                                             \
-        done
+	@ for I in $(shell find . -name "*.jar" |grep target);                 \
+		do                                                                 \
+			$(ECHO) "Looking in $$I ...";                                  \
+			if `jar tvf $$I | grep $(1) &> /dev/null`; then                \
+			  $(ECHO) -e "$(OK_COLOR)==> Found '$(1)' in $$I$(NO_COLOR)";  \
+		   fi;                                                             \
+		done
 
 endef
 
@@ -79,6 +79,9 @@ findbugs:
 
 test: compile
 	@ $(MAVEN) test
+
+test-all: compile
+	@ $(MAVEN) test -P integrator
 
 where.is:
 	@ $(ECHO) -e "$(OK_COLOR)===> Start looking in JAR files for $(class)...$(NO_COLOR)"
@@ -136,6 +139,7 @@ help:
 	@ $(ECHO) "   check-style.... Builds and run Checkstyle."
 	@ $(ECHO) "   findbugs ...... Runs FindBugs."
 	@ $(ECHO) "   test .......... Builds and runs all unit tests."
+	@ $(ECHO) "   test-all ...... Builds and runs all unit and integration tests."
 	@ $(ECHO) "   docs .......... Generates project documentation."
 	@ $(ECHO) "   clean ......... Removes build products."
 	@ $(ECHO) "   publish ....... Publish all your commits in Gerrit for review"
