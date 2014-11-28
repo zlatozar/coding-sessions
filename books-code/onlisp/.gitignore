@@ -1,1 +1,8 @@
+# Ignore compiled
+*.FASL
 *.fasl
+
+# Ignore emacs backups
+*~
+\#*\#
+.\#*

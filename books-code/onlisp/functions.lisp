@@ -176,7 +176,6 @@ LSTS, but avoids unnecessary consing."
 ;;; ____________________________________________________________________________
 ;;;                                                               Destructuring
 
-
 (defun destruc (pat seq &optional (atom? #'atom) (n 0))
   (if (null pat)
       nil
