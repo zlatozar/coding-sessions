@@ -22,7 +22,12 @@ For users
 
 If you are interested in writing miniKanren programs, you can
 `(require cKanren/miniKanren)` for standard miniKanren definitions.
-You can also require constraint libraries like `neq` as `(require cKanren/neq)`.  
+You can also require constraint libraries like `neq` as `(require cKanren/neq)`.
+
+For Emacs users
+---------------
+
+http://docs.racket-lang.org/guide/other-editors.html
 
 Stable constraint libraries
 ---------------------------
@@ -34,4 +39,3 @@ The following libraries have been tested extensively.
 * Absento, symbolo, and numbero `cKanren/absento`
 
 All other constraints libraries are experimental.
-

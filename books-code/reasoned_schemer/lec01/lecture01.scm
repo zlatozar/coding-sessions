@@ -1,3 +1,5 @@
+#lang cKanren
+
 ;; Lecture 1
 
 ;; What is == ?
@@ -56,8 +58,6 @@
 (run 1 (q)
      (== `(lambda (x) x) `(lambda (y) y))) ; => ()
 
-;; Not in Guile
-(run 1 (x y)
-     (== `(lambda (,x) ,x) '(lambda (,y) ,y))) ; => ((_.0 _.0))
-
 ;; == change the meaning of equality
+(run 1 (x y)
+     (== `(lambda (,x) ,x) `(lambda (,y) ,y))) ; => ((_.0 _.0))
