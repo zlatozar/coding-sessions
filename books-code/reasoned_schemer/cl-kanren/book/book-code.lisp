@@ -1,66 +1,53 @@
+;;; -*- Mode: LISP; Syntax: COMMON-LISP; Package: CL-USER; Base: 10 -*-
+
 ;;; Copyright (c) 2008, Matthew Swank
 ;;; All rights reserved.
-;;;
-;;; Redistribution and use in source and binary forms, with or without
-;;; modification, are permitted provided that the following conditions are met:
-;;;
-;;;     * Redistributions of source code must retain the above copyright
-;;; notice, this list of conditions and the following disclaimer.
-;;;     * Redistributions in binary form must reproduce the above copyright
-;;; notice, this list of conditions and the following disclaimer in the
-;;; documentation and/or other materials provided with the distribution.
-;;;
-;;; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-;;; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-;;; IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-;;; ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-;;; LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-;;; CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-;;; SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-;;; INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-;;; CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-;;; ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
-;;; THE POSSIBILITY OF SUCH DAMAGE.
 
-(in-package :kanren-trs-test)
+(in-package :book)
 
-;;;chapter 1
-;;1.56
+;;; ____________________________________________________________________________
+;;;                                                                   Chapter 1
+
+;; 1.56
 (defun teacupo (x)
-  (conde ((== 'tea x) +succeed+) ;the succeed is unnecessary
+  (conde ((== 'tea x) +succeed+) ; the succeed is unnecessary
          ((== 'cup x) +succeed+)
-         (else +fail+)))         ;this line is superfluous
+         (else +fail+)))         ; this line is superfluous
 
-;;;chapter 2
-;;2.9
+;;; ____________________________________________________________________________
+;;;                                                                   Chapter 2
+
+;; 2.9
 (defun caro (cons car)
   (fresh (cdr)
     (== (cons car cdr) cons)))
 
-;;2.16
+;; 2.16
 (defun cdro (cons cdr)
   (fresh (car)
     (== (cons car cdr) cons)))
 
-;;2.28
+;; 2.28
 (defun conso (car cdr cons)
   (== (cons car cdr) cons))
 
-;;2.35
+;; 2.35
 (defun nullo (object)
   (== '() object))
 
-;;2.40
+;; 2.40
 (defun eqo (x y)
   (== x y))
 
-;;2.53
+;; 2.53
 (defun pairo (pair?)
   (fresh (car cdr)
     (conso car cdr pair?)))
 
-;;;chapter 3
-;;3.5
+;;; ____________________________________________________________________________
+;;;                                                                   Chapter 3
+
+;; 3.5
 (defun listo (list)
   (conde ((nullo list) +succeed+)
          ((pairo list)
@@ -69,11 +56,11 @@
             (listo d)))
          (else +fail+)))
 
-;;3.17
+;; 3.17
 (defun lolo (list)
   (conde ((nullo list) +succeed+)
-         ;;these two fresh clauses could be consolidated into one
-         ((fresh (a) 
+         ;; these two fresh clauses could be consolidated into one
+         ((fresh (a)
             (caro list a)
             (listo a))
           (fresh (d)
@@ -81,20 +68,20 @@
             (lolo d)))
          (else +fail+)))
 
-;;3.31
+;; 3.31
 (defun twinso-0 (s)
   (fresh (x y)
     (conso x y s)
     (conso x () y)))
 
-;;3.36
+;; 3.36
 (defun twinso-1 (s)
   (fresh (x)
     (== `(,x ,x) s)))
 
 (setf (symbol-function 'twinso) #'twinso-1)
 
-;;3.37
+;; 3.37
 (defun loto (list)
   (conde ((nullo list)
           +succeed+)
@@ -106,7 +93,7 @@
             (loto d)))
          (else +fail+)))
 
-;;3.48
+;; 3.48
 (defun listofo (predo list)
   (conde ((nullo list)
           +succeed+)
@@ -118,28 +105,28 @@
             (listofo predo d)))
          (else +fail+)))
 
-;;3.50
+;; 3.50
 (defun loto-1 (list)
   (listofo #'twinso list))
 
-;;3.54
+;; 3.54
 (defun eq-caro (list x)
   (caro list x))
 
-;;3.54
+;; 3.54
 (defun membero (x list)
-  (conde ((nullo list) +fail+) 
-         ((eq-caro list x) +succeed+) 
+  (conde ((nullo list) +fail+)
+         ((eq-caro list x) +succeed+)
          (else (fresh (d)
                  (cdro list d)
                  (membero x d)))))
 
-;;3.65
+;; 3.65
 (defun list-identity (list)
   (run nil (y)
     (membero y list)))
 
-;;3.80
+;; 3.80
 (defun pmembero-0 (x list)
   (conde ((nullo list) +fail+)
          ((eq-caro list x) (cdro list '()))
@@ -147,7 +134,7 @@
                  (cdro list d)
                  (pmembero-0 x d)))))
 
-;;3.83 
+;; 3.83
 (defun pmembero-1 (x list)
   (conde ((nullo list) +fail+)
          ((eq-caro list x) (cdro list '()))
@@ -156,20 +143,20 @@
                  (cdro list d)
                  (pmembero-1 x d)))))
 
-;;3.86 
+;; 3.86
 (defun pmembero-2 (x list)
   (conde ((nullo list) +fail+)
          ((eq-caro list x) (cdro list '()))
-         ((eq-caro list x) 
+         ((eq-caro list x)
           (fresh (a d)
             (cdro list `(,a . ,d))))
          (else (fresh (d)
                  (cdro list d)
                  (pmembero-2 x d)))))
 
-;;3.93
+;; 3.93
 (defun pmembero-3 (x list)
-  (conde ((eq-caro list x) 
+  (conde ((eq-caro list x)
           (fresh (a d)
             (cdro list `(,a . ,d))))
          ((eq-caro list x) (cdro list '()))
@@ -177,12 +164,12 @@
                  (cdro list d)
                  (pmembero-3 x d)))))
 
-;;3.95
+;; 3.95
 (defun first-value (list)
   (run 1 (y)
     (membero y list)))
 
-;;3.98
+;; 3.98
 (defun memberrevo (x list)
   (conde ((nullo list) +fail+)
          (+succeed+
@@ -191,12 +178,14 @@
             (memberrevo x d)))
          (else (eq-caro list x))))
 
-;;3.101
+;; 3.101
 (defun reverse-list (list)
   (run nil (y)
     (memberrevo y list)))
 
-;;;chapter 4
+;;; ____________________________________________________________________________
+;;;                                                                   Chapter 4
+
 (defun memo-0 (x list out)
   (conde ((nullo list) +fail+)
          ((eq-caro list x) (== list out))
@@ -222,7 +211,9 @@
 (defun surpriseo (s)
   (remembero s '(a b c) '(a b c)))
 
-;;;chapter 5
+;;; ____________________________________________________________________________
+;;;                                                                   Chapter 5
+
 (defun appendo-0 (list rest out)
   (conde ((nullo list) (== rest out))
          (else (fresh (a d result)
@@ -246,7 +237,7 @@
                  (appendo-2 d rest result)))))
 
 (setf (symbol-function 'appendo) #'appendo-2)
-                 
+
 (defun swappendo (list rest out)
   (conde (+succeed+ (fresh (a d result)
                       (conso a d list)
@@ -263,7 +254,7 @@
 
 (defun unwrapo-1 (x out)
   (conde (+succeed+ (== x out))
-         (else (fresh (a) ;note abscence of pairo
+         (else (fresh (a) ; note absence of 'pairo'
                  (caro x a)
                  (unwrapo-1 a out)))))
 
@@ -281,30 +272,35 @@
   (conde (+succeed+ (conso list? '() out))
          ((nullo list?) (== '() out))
          (else
-          (fresh (a d result-car result-cdr)
-            (conso a d list?)
-            (flattenrevo a result-car)
-            (flattenrevo d result-cdr)
-            (appendo result-car result-cdr out)))))
-;;;chapter 6
-;;6.1
+           (fresh (a d result-car result-cdr)
+             (conso a d list?)
+             (flattenrevo a result-car)
+             (flattenrevo d result-cdr)
+             (appendo result-car result-cdr out)))))
+
+;;; ____________________________________________________________________________
+;;;                                                                   Chapter 6
+
+;; 6.1
 (eval-when  (:execute :load-toplevel :compile-toplevel)
   (defun anyo (goal)
     (conde (goal +succeed+)
            (else (anyo goal)))))
 
-;;6.4
+;; 6.4
 (defconst +never+ (anyo +fail+))
 
-;;6.7
+;; 6.7
 (defconst +always+ (anyo +succeed+))
 
-;;6.12
+;; 6.12
 (defconst +sal+ #'(lambda (goal)
                     (conde (+succeed+ +succeed+)
                            (else goal))))
 
-;;;chapter 7
+;;; ____________________________________________________________________________
+;;;                                                                   Chapter 7
+
 (defun bit-xoro (x y r)
   (conde ((== 0 x) (== 0 y) (== 0 r))
          ((== 1 x) (== 0 y) (== 1 r))
@@ -382,15 +378,20 @@
 (defun -o (n m k)
   (+o m k n))
 
-;;;chapter 8
+;;; ____________________________________________________________________________
+;;;                                                                   Chapter 8
+
+;;; ____________________________________________________________________________
+;;;                                                                   Chapter 9
 
 
-;;;chapter 9 (just forms not already in the reference implementation)
+;;; (just forms not already in the reference implementation)
+
 (defun ext-s-check (rhs lhs subst)
   (cond ((occurs-check rhs lhs subst) +fail+)
         (t (extend-subst rhs lhs subst))))
 
-(defun unify-check (v w subst) 
+(defun unify-check (v w subst)
   (let ((v (walk v subst))
         (w (walk w subst)))
     (cond ((eq v w) subst)
@@ -402,7 +403,7 @@
            (let ((subst (unify-check (car v) (car w) subst)))
              (if (not (eq subst +fail+))
                  (unify-check (cdr v) (cdr w) subst)
-               +fail+)))
+                 +fail+)))
           ((equal v w) subst)
           (t +fail+))))
 
@@ -411,9 +412,11 @@
       (let ((subst-1 (unify-check v w subst)))
         (if (not (eq subst-1 +fail+))
             (funcall +succeed+ subst-1)
-          (funcall +fail+ subst)))))
+            (funcall +fail+ subst)))))
 
-;;;chapter 10
+;;; ____________________________________________________________________________
+;;;                                                                  Chapter 10
+
 (defun not-pastao (x)
   (conda ((== 'pasta x) +fail+)
          (else +succeed+)))
@@ -450,11 +453,3 @@
     (== `(,c . ,z) r) (poso z)
     (all (full-addero d a b c e)
          (addero e x y z))))
-
-
-        
-
-
-
-
-                 

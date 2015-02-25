@@ -1,39 +1,21 @@
+;;; -*- Mode: LISP; Syntax: COMMON-LISP; Package: CL-USER; Base: 10 -*-
+
 ;;; Copyright (c) 2008, Matthew Swank
 ;;; All rights reserved.
-;;;
-;;; Redistribution and use in source and binary forms, with or without
-;;; modification, are permitted provided that the following conditions are met:
-;;;
-;;;     * Redistributions of source code must retain the above copyright
-;;; notice, this list of conditions and the following disclaimer.
-;;;     * Redistributions in binary form must reproduce the above copyright
-;;; notice, this list of conditions and the following disclaimer in the
-;;; documentation and/or other materials provided with the distribution.
-;;;
-;;; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-;;; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-;;; IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-;;; ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-;;; LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-;;; CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-;;; SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-;;; INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-;;; CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-;;; ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
-;;; THE POSSIBILITY OF SUCH DAMAGE.
-(in-package :kanren-trs-test)
+
+(in-package :kanren-test)
 
 (defmacro tests (&rest tests)
-  `(lambda () 
+  `(lambda ()
      (list
       ,@(mapcar #'(lambda (test-pair)
                     (let ((test-result (car test-pair))
                           (test-expected (cadr test-pair)))
                       `(if (equal ,test-result ',test-expected)
                            t
-                           (format nil "failed:~s -expected ~s -actual ~s" 
-                                   ',(car test-pair) 
-                                   ',test-expected 
+                           (format nil "failed:~s -expected ~s -actual ~s"
+                                   ',(car test-pair)
+                                   ',test-expected
                                    ,test-result))))
                 tests))))
 
@@ -49,39 +31,40 @@
 (defun run-tests (tests)
   (funcall tests))
 
-(defparameter *tests* 
-  (tests 
+(defparameter *tests*
+  (tests
 
-;;;chapter 1
-   ;;
-   ;;1.10
-   ((run nil (q) 
-      +fail+) 
+;;; ____________________________________________________________________________
+;;;                                                                   Chapter 1
+
+   ;; 1.10
+   ((run nil (q)
+      +fail+)
     ())
-   
-   ;;1.11
-   ((run nil (q) 
+
+   ;; 1.11
+   ((run nil (q)
       (== 't q))
     (t))
-   
-   ;;1.12
+
+   ;; 1.12
    ((run nil (q)
       +fail+
       (== 't q))
     ())
-   
+
    ;;1.13-14
    ((run nil (q)
       +succeed+
       (== 't q))
     (t))
-   
+
    ;;1.15-16
    ((run nil (r)
       +succeed+
       (== 'corn r))
     (corn))
-   
+
    ;;1.17
    ((run nil (r)
       +fail+
@@ -95,15 +78,15 @@
     (nil))
 
    ;;1.20
-   ((run nil (q) 
+   ((run nil (q)
       (let ((x 't))
-        (== nil x))) 
+        (== nil x)))
     ())
 
    ;;1.21
-   ((run nil (q) 
+   ((run nil (q)
       (let ((x nil))
-        (== nil x))) 
+        (== nil x)))
     (:_.0))
 
    ;;1.22
@@ -111,7 +94,7 @@
       (let ((x 'nil))
         (== 't x)))
     ())
-   
+
    ;;1.23
    ((run nil (q)
       (fresh (x)
@@ -136,8 +119,8 @@
    ;;1.28
    ((run nil (x)
       +succeed+)
-    (:_.0))         
-   
+    (:_.0))
+
    ;;1.29
    ((run nil (x)
       (let ((x 'nil))
@@ -145,19 +128,19 @@
         (fresh (x)
           (== 't x))))
     (:_.0))
-   
+
    ;;1.30
    ((run nil (r)
       (fresh (x y)
         (== (cons x (cons y '())) r)))
     ((:_.0 :_.1)))
-   
+
    ;;1.31
    ((run nil (s)
       (fresh (tee u)
         (== (cons tee (cons u '())) s)))
     ((:_.0 :_.1)))
-   
+
    ;;1.32
    ((run nil (r)
       (fresh (x)
@@ -173,7 +156,7 @@
           (fresh (x)
             (== (cons x (cons y (cons x '()))) r)))))
     ((:_.0 :_.1 :_.0)))
-   
+
    ;;1.34
    ((run nil (q)
       (== 'nil q)
@@ -197,7 +180,7 @@
       (fresh (x)
         (== x r)))
     (:_.0))
-   
+
    ;;1.38
    ((run nil (q)
       (fresh (x)
@@ -287,7 +270,7 @@
              ((== 'oil x) +succeed+)
              (else +fail+)))
     (extra olive))
-    
+
    ;;1.53
    ((run nil (r)
       (fresh (x y)
@@ -346,7 +329,7 @@
         (== 'nil x)
         (== (cons y (cons z '())) r)))
     ((nil :_.0)(:_.0 nil)))
-    
+
    ;;1.60
    ((run nil (q)
       (let ((a (== 't q))
@@ -374,7 +357,7 @@
       (fresh (y x)
         (== `(,x ,y) r)))
     ((:_.0 :_.1)))
-    
+
    ;;2.3
    ((run nil (r)
       (fresh (v w)
@@ -383,25 +366,25 @@
               `(,x ,y))
             r)))
     ((:_.0 :_.1)))
-    
+
    ;;2.6
    ((run nil (r)
       (caro '(a c o r n) r))
     (a))
-    
+
    ;;2.7
    ((run nil (q)
       (caro '(a c o r n) 'a)
       (== 't q))
     (t))
-    
+
    ;;2.8
    ((run nil (r)
       (fresh (x y)
         (caro `(,r ,y) x)
         (== 'pear x)))
     (pear))
-    
+
    ;;2.11
    ((run nil (r)
       (fresh (x y)
@@ -409,14 +392,14 @@
         (caro '((a)(b)(c)) y)
         (== (cons x y) r)))
     ((grape a)))
-    
+
    ;;2.15
    ((run nil (r)
       (fresh (v)
         (cdro '(a c o r n) v)
         (caro v r)))
     (c))
-    
+
    ;;2.18
    ((run nil (r)
       (fresh (x y)
@@ -430,7 +413,7 @@
       (cdro '(a c o r n) '(c o r n))
       (== 't q))
     (t))
-    
+
    ;;2.20
    ((run nil (x)
       (cdro '(c o r n) `(,x r n)))
@@ -511,8 +494,8 @@
 
    ;;2.38
    ((run nil (q)
-     (eqo 'pear 'plum)
-     (== 't q))
+      (eqo 'pear 'plum)
+      (== 't q))
     ())
 
    ;;2.39
@@ -575,12 +558,12 @@
      (:_.0 :_.1)
      (:_.0 :_.1 :_.2)
      (:_.0 :_.1 :_.2 :_.3)))
-    
+
    ;;3.20
    ((run 1 (l)
       (lolo l))
     (()))
-    
+
    ;;3.21
    ((run nil (q)
       (fresh (x y)
@@ -608,7 +591,7 @@
      (() ())
      (() () ())
      (() () () ())))
-    
+
    ;;3.32
    ((run nil (q)
       (twinso-0 '(tofu tofu))
@@ -618,7 +601,7 @@
       (twinso-1 '(tofu tofu))
       (== 't q))
     (t))
-    
+
    ;;3.33
    ((run nil (z)
       (twinso-0 `(,z tofu)))
@@ -640,7 +623,7 @@
      ((:_.0 :_.0) (:_.1 :_.1))
      ((:_.0 :_.0) (:_.1 :_.1) (:_.2 :_.2))
      ((:_.0 :_.0) (:_.1 :_.1) (:_.2 :_.2) (:_.3 :_.3))))
-   
+
    ;;3:45
    ((run 5 (r)
       (fresh (w x y z)
@@ -660,7 +643,7 @@
     (((g g) (e e) (:_.0 :_.0))
      ((g g) (e e) (:_.0 :_.0) (:_.1 :_.1))
      ((g g) (e e) (:_.0 :_.0) (:_.1 :_.1) (:_.2 :_.2))))
-   
+
    ;;3.49
    ((run 3 (out)
       (fresh (w x y z)
@@ -669,11 +652,11 @@
     (((g g) (e e) (:_.0 :_.0))
      ((g g) (e e) (:_.0 :_.0) (:_.1 :_.1))
      ((g g) (e e) (:_.0 :_.0) (:_.1 :_.1) (:_.2 :_.2))))
-   
+
    ;;3.57
    ((run nil (q)
-     (membero 'olive '(virgin olive oil))
-     (== 't q))
+      (membero 'olive '(virgin olive oil))
+      (== 't q))
     (t))
 
    ;;3.58
@@ -685,7 +668,7 @@
    ((run 1 (y)
       (membero y '(with pita)))
     (with))
-   
+
    ;;3.60
    ((run 1 (y)
       (membero y '(pita)))
@@ -703,40 +686,40 @@
 
    ;;3.66
    ((run nil (x)
-     (membero 'e `(pasta ,x fagioli)))
+      (membero 'e `(pasta ,x fagioli)))
     (e))
 
    ;;3.69
    ((run nil (x)
-     (membero 'e `(pasta e ,x fagioli)))
+      (membero 'e `(pasta e ,x fagioli)))
     (:_.0 e))
 
    ;;3.70
    ((run nil (x)
-     (membero 'e `(pasta ,x e fagioli)))
+      (membero 'e `(pasta ,x e fagioli)))
     (e :_.0))
 
    ;;3.71
    ((run nil (r)
-     (fresh (x y)
-       (membero 'e `(pasta ,x fagioli ,y))
-       (== `(,x ,y) r)))
+      (fresh (x y)
+        (membero 'e `(pasta ,x fagioli ,y))
+        (== `(,x ,y) r)))
     ((e :_.0) (:_.0 e)))
 
    ;;3.73
    ((run 1 (l)
-     (membero 'tofu l))
+      (membero 'tofu l))
     ((tofu . :_.0)))
 
    ;;3.76
    ((run 5 (l)
-     (membero 'tofu l))
+      (membero 'tofu l))
     ((tofu . :_.0)
      (:_.0 tofu . :_.1)
      (:_.0 :_.1 tofu . :_.2)
      (:_.0 :_.1 :_.2 tofu . :_.3)
      (:_.0 :_.1 :_.2 :_.3 tofu . :_.4)))
-   
+
    ;;3.81
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -746,7 +729,7 @@
              ((== nil r) +succeed+)
              (else +fail+)))
     (tea nil cup))
-   
+
    ;;6.24
    ((run 5 (q)
       (condi ((== 'nil q) +always+)
@@ -757,56 +740,55 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
    ;;10.1
    ((run nil (q)
-     (conda (+fail+ +succeed+)
-            (else +fail+)))
+      (conda (+fail+ +succeed+)
+             (else +fail+)))
     ())
 
    ;;10.2
    ((run nil (q)
-     (conda (+fail+ +succeed+)
-            (else +succeed+)))
+      (conda (+fail+ +succeed+)
+             (else +succeed+)))
     (:_.0))
 
    ;;10.3
    ((run nil (q)
-     (conda (+succeed+ +fail+)
-            (else +succeed+)))
+      (conda (+succeed+ +fail+)
+             (else +succeed+)))
     ())
 
    ;;10.4
    ((run nil (q)
-     (conda (+succeed+ +succeed+)
-            (else +fail+)))
+      (conda (+succeed+ +succeed+)
+             (else +fail+)))
     (:_.0))
 
    ;;10.5
    ((run nil (x)
-     (conda ((== 'olive x) +succeed+)
-            ((== 'oil x) +succeed+)
-            (else +fail+)))
+      (conda ((== 'olive x) +succeed+)
+             ((== 'oil x) +succeed+)
+             (else +fail+)))
     (olive))
 
    ;;10.7
    ((run nil (x)
-     (conda ((== 'virgin x) +fail+)
-            ((== 'olive x) +succeed+)
-            ((== 'oil x) +succeed+)
-            (else +fail+)))
+      (conda ((== 'virgin x) +fail+)
+             ((== 'olive x) +succeed+)
+             ((== 'oil x) +succeed+)
+             (else +fail+)))
     ())
-   
+
    ;;10.14
    ((run nil (q)
-     (condu (+always+ +succeed+)
-            (else +fail+))
-     (== 't q))
+      (condu (+always+ +succeed+)
+             (else +fail+))
+      (== 't q))
     (t))
-   
+
    ;;10.18
    ((run 1 (q)
-     (condu (+always+ +succeed+)
-            (else +fail+))
-     +fail+
-     (== 't q))
+      (condu (+always+ +succeed+)
+             (else +fail+))
+      +fail+
+      (== 't q))
     ())
-))
-
+   ))

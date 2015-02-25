@@ -1,28 +1,9 @@
+;;; -*- Mode: LISP; Syntax: COMMON-LISP; Package: CL-USER; Base: 10 -*-
+
 ;;; Copyright (c) 2008, Matthew Swank
 ;;; All rights reserved.
-;;;
-;;; Redistribution and use in source and binary forms, with or without
-;;; modification, are permitted provided that the following conditions are met:
-;;;
-;;;     * Redistributions of source code must retain the above copyright
-;;; notice, this list of conditions and the following disclaimer.
-;;;     * Redistributions in binary form must reproduce the above copyright
-;;; notice, this list of conditions and the following disclaimer in the
-;;; documentation and/or other materials provided with the distribution.
-;;;
-;;; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-;;; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-;;; IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-;;; ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-;;; LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-;;; CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-;;; SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-;;; INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-;;; CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-;;; ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
-;;; THE POSSIBILITY OF SUCH DAMAGE.
 
-(in-package :kanren-trs)
+(in-package :study-kanren)
 
 (defmacro choice-case (key-term &body cases)
   (let ((kt-name (gensym)))
@@ -32,7 +13,7 @@
                           (destructuring-bind (keys &rest clauses) case
                             (cond ((eql keys 'else)
                                    clauses)
-                                  ((consp keys) 
+                                  ((consp keys)
                                    (if (cdr keys)
                                        `((conde ,@(mapcar (lambda (key)
                                                         `(== ,kt-name ',key))
@@ -62,20 +43,21 @@
 (defun make-binary-relation (mapping)
   (lambda (a b)
     (map-choice (lambda (a1 b1)
-                  (fresh () 
+                  (fresh ()
                     (== a a1)
                     (== b b1)))
                 (mapcar #'first mapping)
                 (mapcar #'second mapping))))
 
-;;this needs to confirm that compile time evaluation is possible:
-;;mapping is a quoted list, n is a number, etc
-#+ (or) 
-(define-compiler-macro make-nary-relation (n mapping) 
+;; This needs to confirm that compile time evaluation is possible:
+;; mapping is a quoted list, n is a number, etc
+
+#+ (or)
+(define-compiler-macro make-nary-relation (n mapping)
   (let* ((maps (loop :for x :from 0 :below n
                   :collect `',(mapcar (lambda (list)
-                                     (nth x list))
-                                   mapping)))
+                                        (nth x list))
+                                      mapping)))
          (args (loop :for x :from 0 :below n
                   :collect (gensym)))
          (args1 (loop :for x :from 0 :below n
@@ -98,11 +80,11 @@
     (lambda (&rest args)
       (unless (= (length args) n)
         (error "invalid number of arguments"))
-      (apply #'map-choice 
+      (apply #'map-choice
              (lambda (&rest args1)
                (let ((sequence nil))
                  (map nil (lambda (a a1)
-                            (unless sequence 
+                            (unless sequence
                               (setf sequence (== a a1)))
                             ;; we don't want to capture the binding
                             ;; (this should be a fold)
@@ -125,7 +107,7 @@
 (defun make-ternary-relation (mapping)
   (lambda (a b c)
     (map-choice (lambda (a1 b1 c1)
-                  (fresh () 
+                  (fresh ()
                     (== a a1)
                     (== b b1)
                     (== c c1)))
