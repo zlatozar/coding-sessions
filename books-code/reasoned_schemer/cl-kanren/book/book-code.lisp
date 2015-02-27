@@ -273,28 +273,27 @@
          ((nullo list?) (== '() out))
          (else
            (fresh (a d result-car result-cdr)
-             (conso a d list?)
-             (flattenrevo a result-car)
-             (flattenrevo d result-cdr)
-             (appendo result-car result-cdr out)))))
+                  (conso a d list?)
+                  (flattenrevo a result-car)
+                  (flattenrevo d result-cdr)
+                  (appendo result-car result-cdr out)))))
 
 ;;; ____________________________________________________________________________
 ;;;                                                                   Chapter 6
 
 ;; 6.1
-(eval-when  (:execute :load-toplevel :compile-toplevel)
-  (defun anyo (goal)
+(defun anyo (goal)
     (conde (goal +succeed+)
-           (else (anyo goal)))))
+           (else (anyo goal))))
 
 ;; 6.4
-(defconst +never+ (anyo +fail+))
+(defvar +never+ (anyo +fail+))
 
 ;; 6.7
-(defconst +always+ (anyo +succeed+))
+(defvar +always+ (anyo +succeed+))
 
 ;; 6.12
-(defconst +sal+ #'(lambda (goal)
+(defvar +sal+ #'(lambda (goal)
                     (conde (+succeed+ +succeed+)
                            (else goal))))
 

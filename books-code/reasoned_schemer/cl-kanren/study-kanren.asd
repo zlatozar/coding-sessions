@@ -8,8 +8,14 @@
   :depends-on (#:alexandria)
 
   :components
+
+;;; miniKanren implementation
   ((:file "packages")
    (:file "kanren")
    (:file "kanren-lib")
    (:file "kanren-basic-queries")
-   (:file "kanren-tests")))
+
+   (:file "tools/test")
+   (:file "kanren-tests")
+
+   (:file "book/book-code")))
