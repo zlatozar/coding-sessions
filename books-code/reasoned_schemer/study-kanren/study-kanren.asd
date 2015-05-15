@@ -11,11 +11,11 @@
 
 ;;; miniKanren implementation
   ((:file "packages")
-   (:file "kanren")
-   (:file "kanren-lib")
+   (:file "impl/mini-kanren" :depends-on ("packages"))
+   (:file "impl/kanren-lib")
    (:file "kanren-basic-queries")
 
-   (:file "tools/test")
-   (:file "kanren-tests")
+   (:file "tools/test" :depends-on ("packages"))
+   (:file "impl/test-mini-kanren" :depends-on ("tools/test" "impl/mini-kanren"))
 
-   (:file "book/book-code")))
+   (:file "book-code")))
