@@ -4,18 +4,19 @@
 ;;; All rights reserved.
 
 (asdf:defsystem :study-kanren
-  :serial t
   :depends-on (#:alexandria)
 
-  :components
+  :serial t
+  :components  ((:file "packages")
 
-;;; miniKanren implementation
-  ((:file "packages")
-   (:file "impl/mini-kanren" :depends-on ("packages"))
-   (:file "impl/kanren-lib")
-   (:file "kanren-basic-queries")
+                ;; miniKanren
+                (:file "impl/mini-kanren" :depends-on ("packages"))
+                (:file "impl/kanren-lib" :depends-on ("impl/mini-kanren"))
+                (:file "kanren-basic-queries")
 
-   (:file "tools/test" :depends-on ("packages"))
-   (:file "impl/test-mini-kanren" :depends-on ("tools/test" "impl/mini-kanren"))
+                ;; Test miniKanren implementation
+                (:file "tools/test" :depends-on ("packages"))
+                (:file "impl/test-mini-kanren" :depends-on ("tools/test" "impl/mini-kanren"))
 
-   (:file "book-code")))
+                ;; Functions defined in book
+                (:file "book-code" :depends-on ("impl/mini-kanren"))))
