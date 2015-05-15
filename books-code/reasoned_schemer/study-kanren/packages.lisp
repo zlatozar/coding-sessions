@@ -3,7 +3,7 @@
 ;;; Copyright (c) 2008, Matthew Swank
 ;;; All rights reserved.
 
-(defpackage :study-kanren
+(defpackage :mini-kanren
   (:use :cl)
   (:import-from :alexandria
                 #:with-gensyms)
@@ -11,7 +11,6 @@
   (:export #:unify
            #:walk*
            #:reify-subst
-           ;; extendable generics
            #:equivp
            #:unify-impl
            #:walk-impl
@@ -57,14 +56,14 @@
 
 (defpackage #:pcl-test
   (:documentation "Use defined in the book 'Practical Common Lisp' test framework
-to test chapter exercises.")
+to test mini-kanren implementation.")
   (:use #:common-lisp)
   (:export #:deftest
            #:check))
 
-(defpackage :kanren-test
+(defpackage :test-mini-kanren
   (:use :cl
-        :study-kanren
+        :mini-kanren
         :pcl-test)
   (:export #:ch1-tests
            #:ch2-tests
@@ -72,6 +71,13 @@ to test chapter exercises.")
            #:ch6-tests
            #:ch10-tests))
 
-;; Contains "The Reasoned Schemere" book code
+;; Contains "The Reasoned Schemer" book code
 (defpackage :book
-  (:use :cl :study-kanren))
+  (:use :cl :mini-kanren))
+
+;;; ____________________________________________________________________________
+;;;                                                                      Public
+
+(defpackage :cl-kanren
+  (:documentation "Expose functions defined in 'The Reasoned Schemer' book")
+  (:use :cl))

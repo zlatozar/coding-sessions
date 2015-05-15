@@ -1,6 +1,6 @@
 ;;; -*- Mode: LISP; Syntax: COMMON-LISP; Package: STUDY-KANREN; Base: 10 -*-
 
-(in-package :study-kanren)
+(in-package :mini-kanren)
 
 ;; The absolute basics
 (defun nullo (object)

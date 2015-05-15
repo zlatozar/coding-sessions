@@ -3,7 +3,7 @@
 ;;; Copyright 2008 Matthew Swank
 ;;; All rights reserved.
 
-(in-package :study-kanren)
+(in-package :mini-kanren)
 
 (defmacro defconst (name value &optional (documentation nil docp))
   (let ((global (intern (format nil "%%~A" (symbol-name name)))))

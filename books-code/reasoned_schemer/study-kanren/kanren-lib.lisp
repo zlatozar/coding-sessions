@@ -3,7 +3,7 @@
 ;;; Copyright (c) 2008, Matthew Swank
 ;;; All rights reserved.
 
-(in-package :study-kanren)
+(in-package :mini-kanren)
 
 (defmacro choice-case (key-term &body cases)
   (let ((kt-name (gensym)))
