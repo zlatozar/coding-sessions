@@ -7,5 +7,12 @@ target/
 *.war
 *.ear
 
+# IDEs
+.classpath
+*.iml
+.idea/
+.project
+.settings/
+
 # VM crash logs
 hs_err_pid*
