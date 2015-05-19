@@ -3,7 +3,7 @@
 ;;; Copyright (c) 2008, Matthew Swank
 ;;; All rights reserved.
 
-(in-package :test-mini-kanren)
+(in-package :book)
 
 ;;; ____________________________________________________________________________
 ;;;                                                                   Chapter 1

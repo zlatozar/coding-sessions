@@ -16,7 +16,7 @@
            #:walk-impl
            #:reify-subst-impl
 
-;;; user-interface
+           ;; user-interface
            #:else
            #:+succeed+
            #:+fail+
@@ -45,7 +45,7 @@
            #:brancho
            #:flatteno
 
-;;; lib-functions
+           ;; lib-functions
            #:choice-case
            #:map-choice
            #:make-nary-relation
@@ -57,23 +57,21 @@
 (defpackage #:pcl-test
   (:documentation "Use defined in the book 'Practical Common Lisp' test framework
 to test mini-kanren implementation.")
-  (:use #:common-lisp)
+  (:use :cl)
   (:export #:deftest
            #:check))
 
-(defpackage :test-mini-kanren
+;; Contains "The Reasoned Schemer" book code
+(defpackage :book
   (:use :cl
-        :mini-kanren
-        :pcl-test)
+        :pcl-test
+        :mini-kanren)
+  ;; Tests
   (:export #:ch1-tests
            #:ch2-tests
            #:ch3-tests
            #:ch6-tests
            #:ch10-tests))
-
-;; Contains "The Reasoned Schemer" book code
-(defpackage :book
-  (:use :cl :mini-kanren))
 
 ;;; ____________________________________________________________________________
 ;;;                                                                      Public

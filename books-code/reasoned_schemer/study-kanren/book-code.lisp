@@ -236,6 +236,7 @@
                  (conso a result out)
                  (appendo-2 d rest result)))))
 
+;; alias
 (setf (symbol-function 'appendo) #'appendo-2)
 
 (defun swappendo (list rest out)
@@ -257,6 +258,14 @@
          (else (fresh (a) ; note absence of 'pairo'
                  (caro x a)
                  (unwrapo-1 a out)))))
+
+(defun brancho (x tree)
+  (fresh (car cdr)
+    (conso car cdr tree)
+    (conde ((nullo tree) +fail+)
+	   ((== car x) +succeed+)
+	   ((brancho x car))
+	   (else (brancho x cdr)))))
 
 (defun flatteno (list? out)
   (conde ((nullo list?) (== '() out))

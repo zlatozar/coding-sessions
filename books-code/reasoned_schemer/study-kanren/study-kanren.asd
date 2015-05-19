@@ -11,12 +11,12 @@
 
                 ;; miniKanren
                 (:file "impl/mini-kanren" :depends-on ("packages"))
-                (:file "impl/kanren-lib" :depends-on ("impl/mini-kanren"))
-                (:file "kanren-basic-queries")
+                (:file "impl/mini-kanren-lib" :depends-on ("impl/mini-kanren"))
 
-                ;; Test miniKanren implementation
+                ;; To test miniKanren implementation and book code
                 (:file "tools/test" :depends-on ("packages"))
-                (:file "impl/test-mini-kanren" :depends-on ("tools/test" "impl/mini-kanren"))
+                
 
                 ;; Functions defined in book
-                (:file "book-code" :depends-on ("impl/mini-kanren"))))
+                (:file "book-code" :depends-on ("impl/mini-kanren"))
+                (:file "book-code-test" :depends-on ("book-code"))))
