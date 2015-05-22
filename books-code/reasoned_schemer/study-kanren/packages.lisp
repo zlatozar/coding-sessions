@@ -32,19 +32,6 @@
            #:alli
            #:conda
 
-;;; basic queries
-           #:nullo
-           #:conso
-           #:caro
-           #:cdro
-           #:pairo
-           #:eq-caro
-           #:listo
-           #:membero
-           #:appendo
-           #:brancho
-           #:flatteno
-
            ;; lib-functions
            #:choice-case
            #:map-choice
@@ -71,11 +58,49 @@ to test mini-kanren implementation.")
            #:ch2-tests
            #:ch3-tests
            #:ch6-tests
-           #:ch10-tests))
+           #:ch10-tests)
+  (:export #:nullo
+           #:conso
+           #:caro
+           #:cdro
+           #:pairo
+           #:eq-caro
+           #:listo
+           #:membero
+           #:appendo
+           #:brancho
+           #:flatteno))
 
 ;;; ____________________________________________________________________________
 ;;;                                                                      Public
 
 (defpackage :cl-kanren
   (:documentation "Expose functions defined in 'The Reasoned Schemer' book")
-  (:use :cl))
+  (:use :cl)
+  (:import-from :mini-kanren
+                #:else
+                #:+succeed+
+                #:+fail+
+                #:jog
+                #:run
+                #:run*
+                #:==
+                #:fresh
+                #:conde
+                #:condi
+                #:condu
+                #:all
+                #:alli
+                #:conda)
+  (:import-from :book
+                #:nullo
+                #:conso
+                #:caro
+                #:cdro
+                #:pairo
+                #:eq-caro
+                #:listo
+                #:membero
+                #:appendo
+                #:brancho
+                #:flatteno))
