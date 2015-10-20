@@ -263,9 +263,9 @@
   (fresh (car cdr)
     (conso car cdr tree)
     (conde ((nullo tree) +fail+)
-	   ((== car x) +succeed+)
-	   ((brancho x car))
-	   (else (brancho x cdr)))))
+           ((== car x) +succeed+)
+           ((brancho x car))
+           (else (brancho x cdr)))))
 
 (defun flatteno (list? out)
   (conde ((nullo list?) (== '() out))
@@ -282,18 +282,18 @@
          ((nullo list?) (== '() out))
          (else
            (fresh (a d result-car result-cdr)
-                  (conso a d list?)
-                  (flattenrevo a result-car)
-                  (flattenrevo d result-cdr)
-                  (appendo result-car result-cdr out)))))
+             (conso a d list?)
+             (flattenrevo a result-car)
+             (flattenrevo d result-cdr)
+             (appendo result-car result-cdr out)))))
 
 ;;; ____________________________________________________________________________
 ;;;                                                                   Chapter 6
 
 ;; 6.1
 (defun anyo (goal)
-    (conde (goal +succeed+)
-           (else (anyo goal))))
+  (conde (goal +succeed+)
+         (else (anyo goal))))
 
 ;; 6.4
 (defvar +never+ (anyo +fail+))
@@ -303,8 +303,8 @@
 
 ;; 6.12
 (defvar +sal+ #'(lambda (goal)
-                    (conde (+succeed+ +succeed+)
-                           (else goal))))
+                  (conde (+succeed+ +succeed+)
+                         (else goal))))
 
 ;;; ____________________________________________________________________________
 ;;;                                                                   Chapter 7
