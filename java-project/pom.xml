@@ -15,7 +15,7 @@ http://www.w3.org/2001/XMLSchema-instance ">
     <!-- Project description    -->
     <!-- ====================== -->
 
-    <inceptionYear>2014</inceptionYear>
+    <inceptionYear>2015</inceptionYear>
 
     <groupId>com.zlatozar.java-project</groupId>
     <artifactId>java-project</artifactId>
@@ -87,8 +87,8 @@ http://www.w3.org/2001/XMLSchema-instance ">
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
 
@@ -251,6 +251,16 @@ http://www.w3.org/2001/XMLSchema-instance ">
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
             <version>${project.jsr305.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jsonSchema</artifactId>
+            <version>2.5.0</version>
         </dependency>
 
     </dependencies>
