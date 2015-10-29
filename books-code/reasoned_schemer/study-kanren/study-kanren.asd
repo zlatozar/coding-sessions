@@ -15,8 +15,12 @@
 
                 ;; To test miniKanren implementation and book code
                 (:file "tools/test" :depends-on ("packages"))
-                
 
                 ;; Functions defined in book
                 (:file "book-code" :depends-on ("impl/mini-kanren"))
-                (:file "book-code-test" :depends-on ("book-code"))))
+                (:file "book-code-test" :depends-on ("book-code"))
+
+                ;; Lectures notes
+                (:file "study-kanren/lec01/code" :depends-on ("tools/test" "book-code"))
+
+                ))

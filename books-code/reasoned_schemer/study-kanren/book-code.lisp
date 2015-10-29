@@ -1,4 +1,4 @@
-;;; -*- Mode: LISP; Syntax: COMMON-LISP; Package: CL-USER; Base: 10 -*-
+;;; -*- Mode: LISP; Syntax: COMMON-LISP; Package: BOOK; Base: 10 -*-
 
 ;;; Copyright (c) 2008, Matthew Swank
 ;;; All rights reserved.

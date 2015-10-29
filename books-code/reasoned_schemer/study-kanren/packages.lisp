@@ -4,7 +4,8 @@
 ;;; All rights reserved.
 
 (defpackage :mini-kanren
-  (:use :cl)
+  (:documentation "miniKanren implementation")
+  (:use #:cl)
   (:import-from :alexandria
                 #:with-gensyms)
 
@@ -15,6 +16,7 @@
            #:unify-impl
            #:walk-impl
            #:reify-subst-impl
+           #:defconst
 
            ;; user-interface
            #:else
@@ -44,12 +46,12 @@
 (defpackage #:pcl-test
   (:documentation "Use defined in the book 'Practical Common Lisp' test framework
 to test mini-kanren implementation.")
-  (:use :cl)
+  (:use #:cl)
   (:export #:deftest
            #:check))
 
-;; Contains "The Reasoned Schemer" book code
 (defpackage :book
+  (:documentation "Contains 'The Reasoned Schemer' book code")
   (:use :cl
         :pcl-test
         :mini-kanren)
@@ -71,14 +73,21 @@ to test mini-kanren implementation.")
            #:brancho
            #:flatteno))
 
+(defpackage :study-kanren
+  (:documentation "Contains code from 'miniKanren uncourse")
+  (:use #:cl
+        #:pcl-test
+        #:mini-kanren
+        #:book))
+
 ;;; ____________________________________________________________________________
 ;;;                                                                      Public
 
 (defpackage :cl-kanren
   (:documentation "Expose functions defined in 'The Reasoned Schemer' book")
-  (:use :cl
-        :mini-kanren
-        :book)
+  (:use #:cl
+        #:mini-kanren
+        #:book)
   ;; `mini-kanren'
   (:export #:else
            #:+succeed+
