@@ -76,31 +76,33 @@ to test mini-kanren implementation.")
 
 (defpackage :cl-kanren
   (:documentation "Expose functions defined in 'The Reasoned Schemer' book")
-  (:use :cl)
-  (:import-from :mini-kanren
-                #:else
-                #:+succeed+
-                #:+fail+
-                #:jog
-                #:run
-                #:run*
-                #:==
-                #:fresh
-                #:conde
-                #:condi
-                #:condu
-                #:all
-                #:alli
-                #:conda)
-  (:import-from :book
-                #:nullo
-                #:conso
-                #:caro
-                #:cdro
-                #:pairo
-                #:eq-caro
-                #:listo
-                #:membero
-                #:appendo
-                #:brancho
-                #:flatteno))
+  (:use :cl
+        :mini-kanren
+        :book)
+  ;; `mini-kanren'
+  (:export #:else
+           #:+succeed+
+           #:+fail+
+           #:jog
+           #:run
+           #:run*
+           #:==
+           #:fresh
+           #:conde
+           #:condi
+           #:condu
+           #:all
+           #:alli
+           #:conda)
+  ;; `book'
+  (:export #:nullo
+           #:conso
+           #:caro
+           #:cdro
+           #:pairo
+           #:eq-caro
+           #:listo
+           #:membero
+           #:appendo
+           #:brancho
+           #:flatteno))
