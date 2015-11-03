@@ -23,15 +23,15 @@
         ((null (cdr goals))
          (car goals))
         (t
-	 (with-gensyms (goal all-aux-subst)
-	   (let ((remaining-goals (cdr goals)))
-	     `(let ((,goal ,(car goals)))
-		(lambda (,all-aux-subst)
-		  (funcall ,bnd
-			   (funcall ,goal ,all-aux-subst)
-			   (lambda (,all-aux-subst)
-			     (funcall (all-aux ,bnd ,@remaining-goals)
-				      ,all-aux-subst))))))))))
+         (with-gensyms (goal all-aux-subst)
+           (let ((remaining-goals (cdr goals)))
+             `(let ((,goal ,(car goals)))
+                (lambda (,all-aux-subst)
+                  (funcall ,bnd
+                           (funcall ,goal ,all-aux-subst)
+                           (lambda (,all-aux-subst)
+                             (funcall (all-aux ,bnd ,@remaining-goals)
+                                      ,all-aux-subst))))))))))
 
 ;;; Case statement for streams
 ;;;
@@ -44,77 +44,86 @@
   (with-gensyms (e)
     `(let ((,e ,expr))
        (cond ((eq +empty-stream+ ,e) ,on-zero)
-	     ((choice-p ,e)
-	      (let ((,ac (choice-head ,e))
-		    (,f (choice-tail ,e)))
-		,@on-choice))
-	     (t (let ((,a ,e))
-		  ,@on-one))))))
+             ((choice-p ,e)
+              (let ((,ac (choice-head ,e))
+                    (,f (choice-tail ,e)))
+                ,@on-choice))
+             (t (let ((,a ,e))
+                  ,@on-one))))))
 
 (defmacro ife (goal0 goal1 goal2)
   (with-gensyms (ife-subst)
     `#'(lambda (,ife-subst)
-	 (mplus (funcall (all ,goal0 ,goal1) ,ife-subst)
-		#'(lambda () (funcall ,goal2 ,ife-subst))))))
+         (mplus (funcall (all ,goal0 ,goal1) ,ife-subst)
+                #'(lambda () (funcall ,goal2 ,ife-subst))))))
 
 (defmacro ifi (goal0 goal1 goal2)
   (with-gensyms (ifi-subst)
     `#'(lambda (,ifi-subst)
-	 (mplusi (funcall (all ,goal0 ,goal1) ,ifi-subst)
-		 #'(lambda () (funcall ,goal2 ,ifi-subst))))))
+         (mplusi (funcall (all ,goal0 ,goal1) ,ifi-subst)
+                 #'(lambda () (funcall ,goal2 ,ifi-subst))))))
 
 (defmacro ifa (goal0 goal1 goal2)
   (with-gensyms (ifa-subst ifa-subst-inf fun)
     `#'(lambda (,ifa-subst)
-	 (declare (ignorable ,ifa-subst))
-	 (let ((,ifa-subst-inf (funcall ,goal0 ,ifa-subst)))
-	   (case-inf ,ifa-subst-inf
-		     (funcall ,goal2 ,ifa-subst)
-		     ((,ifa-subst)
-		      (funcall ,goal1 ,ifa-subst))
-		     ((,ifa-subst ,fun)
-		      (declare (ignore ,ifa-subst ,fun))
-		      (bind ,ifa-subst-inf ,goal1)))))))
+         (declare (ignorable ,ifa-subst))
+         (let ((,ifa-subst-inf (funcall ,goal0 ,ifa-subst)))
+           (case-inf ,ifa-subst-inf
+                     (funcall ,goal2 ,ifa-subst)
+                     ((,ifa-subst)
+                      (funcall ,goal1 ,ifa-subst))
+                     ((,ifa-subst ,fun)
+                      (declare (ignore ,ifa-subst ,fun))
+                      (bind ,ifa-subst-inf ,goal1)))))))
 
 (defmacro ifu (goal0 goal1 goal2)
   (with-gensyms (ifu-subst ifu-subst-inf fun)
     `#'(lambda (,ifu-subst)
-	 (let ((,ifu-subst-inf (funcall ,goal0 ,ifu-subst)))
-	   (case-inf ,ifu-subst-inf
-		     (funcall ,goal2 ,ifu-subst)
-		     ((,ifu-subst)
-		      (funcall ,goal1 ,ifu-subst))
-		     ((,ifu-subst ,fun)
-		      (declare (ignore ,fun))
-		      (funcall ,goal1 ,ifu-subst)))))))
+         (let ((,ifu-subst-inf (funcall ,goal0 ,ifu-subst)))
+           (case-inf ,ifu-subst-inf
+                     (funcall ,goal2 ,ifu-subst)
+                     ((,ifu-subst)
+                      (funcall ,goal1 ,ifu-subst))
+                     ((,ifu-subst ,fun)
+                      (declare (ignore ,fun))
+                      (funcall ,goal1 ,ifu-subst)))))))
 
 ;; TODO - destructure in the arg line here
 (defmacro cond-aux (ifer &body clauses)
   (if (null clauses)
       '+fail+
       (destructuring-bind ((&rest goals) &rest other-clauses) clauses
-	(if (null other-clauses)
-	    `(all ,@(if (and goals (eq (car goals) 'else))
-			(cdr goals)
-			goals))
-	    (destructuring-bind (goal0 &rest other-goals) goals
-	      `(,ifer ,goal0
-		      (all ,@other-goals)
-		      (cond-aux ,ifer ,@other-clauses)))))))
+        (if (null other-clauses)
+            `(all ,@(if (and goals (eq (car goals) 'else))
+                        (cdr goals)
+                        goals))
+            (destructuring-bind (goal0 &rest other-goals) goals
+              `(,ifer ,goal0
+                      (all ,@other-goals)
+                      (cond-aux ,ifer ,@other-clauses)))))))
 
 (defmacro jog ((var) &body goals)
   (with-gensyms (subst)
     `(let ((,var (id ',var)))
        (declare (ignorable ,var))
        (map-inf
-	#'(lambda (,subst)
-	    (reify (walk* ,var ,subst)))
-	(funcall (all ,@goals) +empty-subst+)))))
+        #'(lambda (,subst)
+            (reify (walk* ,var ,subst)))
+        (funcall (all ,@goals) +empty-subst+)))))
+
+(defmacro project ((&rest vars) &body goals)
+  (with-gensyms (subst)
+    (let* ((let-clauses (loop for v in vars collect
+                             `(,v (walk* ,v ,subst)))))
+      `#'(lambda (,subst)
+           (let ,let-clauses
+             (declare (ignorable ,@vars))
+             (funcall (all ,@goals) ,subst))))))
 
 (defmacro run (num (var) &body goals)
   (with-gensyms (gen res res?)
     `(loop with ,gen = (jog (,var) ,@goals)
-	for (,res ,res?) = (multiple-value-list (funcall ,gen))
+        for (,res ,res?) = (multiple-value-list (funcall ,gen))
           ,@(when num `(repeat ,num)) while ,res? collect ,res)))
 
 (defmacro run* ((var) &body goals)
@@ -124,8 +133,8 @@
   (with-gensyms (subst)
     `(lambda (,subst)
        (let ,(loop for v in vars collect `(,v (id ',v)))
-	 (declare (ignorable ,@vars))
-	 (funcall (all ,@goals) ,subst)))))
+         (declare (ignorable ,@vars))
+         (funcall (all ,@goals) ,subst)))))
 
 (defmacro conde (&body clauses)
   `(cond-aux ife ,@clauses))
@@ -171,49 +180,49 @@
   (let ((rest a-inf))
     (lambda ()
       (case-inf rest
-		(values nil nil)
-		((a)
-		 (setf rest +empty-stream+)
-		 (values (funcall p a) t))
-		((a f)
-		 (setf rest (funcall f))
-		 (values (funcall p a) t))))))
+                (values nil nil)
+                ((a)
+                 (setf rest +empty-stream+)
+                 (values (funcall p a) t))
+                ((a f)
+                 (setf rest (funcall f))
+                 (values (funcall p a) t))))))
 
 ;; stream * (_ -> stream) -> stream
 (defun mplus (a-inf fun)
   (case-inf a-inf
-	    (funcall fun)
-	    ((a) (choice a fun))
-	    ((a fun0)
-	     (choice a #'(lambda ()
-			   (mplus (funcall fun0) fun))))))
+            (funcall fun)
+            ((a) (choice a fun))
+            ((a fun0)
+             (choice a #'(lambda ()
+                           (mplus (funcall fun0) fun))))))
 
 ;; stream * goal -> stream
 ;; where goal <==> (T -> stream)
 (defun bind (a-inf goal)
   (case-inf a-inf
-	    (mzero)
-	    ((a) (funcall goal a))
-	    ((a f) (mplus (funcall goal a)
-			  #'(lambda () (bind (funcall f) goal))))))
+            (mzero)
+            ((a) (funcall goal a))
+            ((a f) (mplus (funcall goal a)
+                          #'(lambda () (bind (funcall f) goal))))))
 
 ;; stream * (_ -> stream) -> stream
 (defun mplusi (a-inf fun)
   (case-inf a-inf
-	    (funcall fun)
-	    ((a) (choice a fun))
-	    ((a fun0)
-	     (choice a #'(lambda ()
-			   (mplusi (funcall fun) fun0))))))
+            (funcall fun)
+            ((a) (choice a fun))
+            ((a fun0)
+             (choice a #'(lambda ()
+                           (mplusi (funcall fun) fun0))))))
 
 ;; stream * goal -> stream
 ;; where goal <==> (T -> stream)
 (defun bindi (a-inf goal)
   (case-inf a-inf
-	    (mzero)
-	    ((a) (funcall goal a))
-	    ((a f) (mplusi (funcall goal a)
-			   #'(lambda () (bindi (funcall f) goal))))))
+            (mzero)
+            ((a) (funcall goal a))
+            ((a f) (mplusi (funcall goal a)
+                           #'(lambda () (bindi (funcall f) goal))))))
 
 (defun id-bound-p (id subst)
   (assoc id subst))
@@ -229,7 +238,7 @@
       (let ((binding (id-bound-p id? subst)))
         (if binding
             (walk (binding-val binding) subst)
-	    id?))
+            id?))
       id?))
 
 (defun walk* (id? subst)
@@ -246,7 +255,7 @@
 
           ((vectorp id?)
            (map 'vector (lambda (id?)
-			  (walk* id? subst))
+                          (walk* id? subst))
                 id?))
           (t id?))))
 
@@ -302,7 +311,7 @@
       (let ((subst-1 (unify v w subst)))
         (if (not (eq subst-1 +fail+))
             (funcall +succeed+ subst-1)
-	    (funcall +fail+ subst)))))
+            (funcall +fail+ subst)))))
 
 ;; Public interface to extend unification
 (defgeneric equivp (lhs rhs)
@@ -312,7 +321,7 @@
     (string= lhs rhs))
   (:method ((lhs vector) (rhs vector))
     (or (eq lhs rhs)
-	(and (eql (length lhs) (length rhs))
+        (and (eql (length lhs) (length rhs))
              (progn (map nil (lambda (l r)
                                (unless (equivp l r)
                                  (return-from equivp nil)))

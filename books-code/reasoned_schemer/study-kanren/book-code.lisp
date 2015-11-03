@@ -3,6 +3,8 @@
 ;;; Copyright (c) 2008, Matthew Swank
 ;;; All rights reserved.
 
+;;; File book-code.lisp: Contains functions defined in book
+
 (in-package :book)
 
 ;;; ____________________________________________________________________________
@@ -10,9 +12,9 @@
 
 ;; 1.56
 (defun teacupo (x)
-  (conde ((== 'tea x) +succeed+) ; the succeed is unnecessary
+  (conde ((== 'tea x) +succeed+)
          ((== 'cup x) +succeed+)
-         (else +fail+)))         ; this line is superfluous
+         (else +fail+)))
 
 ;;; ____________________________________________________________________________
 ;;;                                                                   Chapter 2
@@ -394,6 +396,14 @@
 
 
 ;;; (just forms not already in the reference implementation)
+(defun occurs-check (x v subst)
+  (let ((v (walk v subst)))
+    (cond
+      ((id-p v) (eq v x))
+      ((consp v)
+       (or (occurs-check x (car v) subst)
+	   (occurs-check x (cdr v) subst)))
+      (t nil))))
 
 (defun ext-s-check (rhs lhs subst)
   (cond ((occurs-check rhs lhs subst) +fail+)

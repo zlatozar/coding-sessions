@@ -21,6 +21,7 @@
                 (:file "book-code-test" :depends-on ("book-code"))
 
                 ;; Lectures notes
-                (:file "study-kanren/lec01/code" :depends-on ("tools/test" "book-code"))
+                (:file "study-kanren/lec01" :depends-on ("tools/test" "book-code"))
+                (:file "study-kanren/lec02" :depends-on ("tools/test" "book-code"))
 
                 ))

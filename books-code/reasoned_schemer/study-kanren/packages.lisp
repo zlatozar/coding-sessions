@@ -11,18 +11,21 @@
 
   (:export #:unify
            #:walk*
+           #:walk
+           #:walk-impl
            #:reify-subst
            #:equivp
            #:unify-impl
-           #:walk-impl
            #:reify-subst-impl
            #:defconst
+           #:id-p
 
            ;; user-interface
            #:else
-           #:+succeed+
-           #:+fail+
+           #:+succeed+ ;; #s
+           #:+fail+    ;; #u
            #:jog
+           #:project
            #:run
            #:run*
            #:==
@@ -60,18 +63,39 @@ to test mini-kanren implementation.")
            #:ch2-tests
            #:ch3-tests
            #:ch6-tests
+           #:ch9-tests
            #:ch10-tests)
-  (:export #:nullo
-           #:conso
+  (:export ;; ch2
            #:caro
            #:cdro
+           #:conso
+           #:nullo
+           #:eqo
            #:pairo
-           #:eq-caro
+           ;; ch3
            #:listo
+           #:eq-caro
            #:membero
+           #:list-identity
+           #:reverse-list
+           ;; ch4
+           #:remembero
+           ;; ch5
            #:appendo
            #:brancho
-           #:flatteno))
+           #:flatteno
+           ;; ch6
+           #:anyo
+           #:+never+
+           #:+always+
+           #:+sal+
+           #:addero
+           ;; ch9
+           #:==-check
+           ;; ch10
+           #:onceo
+           #:gen&testo
+           #:enumerateo))
 
 (defpackage :study-kanren
   (:documentation "Contains code from 'miniKanren uncourse")
@@ -104,14 +128,35 @@ to test mini-kanren implementation.")
            #:alli
            #:conda)
   ;; `book'
-  (:export #:nullo
-           #:conso
+  (:export ;; ch2
            #:caro
            #:cdro
+           #:conso
+           #:nullo
+           #:eqo
            #:pairo
-           #:eq-caro
+           ;; ch3
            #:listo
+           #:eq-caro
            #:membero
+           #:list-identity
+           #:reverse-list
+           ;; ch4
+           #:remembero
+           ;; ch5
            #:appendo
            #:brancho
-           #:flatteno))
+           #:flatteno
+           ;; ch6
+           #:anyo
+           #:+never+
+           #:+always+
+           #:+sal+
+           #:addero
+           ;; ch9
+           #:==-check
+           ;; ch10
+           #:onceo
+           #:gen&testo
+           #:enumerateo
+           ))
