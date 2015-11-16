@@ -19,19 +19,26 @@
 ;;; ____________________________________________________________________________
 ;;;                                                                   Chapter 2
 
+;; Here is the idea of naming `caro' and `cdro'
+;;
+;; First argument is called 'cons' because represent cons, second is 'q' because this is
+;; the query parameter and result of `caro' will be assigned to it.
+
 ;; 2.9
-(defun caro (cons car)
+(defun caro (cons q)
   (fresh (cdr)
-    (== (cons car cdr) cons)))
+    (== (cons q cdr) cons))) ; What is the value of 'car' such that consing with
+                                        ; 'cdr'(could be anything) will give you given cons?
+                                        ; Actually both 'q' and 'cdr' are discovered but only query parameter 'q' will be returned.
 
 ;; 2.16
-(defun cdro (cons cdr)
+(defun cdro (cons q)
   (fresh (car)
-    (== (cons car cdr) cons)))
+    (== (cons car q) cons)))
 
 ;; 2.28
-(defun conso (car cdr cons)
-  (== (cons car cdr) cons))
+(defun conso (car cdr q)
+  (== (cons car cdr) q))
 
 ;; 2.35
 (defun nullo (object)
@@ -42,23 +49,31 @@
   (== x y))
 
 ;; 2.53
-(defun pairo (pair?)
+(defun pairo (q)
   (fresh (car cdr)
-    (conso car cdr pair?)))
+    (conso car cdr q))) ; Do exist car and cdr such that (cons car cdr) to be equal to pair?
 
 ;;; ____________________________________________________________________________
 ;;;                                                                   Chapter 3
 
-;; 3.5
+;; 3.5. `listo' has goals as questions and answers
 (defun listo (list)
   (conde ((nullo list) +succeed+)
          ((pairo list)
-          (fresh (d)
-            (cdro list d)
-            (listo d)))
-         (else +fail+)))
+          (fresh (d)       ; It is an unnesting of (list? (cdr l)). First we
+            (cdro list d)  ; take the cdr of l and associate it with a fresh
+            (listo d)))    ; variable d, and then we use d in the
+         (else +fail+)))   ; recursive call.
 
-;; 3.17
+;; The First Commandment
+;; ---------------------
+;; To transform a function whose value is a Boolean
+;; into a function whose value is a goal, replace cond
+;; with cond e and unnest each question and answer.
+;; Unnest the answer #t (or #f) by replacing it with #s
+;; (or #u).
+
+;; 3.17 lolo - list of lists
 (defun lolo (list)
   (conde ((nullo list) +succeed+)
          ;; these two fresh clauses could be consolidated into one
@@ -73,8 +88,8 @@
 ;; 3.31
 (defun twinso-0 (s)
   (fresh (x y)
-    (conso x y s)
-    (conso x () y)))
+    (conso x y s)      ; to exist to x and y
+    (conso x () y)))   ; such that adding nothing to x to have y
 
 ;; 3.36
 (defun twinso-1 (s)
@@ -83,7 +98,7 @@
 
 (setf (symbol-function 'twinso) #'twinso-1)
 
-;; 3.37
+;; 3.37 loto - list-of-twins
 (defun loto (list)
   (conde ((nullo list)
           +succeed+)
@@ -125,13 +140,18 @@
 
 ;; 3.65
 (defun list-identity (list)
-  (run nil (y)
+  (run* (y)
     (membero y list)))
+
+;; What should the cdr be when we find this value?
+
+;; It should be the empty list if we find the
+;; value at the end of the list.
 
 ;; 3.80
 (defun pmembero-0 (x list)
   (conde ((nullo list) +fail+)
-         ((eq-caro list x) (cdro list '()))
+         ((eq-caro list x) (cdro list '())) ; ***
          (else (fresh (d)
                  (cdro list d)
                  (pmembero-0 x d)))))
@@ -182,7 +202,7 @@
 
 ;; 3.101
 (defun reverse-list (list)
-  (run nil (y)
+  (run* (y)
     (memberrevo y list)))
 
 ;;; ____________________________________________________________________________
@@ -402,7 +422,7 @@
       ((id-p v) (eq v x))
       ((consp v)
        (or (occurs-check x (car v) subst)
-	   (occurs-check x (cdr v) subst)))
+           (occurs-check x (cdr v) subst)))
       (t nil))))
 
 (defun ext-s-check (rhs lhs subst)

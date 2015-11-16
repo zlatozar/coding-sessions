@@ -125,7 +125,8 @@
     ;;      that's why (:_.0 :_.1)
     (equal (run* (r)
              (fresh (x y)
-               (== (cons x (cons y '())) r)))
+               (== (cons x (cons y '())) r))) ; could be written as `(,x ,y). See 2.2.
+
            '((:_.0 :_.1))) ; For each different fresh variable there is a
                                         ; symbol with an underscore followed by a
                                         ; numeric subscript - (:_.0 :_.1)
@@ -331,7 +332,7 @@
     (equal (run* (r)
              (fresh (x y z)
                (conde ((== y x) (fresh (x) (== z x))) ; (:_.0 :_.1)
-                      ((fresh (x) (== y x)) (== z x)) ; again (:_.0 :_.1) but do they the same?
+                      ((fresh (x) (== y x)) (== z x)) ; again (:_.0 :_.1) but do they are the same?
                       (else +fail+))
                (== (cons y (cons z '())) r)))
            '((:_.0 :_.1) (:_.0 :_.1)))
@@ -379,21 +380,21 @@
     ;; 2.2
     (equal (run* (r)
              (fresh (y x)
-               (== `(,x ,y) r)))
+               (== `(,x ,y) r))) ; `(,x ,y) => (cons x (cons y ()))
            '((:_.0 :_.1)))
 
     ;; 2.3
     (equal (run* (r)
              (fresh (v w)
-               (== (let ((x v)
+               (== (let ((x v)  ; x and y are now fresh
                          (y w))
                      `(,x ,y))
                    r)))
-           '((:_.0 :_.1)))
+           '((:_.0 :_.1))) ; r is associated with (x y) that could be anything
 
     ;; 2.6
     (equal (run* (r)
-             (caro '(a c o r n) r))
+             (caro '(a c o r n) r)) ; caro is like car but accepts two parameters
            '(a))
 
     ;; 2.7
@@ -405,30 +406,34 @@
     ;; 2.8
     (equal (run* (r)
              (fresh (x y)
-               (caro `(,r ,y) x)
-               (== 'pear x)))
-           '(pear))
-
+               (caro `(,r ,y) x)  ; Since x is associated with the car of ( r y)) ,
+               (== 'pear x)))     ; which is the fresh variable r . Then x is
+           '(pear))               ; associated with pear, which in turn
+                                        ; associates r with pear.
     ;; 2.11
     (equal (run* (r)
              (fresh (x y)
                (caro '(grape raisin pear) x)
-               (caro '((a)(b)(c)) y)
-               (== (cons x y) r)))
-           '((grape a)))
+               (caro '((a) (b) (c)) y)
+               (== (cons x y) r))) ; no need to write `(,x ,y) because they are quoted
+           '((grape a))) ; from every goal
 
     ;; 2.15
     (equal (run* (r)
              (fresh (v)
-               (cdro '(a c o r n) v)
-               (caro v r)))
+               (cdro '(a c o r n) v) ; like cdr but with two parameters, v is '(c o r n) now
+               (caro v r))) ; v is not fresh anymore
            '(c))
 
-    ;; 2.18
+    ;; The process of transforming (car (cdr l)) into (cdro l v) and (caro v r) is
+    ;; called unnesting. There is similarity between unnesting and continuation-passing style.
+
+    ;; 2.18. Because variables introduced by fresh are
+    ;;       values, we can use CL constructions in miniKanren.
     (equal (run* (r)
              (fresh (x y)
                (cdro '(grape raisin pear) x)
-               (caro '((a)(b)(c)) y)
+               (caro '((a) (b) (c)) y)
                (== (cons x y) r)))
            '(((raisin pear) a)))
 
@@ -441,12 +446,15 @@
     ;; 2.20
     (equal (run* (x)
              (cdro '(c o r n) `(,x r n)))
-           '(o))
+           '(o)) ; miniKanren program returns value of query variable
 
-    ;; 2.21
+    ;; 2.21 Because if the cdr of l is (c o r n) , then l
+    ;;      must be the list (A c o r n) , where A is the
+    ;;      fresh variable introduced in the definition
+    ;;      of `cdro'.
     (equal (run* (l)
              (fresh (x)
-               (cdro l '(c o r n))
+               (cdro l '(c o r n)) ; l is something (:_.0) which cdr is '(c o r n)
                (caro l x)
                (== 'a x)))
            '((a c o r n)))
@@ -458,47 +466,56 @@
 
     ;; 2.23
     (equal (run* (x)
-             (conso x '(a b c) '(d a b c)))
-           '(d))
-
+             (conso x '(a b c) '(d a b c))) ; What value can we associate with x so
+           '(d))                            ; that (cons x (a x c))) is (d a x c))?
+                                        ; Obviously, d is the value.
     ;; 2.24
     (equal (run* (r)
              (fresh (x y z)
-               (== `(e a d ,x) r)
-               (conso y `(a ,z c) r)))
-           '((e a d c)))
+               (== `(e a d ,x) r)       ; r is (e a d (:_.0)) here
+               (conso y `(a ,z c) r)))  ; What is the value of y such that (conso y (a (:_.0) c)) give (e a d (:_.0))
+           '((e a d c)))                ; First add e, then a ,z first (:_.0) is associated with d and ,x second (:_.0) with c
 
     ;; 2.25
     (equal (run* (x)
              (conso x `(a ,x c) `(d a ,x c)))
            '(d))
 
+    ;; X[:_.0] represents fresh logical variable X
+
     ;; 2.26
     (equal (run* (l)
              (fresh (x)
-               (== `(d a ,x c) l)
-               (conso x `(a ,x c) l)))
-           '((d a d c)))
+               (== `(d a ,x c) l)      ; l is (d a X[:_.0] c))
+               (conso x `(a ,x c) l))) ; Find x in (== (conso x (a X[:_.0] c)) (d a X[:_.0] c)) => d a ?? c
+           '((d a d c)))               ; X is in both places! Because `conso' associate x with d at the beginning
+                                        ; X[:_.0] is d. The result will be (d a d c)
 
     ;; 2.27
     (equal (run* (l)
              (fresh (x)
-               (conso x `(a ,x c) l)
-               (== `(d a ,x c) l)))
+               (conso x `(a ,x c) l) ; l is (X[:_.0] a X[:_.0] c)
+               (== `(d a ,x c) l)))  ; X[:_.0] is associated with d, so result is (d a d c)
            '((d a d c)))
 
-    ;; 2.29
+    ;; 2.29. That is hard...
     (equal (run* (l)
              (fresh (d x y w s)
-               (conso w '(a n s) s)
-               (cdro l s)
-               (caro l x)
-               (== 'b x)
-               (cdro l d)
-               (caro d y)
-               (== 'e y)))
-           '((b e a n s)))
-
+               (conso w '(a n s) s) ;1.  s is (W[:_.0] a n s)
+               (cdro l s)           ;2.  s is cdr(L[:_.0])
+               (caro l x)           ;3.  x is car(L[:_.0])
+               (== 'b x)            ;4.  x should be equal to 'b => l should have 'b as first element, because of p.3
+               (cdro l d)           ;5.  d contains rest of l (excludes 'b)
+               (caro d y)           ;6.  y is car d
+               (== 'e y)))          ;7.  y is 'e  => d starts with 'e, because of p.6
+           '((b e a n s)))          ;
+                                        ; Now backwards. Remember we search for value of l!
+                                        ; y -> 'e, d -> ('e ...) p.7 p.6
+                                        ; l -> (... D['e ...]) p.5
+                                        ; x is 'b p.4
+                                        ; s -> ('b D['e ...]) => l -> (... 'b D['e ...])  because p.2. We need rest of s!
+                                        ; s is (conso W[:_.0] '(a n s) ('b D['e ...])) which means w is '(b e) and rest of s is '(a n s)
+                                        ; now l is (... b e a n s) and because of p.2 we discover that the result is '(b e a n s)
     ;; 2.32
     (equal (run* (q)
              (nullo '(grape raisin pear))
@@ -555,7 +572,7 @@
     ;; 2.57
     (equal (run* (x)
              (pairo x))
-           '((:_.0 . :_.1)))
+           '((:_.0 . :_.1))) ; note the dot. (cons 'a 'b) ;=> (A . B)
 
     ;; 2.58
     (equal (run* (r)
@@ -569,15 +586,25 @@
 (deftest ch3-tests ()
   (check
 
+    ;; When determining the goal returned by `listo',
+    ;; it is not necessary to determine the value of
+    ;; x . Therefore x remains fresh, which means
+    ;; that the goal returned from the call to `listo'
+    ;; succeeds for all values associated with x .
+
     ;; 3.7
-    (equal (run nil (x)
+    (equal (run* (x)
              (listo `(a b ,x d)))
            '(:_.0))
 
     ;; 3.10
     (equal (run 1 (x)
              (listo `(a b c . ,x)))
-           '(()))
+           '(())) ; Because (a b c . x) is a proper list when x is the empty list!
+
+    ;; Returns infinite stream - try bigger and bigger list
+    ;; (run* (x)
+    ;;          (listo `(a b c . ,x)))
 
     ;; 3.14
     (equal (run 5 (x)
@@ -588,68 +615,78 @@
              (:_.0 :_.1 :_.2)
              (:_.0 :_.1 :_.2 :_.3)))
 
+    ;; Describe what we have seen in transforming list? into `listo'.
+
+    ;; In list? each cond line results in a value, whereas in list o each cond e line results in
+    ;; a goal. To have each cond e result in a goal, we unnest each cond question and each cond
+    ;; answer. Used with recursion, a cond e expression can produce an unbounded number of
+    ;; values. We have used an upper bound, 5 in the previous frame, to keep from creating a list
+    ;; with an unbounded number of values.
+
     ;; 3.20
     (equal (run 1 (l)
-             (lolo l))
-           '(()))
+             (lolo l)) ; Since l is fresh, (nullo l) succeeds and in
+           '(()))      ; the process associates l with () .
 
     ;; 3.21
-    (equal (run nil (q)
+    (equal (run* (q)
              (fresh (x y)
-               (lolo `((a b)(,x c)(d ,y)))
+               (lolo `((a b) (,x c) (d ,y))) ; succeeds and x and y could be anything
                (== 't q)))
            '(t))
 
     ;; 3.22
-    (equal (run 1 (q)
+    (equal (run 1 (q)   ; note that we request only one answer
              (fresh (x)
-               (lolo `((a b) . ,x))
+               (lolo `((a b) . ,x)) ; yes there is a solution if x is (). See 3.23
                (== 't q)))
            '(t))
 
     ;; 3.23
     (equal (run 1 (x)
-             (lolo `((a b)(c d) . ,x)))
+             (lolo `((a b) (c d) . ,x)))
            '(()))
 
     ;; 3.24
     (equal (run 5 (x)
-             (lolo `((a b)(c d) . ,x)))
-           '(()
+             (lolo `((a b) (c d) . ,x)))
+           '(()         ; ((a b)) (c d)) (() () () ())) => ((a b)) (c d)) () () () ())
              (())
              (() ())
              (() () ())
              (() () () ())))
 
-    ;; 3.32
-    (equal (run nil (q)
+    ;; 3.32. What is a twin? List of two identical values.
+    ;;       Is (( g g)) (tofu tofu))) a list of twins?
+    ;;       Yes, since both (g g) and (tofu tofu) are twins.
+    (equal (run* (q)
              (twinso-0 '(tofu tofu))
              (== 't q))
            '(t))
 
-    (equal (run nil (q)
+    (equal (run* (q)
              (twinso-1 '(tofu tofu))
              (== 't q))
            '(t))
 
     ;; 3.33
-    (equal (run nil (z)
+    (equal (run* (z)
              (twinso-0 `(,z tofu)))
            '(tofu))
 
-    (equal (run nil (z)
+    (equal (run* (z)
              (twinso-1 `(,z tofu)))
            '(tofu))
 
     ;; 3.38
     (equal (run 1 (z)
-             (loto `((g g) . ,z)))
+             (loto `((g g) . ,z))) ; ((g g) . ()) is list of twins
            '(()))
 
     ;; 3.42
     (equal (run 5 (z)
-             (loto `((g g) . ,z)))
-           '(()
+             (loto `((g g) . ,z))) ; because ((g g) . ((:_.0 :_.0) (:_.1 :_.1))) is
+           '(()                    ; ((g g) (:_.0 :_.0) (:_.1 :_.1)) and so on
              ((:_.0 :_.0))
              ((:_.0 :_.0) (:_.1 :_.1))
              ((:_.0 :_.0) (:_.1 :_.1) (:_.2 :_.2))
@@ -658,8 +695,9 @@
     ;; 3:45
     (equal (run 5 (r)
              (fresh (w x y z)
-               (loto `((g g) (e ,w) (,x ,y) . ,z))
-               (== `(,w (,x ,y) ,z) r)))
+               (loto `((g g) (e ,w) (,x ,y) . ,z)) ; note that here there is no r. See 3.47
+               (== `(,w (,x ,y) ,z) r))) ; obviously w is 'e, x and y are the same -> (:_.0 :_.0)
+                                        ; z is (), ((:_.1 :_.1))....see 3.42
            '((e (:_.0 :_.0) ())
              (e (:_.0 :_.0) ((:_.1 :_.1)))
              (e (:_.0 :_.0) ((:_.1 :_.1) (:_.2 :_.2)))
@@ -670,7 +708,7 @@
     (equal (run 3 (out)
              (fresh (w x y z)
                (== `((g g) (e ,w) (,x ,y) . ,z) out)
-               (loto out)))
+               (loto out))) ; we force out to be only twins
            '(((g g) (e e) (:_.0 :_.0))
              ((g g) (e e) (:_.0 :_.0) (:_.1 :_.1))
              ((g g) (e e) (:_.0 :_.0) (:_.1 :_.1) (:_.2 :_.2))))
@@ -680,19 +718,20 @@
              (fresh (w x y z)
                (== `((g g) (e ,w) (,x ,y) . ,z) out)
                (listofo #'twinso out)))
+
            '(((g g) (e e) (:_.0 :_.0))
              ((g g) (e e) (:_.0 :_.0) (:_.1 :_.1))
              ((g g) (e e) (:_.0 :_.0) (:_.1 :_.1) (:_.2 :_.2))))
 
     ;; 3.57
-    (equal (run nil (q)
+    (equal (run* (q)
              (membero 'olive '(virgin olive oil))
              (== 't q))
            '(t))
 
     ;; 3.58
     (equal (run 1 (y)
-             (membero y '(hummus with pita)))
+             (membero y '(hummus with pita))) ; We request one result so `membero' associate first one!
            '(hummus))
 
     ;; 3.59
@@ -711,36 +750,36 @@
            '())
 
     ;; 3.62
-    (equal (run nil (y)
+    (equal (run* (y)
              (membero y '(hummus with pita)))
            '(hummus with pita))
 
     ;; 3.66
-    (equal (run nil (x)
-             (membero 'e `(pasta ,x fagioli)))
+    (equal (run* (x)
+             (membero 'e `(pasta ,x fagioli))) ; The `membero' function determines that x's value should be e to succeed
            '(e))
 
-    ;; 3.69
-    (equal (run nil (x)
+    ;; 3.69. Tricky!
+    (equal (run* (x)
              (membero 'e `(pasta e ,x fagioli)))
-           '(:_.0 e))
+           '(:_.0 e)) ; because the recursion succeeds before it gets to the variable x .
 
-    ;; 3.70
-    (equal (run nil (x)
+    ;; 3.70. Tricky!
+    (equal (run* (x)
              (membero 'e `(pasta ,x e fagioli)))
-           '(e :_.0))
+           '(e :_.0)) ; because the recursion succeeds when it gets to the variable x .
 
     ;; 3.71
-    (equal (run nil (r)
+    (equal (run* (r)
              (fresh (x y)
-               (membero 'e `(pasta ,x fagioli ,y))
+               (membero 'e `(pasta ,x fagioli ,y)) ; x is 'e, Y[:_.0] but also could be X[:_.0] and y is 'e
                (== `(,x ,y) r)))
            '((e :_.0) (:_.0 e)))
 
-    ;; 3.73
+    ;; 3.73 Remember!
     (equal (run 1 (l)
              (membero 'tofu l))
-           '((tofu . :_.0)))
+           '((tofu . :_.0))) ; Represents every list whose car is tofu.
 
     ;; 3.76
     (equal (run 5 (l)
@@ -749,10 +788,23 @@
              (:_.0 tofu . :_.1)
              (:_.0 :_.1 tofu . :_.2)
              (:_.0 :_.1 :_.2 tofu . :_.3)
-             (:_.0 :_.1 :_.2 :_.3 tofu . :_.4)))
+             (:_.0 :_.1 :_.2 :_.3 tofu . :_.4))) ; if car contains tofu goal succeeds
+
+    ;; Is it possible to remove the dotted variable at the end of each list, making it proper?
+    ;; See `pmembero-0'
+
+    (equal (run 5 (l)
+             (pmembero-0 'tofu l))
+           '((tofu)
+             (:_.0 tofu)
+             (:_.0 :_.1 tofu)
+             (:_.0 :_.1 :_.2 tofu)
+             (:_.0 :_.1 :_.2 :_.3 tofu)))
     ))
 
-;; 3.81 ??
+;;; ____________________________________________________________________________
+;;;                                                                   Chapter 4
+
 
 ;;; ____________________________________________________________________________
 ;;;                                                                   Chapter 6
@@ -783,7 +835,7 @@
 (deftest ch9-tests ()
 
   ;; 9.64
-  (equal (run nil (q)
+  (equal (run* (q)
            (==-check q `(,q)))
          '()))
 
@@ -794,38 +846,38 @@
   (check
 
     ;; 10.1
-    (equal (run nil (q)
+    (equal (run* (q)
              (conda (+fail+ +succeed+)
                     (else +fail+)))
            '())
 
     ;; 10.2
-    (equal (run nil (q)
+    (equal (run* (q)
              (conda (+fail+ +succeed+)
                     (else +succeed+)))
            '(:_.0))
 
     ;; 10.3
-    (equal (run nil (q)
+    (equal (run* (q)
              (conda (+succeed+ +fail+)
                     (else +succeed+)))
            '())
 
     ;; 10.4
-    (equal (run nil (q)
+    (equal (run* (q)
              (conda (+succeed+ +succeed+)
                     (else +fail+)))
            '(:_.0))
 
     ;; 10.5
-    (equal (run nil (x)
+    (equal (run* (x)
              (conda ((== 'olive x) +succeed+)
                     ((== 'oil x) +succeed+)
                     (else +fail+)))
            '(olive))
 
     ;; 10.7
-    (equal (run nil (x)
+    (equal (run* (x)
              (conda ((== 'virgin x) +fail+)
                     ((== 'olive x) +succeed+)
                     ((== 'oil x) +succeed+)
@@ -833,7 +885,7 @@
            '())
 
     ;; 10.14
-    (equal (run nil (q)
+    (equal (run* (q)
              (condu (+always+ +succeed+)
                     (else +fail+))
              (== 't q))
