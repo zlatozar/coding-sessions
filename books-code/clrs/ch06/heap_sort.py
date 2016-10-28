@@ -1,13 +1,13 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-# Chapter 6: Heapsort
+# Chapter 6: Heapsort p.151
 
 def PARENT(i):
     return i // 2
 
 def LEFT(i):
     return 2*i + 1
-
 
 def RIGHT(i):
     return 2*i + 2
@@ -43,7 +43,9 @@ def HEAPSORT(A):
         MAX_HEAPIFY(A, 0, size)
     return A
 
-# test
+# ___________________________________________________________
+#                                                       TEST
+
 import random
 
 L = [random.randint(1, 50) for _ in range(10)]

@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 # Programming pearls. Chapter 8: Algorithm design techniques p.80
 
@@ -36,7 +37,9 @@ def max_subarray(A):
 
     return find_max_subarray(0, len(A) - 1)
 
-# test
+# ___________________________________________________________
+#                                                       TEST
+
 #                                  |max subarray=43|
 A = [13, -3, -25, 20, -3, -16, -23, 18, 20, -7, 12, -5, -22, 15, -4, 7]
 print 'A=%s' % A

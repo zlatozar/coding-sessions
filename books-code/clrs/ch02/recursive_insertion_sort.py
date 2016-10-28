@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 def insert(x, L):
     if [] == L:      return [x]
@@ -9,7 +10,9 @@ def insertion_sort(L):
     if [] == L:  return []
     else:        return insert(L[0], insertion_sort(L[1:]))
 
-# test
+# ___________________________________________________________
+#                                                       TEST
+
 import random
 
 L = [random.randint(1, 50) for _ in range(10)]

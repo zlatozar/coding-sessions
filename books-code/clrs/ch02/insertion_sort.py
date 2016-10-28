@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 # Chapter 2: Getting started p.18
 
@@ -15,7 +16,9 @@ def INSERTION_SORT(A):
 
     return A
 
-# test
+# ___________________________________________________________
+#                                                       TEST
+
 import random
 
 L = [random.randint(1, 50) for _ in range(10)]

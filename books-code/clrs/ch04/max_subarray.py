@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 # Chapter 4: Divide and Conquer p.71
 
@@ -55,13 +56,15 @@ def FIND_MAXIMUM_SUBARRAY(A, low, high):
         else:
             return [cross_low, cross_high, cross_sum]
 
+# ___________________________________________________________
+#                                                       TEST
+
 def max_subarray(A):
     result = FIND_MAXIMUM_SUBARRAY(A, 0, len(A) - 1)
     print 'A=%s' % A
     print 'Indices of max sub-array: (low: %s, high: %s)' % (result[0], result[1])
     return result[2]
 
-# test
 #                                  |max subarray=43|
 A = [13, -3, -25, 20, -3, -16, -23, 18, 20, -7, 12, -5, -22, 15, -4, 7]
 print 'Sum of max sub-array is: %s\n' % max_subarray(A)
