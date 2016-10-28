@@ -2,12 +2,6 @@
 
 # Chapter 6: Heapsort
 
-class heap(list):
-    def __init__(self, *args):
-        list.__init__(self, *args)
-        self.heap_size = len(*args)
-        self.length = 0
-
 def PARENT(i):
     return i // 2
 
@@ -25,8 +19,6 @@ def MAX_HEAPIFY(A, i, size):
     largest = i
     if left <= size and A[left] > A[largest]:
         largest = left
-    # else:
-    #     largest = i
 
     if right <= size and A[right] > A[largest]:
         largest = right
@@ -37,21 +29,24 @@ def MAX_HEAPIFY(A, i, size):
         MAX_HEAPIFY(A, largest, size)
 
 def BUILD_MAX_HEAP(A):
-    n = len(A)
-    for i in range(n // 2, -1, -1):
-        MAX_HEAPIFY(A, i, len(A) - 1)
+    heap_size = len(A)
+    for i in range(heap_size // 2, -1, -1):
+        MAX_HEAPIFY(A, i, heap_size - 1)
 
 
 def HEAPSORT(A):
     BUILD_MAX_HEAP(A)
     size = len(A) - 1
-    for i in range(len(A) - 1, 0, -1):
+    for i in range(size, 0, -1):
         A[0], A[i] = A[i], A[0]
-        size -= 1
+        size = size - 1
         MAX_HEAPIFY(A, 0, size)
+    return A
 
-A = [4, 1, 3, 2, 16, 9, 10, 14, 8, 7]
-print A
-HEAPSORT(A)
-print A
-assert A == [1, 2, 3, 4, 7, 8, 9, 10, 14, 16]
+# test
+import random
+
+L = [random.randint(1, 50) for _ in range(10)]
+
+print L
+print HEAPSORT(L)
