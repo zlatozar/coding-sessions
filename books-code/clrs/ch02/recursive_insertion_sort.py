@@ -1,5 +1,9 @@
 #!/usr/bin/env python
+#
 # -*- coding: utf-8 -*-
+
+# ___________________________________________________________
+#                                             IMPLEMENTATION
 
 def insert(x, L):
     if [] == L:      return [x]

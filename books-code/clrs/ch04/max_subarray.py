@@ -1,12 +1,15 @@
 #!/usr/bin/env python
+#
 # -*- coding: utf-8 -*-
 
 # Chapter 4: Divide and Conquer p.71
 
+# ___________________________________________________________
+#                                             IMPLEMENTATION
+
 import sys
 
 def FIND_MAX_CROSSING_SUBARRAY(A, low, mid, high):
-    print "Indices: [low:%s, mid:%s, high:%s]" % (low, mid, high)
 
     left_sum = -sys.maxint
     max_l_idx = 0
@@ -44,8 +47,6 @@ def FIND_MAXIMUM_SUBARRAY(A, low, high):
         [right_low, right_high, righ_sum] = FIND_MAXIMUM_SUBARRAY(A, mid + 1, high)
 
         [cross_low, cross_high, cross_sum] = FIND_MAX_CROSSING_SUBARRAY(A, low, mid, high)
-
-        print 'l_sum: %s, r_sum: %s, cross_sum: %s\n' % (left_sum, righ_sum, cross_sum)
 
         if left_sum >= righ_sum and left_sum >= cross_sum:
             return [left_low, left_high, left_sum]

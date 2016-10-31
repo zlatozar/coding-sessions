@@ -1,7 +1,11 @@
 #!/usr/bin/env python
+#
 # -*- coding: utf-8 -*-
 
 # Programming pearls. Chapter 8: Algorithm design techniques p.80
+
+# ___________________________________________________________
+#                                             IMPLEMENTATION
 
 def max_subarray(A):
 

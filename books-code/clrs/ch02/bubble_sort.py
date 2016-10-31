@@ -1,5 +1,9 @@
 #!/usr/bin/env python
+#
 # -*- coding: utf-8 -*-
+
+# ___________________________________________________________
+#                                             IMPLEMENTATION
 
 def BUBBLESORT(A):
     for i in range(0, len(A)):
