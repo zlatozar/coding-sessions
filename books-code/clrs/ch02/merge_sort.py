@@ -2,7 +2,7 @@
 #
 # -*- coding: utf-8 -*-
 
-# Merge sort p.31-34
+# Merge Sort p.31-34
 
 # ___________________________________________________________
 #                                                      NOTES
@@ -51,6 +51,7 @@ def MERGE(A, start, mid, end):
 def MERGE_SORT(A):
 
     def SORT(A, start, end):
+        # guards for empty A
         if start < end:
             mid = (start + end) // 2
             SORT(A, start, mid)

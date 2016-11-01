@@ -5,12 +5,17 @@
 # Programming pearls. Chapter 8: Algorithm design techniques p.80
 
 # ___________________________________________________________
+#                                                      NOTES
+
+# Very intuitive
+
+# ___________________________________________________________
 #                                             IMPLEMENTATION
 
-def max_subarray(A):
+def MAX_SUBARRAY(A):
 
     # 0 <= low <= high < len(A)
-    def find_max_subarray(low, high):
+    def FIND_MAX_SUBARRAY(low, high):
 
         if low > high:
             return 0
@@ -36,10 +41,10 @@ def max_subarray(A):
             rmax = max(rmax, sum);
 
         return max(lmax + rmax,                            # crossing
-                   max(find_max_subarray(low, mid),        # left
-                       find_max_subarray(mid + 1, high)))  # right
+                   max(FIND_MAX_SUBARRAY(low, mid),        # left
+                       FIND_MAX_SUBARRAY(mid + 1, high)))  # right
 
-    return find_max_subarray(0, len(A) - 1)
+    return FIND_MAX_SUBARRAY(0, len(A) - 1)
 
 # ___________________________________________________________
 #                                                       TEST
@@ -47,4 +52,4 @@ def max_subarray(A):
 #                                  |max subarray=43|
 A = [13, -3, -25, 20, -3, -16, -23, 18, 20, -7, 12, -5, -22, 15, -4, 7]
 print 'A=%s' % A
-print 'Sum of max sub-array is: %s\n' % max_subarray(A)
+print 'Sum of max sub-array is: %s\n' % MAX_SUBARRAY(A)

@@ -9,7 +9,7 @@
 # exchange it with A[2]. Continue in this manner for the first N - 1 elements of A.
 
 # ___________________________________________________________
-#                                                      NOTES
+#                                             IMPLEMENTATION
 
 def SELECTION_SORT(A):
 

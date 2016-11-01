@@ -34,7 +34,7 @@ about the order of the equals, just that the smaller appear before.
 
 - Uses divide and conquer to recursively divide and sort the list
 
-![Merge sort](merge_sort_recursion.png "Illustrate merge sort recursion")
+![Merge sort](images/merge_sort_recursion.png "Illustrate merge sort recursion")
 
 - Time Complexity: O(n log n)
 - Space Complexity: O(n)

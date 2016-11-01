@@ -2,7 +2,7 @@
 #
 # -*- coding: utf-8 -*-
 
-# Chapter 2: Getting started p.18
+# Insertion Sort p.16-18
 
 # ___________________________________________________________
 #                                                      NOTES

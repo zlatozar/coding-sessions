@@ -5,12 +5,14 @@
 # ___________________________________________________________
 #                                             IMPLEMENTATION
 
-def BUBBLESORT(A):
-    for i in range(0, len(A)):
-        for j in range(len(A) - 1, i, -1):
-            if A[j] < A[j - 1]:
-                A[j], A[j - 1] = A[j - 1], A[j]
-    return A
+def INSERT(x, L):
+    if [] == L:      return [x]
+    elif x <= L[0]:  return [x] + L
+    else:            return [L[0]] + INSERT(x, L[1:])
+
+def INSERTION_SORT(L):
+    if [] == L:  return []
+    else:        return INSERT(L[0], INSERTION_SORT(L[1:]))
 
 # ___________________________________________________________
 #                                                       TEST
@@ -20,4 +22,4 @@ import random
 L = [random.randint(1, 50) for _ in range(10)]
 
 print L
-print BUBBLESORT(L)
+print INSERTION_SORT(L)
