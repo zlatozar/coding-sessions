@@ -7,7 +7,7 @@
 # ___________________________________________________________
 #                                                      NOTES
 
-# Very intuitive
+# Very intuitive, but not optimal solution.
 
 # ___________________________________________________________
 #                                             IMPLEMENTATION

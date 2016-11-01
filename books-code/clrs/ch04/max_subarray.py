@@ -2,7 +2,14 @@
 #
 # -*- coding: utf-8 -*-
 
-# Chapter 4: Divide and Conquer p.71
+# The maximum-subarray problem p.68
+
+# ___________________________________________________________
+#                                                      NOTES
+
+# Demonstrates divide and conquer technique.
+
+# This problem is interesting if there is positive and negative numbers.
 
 # ___________________________________________________________
 #                                             IMPLEMENTATION
@@ -11,14 +18,14 @@ import sys
 
 def FIND_MAX_CROSSING_SUBARRAY(A, low, mid, high):
 
+    # left
     left_sum = -sys.maxint
     max_l_idx = 0
 
-    # left
     sum = 0
     for i in range(mid, low - 1, -1):
         sum = sum + A[i]
-        if sum > left_sum:
+        if sum > left_sum:   # checks if sum increases
             left_sum = sum
             max_l_idx = i
 
@@ -29,7 +36,7 @@ def FIND_MAX_CROSSING_SUBARRAY(A, low, mid, high):
     sum = 0
     for i in range(mid + 1, high + 1):
         sum = sum + A[i]
-        if sum > right_sum:
+        if sum > right_sum: # checks if sum increases
             right_sum = sum
             max_r_idx = i
 
