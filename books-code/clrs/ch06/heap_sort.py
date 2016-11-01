@@ -1,10 +1,22 @@
 #!/usr/bin/env python
+#
 # -*- coding: utf-8 -*-
 
-# Chapter 6: Heapsort p.151
+# Heapsort p.151
+
+# ___________________________________________________________
+#                                                      NOTES
+
+# In heapsort implementation we use two very important facts based on heap property
+
+# 1. First element of the heap is the biggest one
+# 2. First half of the heap are roots, second one contains only leaves
+
+# ___________________________________________________________
+#                                             IMPLEMENTATION
 
 def PARENT(i):
-    return i // 2
+    return (i - 1) // 2
 
 def LEFT(i):
     return 2*i + 1
@@ -12,6 +24,8 @@ def LEFT(i):
 def RIGHT(i):
     return 2*i + 2
 
+# A[i] "float down" in the max-heap so that
+# the sub-tree rooted at index i obeys the max-heap property.
 def MAX_HEAPIFY(A, i, size):
     left = LEFT(i)
     right = RIGHT(i)
@@ -33,6 +47,9 @@ def BUILD_MAX_HEAP(A):
     for i in range(heap_size // 2, -1, -1):
         MAX_HEAPIFY(A, i, heap_size - 1)
 
+# Since the maximum element of the array is stored at the root A[0] we can put it into its
+# correct final position by exchanging it with A[n]. In next step we take shorter segment
+# as reduce previous one from both sides and apply again the rule - A[0] at the end and reorder.
 
 def HEAPSORT(A):
     BUILD_MAX_HEAP(A)
@@ -46,9 +63,10 @@ def HEAPSORT(A):
 # ___________________________________________________________
 #                                                       TEST
 
-import random
+if __name__ == '__main__':
+    import random
 
-L = [random.randint(1, 50) for _ in range(10)]
+    L = [random.randint(1, 50) for _ in range(10)]
 
-print L
-print HEAPSORT(L)
+    print L
+    print HEAPSORT(L)

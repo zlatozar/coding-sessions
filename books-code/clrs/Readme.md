@@ -30,3 +30,5 @@ for i in range(1, len(A)):
   through ```end - 1```
 
 - Algorithms intensively works with indices, use to use them
+
+- // floor divide is a convenient way to take lower bound

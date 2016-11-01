@@ -20,6 +20,7 @@
 
 import sys
 
+# Linear merge
 def MERGE(A, start, mid, end):
 
     n1 = mid - start + 1
@@ -64,9 +65,10 @@ def MERGE_SORT(A):
 # ___________________________________________________________
 #                                                       TEST
 
-import random
+if __name__ == '__main__':
+    import random
 
-L = [random.randint(1, 50) for _ in range(10)]
+    L = [random.randint(1, 50) for _ in range(10)]
 
-print L
-print MERGE_SORT(L)
+    print L
+    print MERGE_SORT(L)

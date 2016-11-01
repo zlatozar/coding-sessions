@@ -10,6 +10,7 @@
 # Demonstrates divide and conquer technique.
 
 # This problem is interesting if there is positive and negative numbers.
+# Time complexity is 0(nlogn)
 
 # ___________________________________________________________
 #                                             IMPLEMENTATION
@@ -73,6 +74,7 @@ def max_subarray(A):
     print 'Indices of max sub-array: (low: %s, high: %s)' % (result[0], result[1])
     return result[2]
 
-#                                  |max subarray=43|
-A = [13, -3, -25, 20, -3, -16, -23, 18, 20, -7, 12, -5, -22, 15, -4, 7]
-print 'Sum of max sub-array is: %s\n' % max_subarray(A)
+if __name__ == '__main__':
+    #                                  |max subarray=43|
+    A = [13, -3, -25, 20, -3, -16, -23, 18, 20, -7, 12, -5, -22, 15, -4, 7]
+    print 'Sum of max sub-array is: %s\n' % max_subarray(A)

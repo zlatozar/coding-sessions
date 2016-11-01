@@ -26,9 +26,10 @@ def SELECTION_SORT(A):
 # ___________________________________________________________
 #                                                       TEST
 
-import random
+if __name__ == '__main__':
+    import random
 
-L = [random.randint(1, 50) for _ in range(10)]
+    L = [random.randint(1, 50) for _ in range(10)]
 
-print L
-print SELECTION_SORT(L)
+    print L
+    print SELECTION_SORT(L)

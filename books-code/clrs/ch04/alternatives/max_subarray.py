@@ -49,7 +49,8 @@ def MAX_SUBARRAY(A):
 # ___________________________________________________________
 #                                                       TEST
 
-#                                  |max subarray=43|
-A = [13, -3, -25, 20, -3, -16, -23, 18, 20, -7, 12, -5, -22, 15, -4, 7]
-print 'A=%s' % A
-print 'Sum of max sub-array is: %s\n' % MAX_SUBARRAY(A)
+if __name__ == '__main__':
+    #                                  |max subarray=43|
+    A = [13, -3, -25, 20, -3, -16, -23, 18, 20, -7, 12, -5, -22, 15, -4, 7]
+    print 'A=%s' % A
+    print 'Sum of max sub-array is: %s\n' % MAX_SUBARRAY(A)

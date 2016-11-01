@@ -1,5 +1,7 @@
 ## Chapter 4:
 
+### Divide and conquer technique
+
 **Divide** the problem into a number of subproblems that are smaller instances of the
            same problem.
 
@@ -14,3 +16,17 @@ recursion "bottoms out" and that we have gotten down to the **base case**. Somet
 addition to subproblems that are smaller instances of the same problem, we have to solve
 subproblems that are _not quite the same as the original problem_. We consider solving such
 subproblems as part of the combine step.
+
+### Master theorem
+
+The master method provides a "cookbook" method for solving recurrences of the form:
+
+```
+T(n) = aT(n/b) + f(n)
+```
+
+The recurrence describes the running time of an algorithm that divides a problem of size
+```n``` into a subproblems, each of size ```n/b```, where ```a``` and ```b``` are positive
+constants. The ```a``` subproblems are solved recursively, each in time ```T(n/b)```.  The
+function ```f(n)``` encompasses the cost of dividing the problem and combining the results
+of the subproblems.
