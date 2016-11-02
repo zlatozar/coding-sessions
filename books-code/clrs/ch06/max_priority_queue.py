@@ -15,7 +15,7 @@
 #                                             IMPLEMENTATION
 
 import sys
-from heap_sort import PARENT, LEFT, RIGHT, MAX_HEAPIFY, BUILD_MAX_HEAP
+from max_heap import PARENT, LEFT, RIGHT, MAX_HEAPIFY, BUILD_MAX_HEAP
 
 def HEAP_MAXIMUM(A):
     return A[0]
@@ -49,16 +49,13 @@ def MAX_HEAP_INSERT(A, key):
     HEAP_INCREASE_KEY(A, heap_size, key)
 
 # Exercise 6.5-8 p. 166
-#
-# 1. Move deleted key to the root - is the key idea!
-# 2. Switch the root with the last element and delete the last element
-# 3. Build the heap
 def MAX_HEAP_DELETE(A, i):
     heap_size = len(A) - 1
 
     if heap_size < 0:
         raise IndexError("Heap underflow")
 
+    # Move deleted key to the root is the key idea!
     while i > 0:
         A[i], A[PARENT(i)] = A[PARENT(i)], A[i]
         i = PARENT(i)
@@ -109,6 +106,6 @@ if __name__ == '__main__':
     assert L==[15, 13, 10, 5, 12, 9, 7, 4, 0, 6, 2, 1, 8]
 
     MAX_HEAP_DELETE(L, 2)
-    print 'after delete:    ', L , 'heap is not the same after insert/delete'
+    print 'after delete:    ', L , 'heap is the same after insert/delete'
     assert check_max_heap(L, 0)
     assert L==[15, 13, 9, 5, 12, 8, 7, 4, 0, 6, 2, 1]
