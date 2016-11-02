@@ -7,6 +7,7 @@
 # ___________________________________________________________
 #                                                      NOTES
 
+# Opposite to max heap
 
 # ___________________________________________________________
 #                                             IMPLEMENTATION
@@ -44,21 +45,3 @@ def BUILD_MIN_HEAP(A):
 
 # ___________________________________________________________
 #                                                       TEST
-
-if __name__ == '__main__':
-
-    L = [4, 1, 3, 2, 16, 9, 10, 14, 8, 7]
-    print '\narray:           ', L
-
-    BUILD_MIN_HEAP(L)
-    print 'min_heap_array:  ', L
-    print 'min:             ', HEAP_EXTRACT_MIN(L)
-
-    L = [15, 13, 9, 5, 12, 8, 7, 4, 0, 6, 2, 1]
-
-    BUILD_MIN_HEAP(L)
-    print '\nmin_heap_array:  ', L, 'and insert 10'
-
-    # MAX_HEAP_INSERT(L, 10)
-    # print 'after insert:    ', L
-    # assert L==[15, 13, 10, 5, 12, 9, 7, 4, 0, 6, 2, 1, 8]

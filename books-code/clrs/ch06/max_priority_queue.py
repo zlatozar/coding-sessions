@@ -15,7 +15,7 @@
 #                                             IMPLEMENTATION
 
 import sys
-from max_heap import PARENT, LEFT, RIGHT, MAX_HEAPIFY, BUILD_MAX_HEAP
+from max_heap import PARENT, MAX_HEAPIFY, BUILD_MAX_HEAP
 
 def HEAP_MAXIMUM(A):
     return A[0]
@@ -67,20 +67,6 @@ def MAX_HEAP_DELETE(A, i):
 # ___________________________________________________________
 #                                                       TEST
 
-def check_max_heap(heap, i):
-    if i >= len(heap):
-        return True
-
-    if LEFT(i) < len(heap) and heap[i] < heap[LEFT(i)]:
-        print 'Parent %s has invalid LEFT child %s' % (heap[i], heap[LEFT(i)])
-        return False
-
-    if RIGHT(i) < len(heap) and heap[i] < heap[RIGHT(i)]:
-        print 'Parent %s has invalid RIGHT child %s' % (heap[i], heap[RIGHT(i)])
-        return False
-
-    return check_max_heap(heap, LEFT(i)) and check_max_heap(heap, RIGHT(i))
-
 if __name__ == '__main__':
 
     L = [4, 1, 3, 2, 16, 9, 10, 14, 8, 7]
@@ -88,24 +74,19 @@ if __name__ == '__main__':
 
     BUILD_MAX_HEAP(L)
     print 'max_heap_array:  ', L
-    assert check_max_heap(L, 0)
     print 'extracted max:   ', HEAP_EXTRACT_MAX(L)
     print 'without max:     ', L
-    assert check_max_heap(L, 0)
 
     # Exercise 6.5-2 p. 165
     L = [15, 13, 9, 5, 12, 8, 7, 4, 0, 6, 2, 1]
 
     BUILD_MAX_HEAP(L)
-    assert check_max_heap(L, 0)
     print '\nmax_heap_array:  ', L, 'and insert 10'
 
     MAX_HEAP_INSERT(L, 10)
     print 'after insert:    ', L, 'and remove 10 (index 2)'
-    assert check_max_heap(L, 0)
     assert L==[15, 13, 10, 5, 12, 9, 7, 4, 0, 6, 2, 1, 8]
 
     MAX_HEAP_DELETE(L, 2)
     print 'after delete:    ', L , 'heap is the same after insert/delete'
-    assert check_max_heap(L, 0)
     assert L==[15, 13, 9, 5, 12, 8, 7, 4, 0, 6, 2, 1]
