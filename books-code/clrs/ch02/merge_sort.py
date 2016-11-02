@@ -28,7 +28,7 @@ def MERGE(A, start, mid, end):
     L = []
     R = []
 
-    # divide in to pails
+    # divide in two pails
     for i in range(0, n1):
         L.append(A[start + i])
 

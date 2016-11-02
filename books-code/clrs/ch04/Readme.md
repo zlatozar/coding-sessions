@@ -22,7 +22,7 @@ subproblems as part of the combine step.
 The master method provides a "cookbook" method for solving recurrences of the form:
 
 ```
-T(n) = aT(n/b) + f(n)
+T(n) = a.T(n/b) + f(n)
 ```
 
 The recurrence describes the running time of an algorithm that divides a problem of size

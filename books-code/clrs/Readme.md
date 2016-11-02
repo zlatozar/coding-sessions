@@ -1,5 +1,9 @@
 # General notes
 
+### Requirements
+
+Requires Python **2.5.x**
+
 ### Python code notes
 
 - In book array index starts from ```1```. That is very convenient because algorithm
@@ -31,4 +35,6 @@ for i in range(1, len(A)):
 
 - Algorithms intensively works with indices, use to use them
 
-- // floor divide is a convenient way to take lower bound
+- ```//``` floor divide is a convenient way to take lower bound
+
+- If you can't calculate it in the procedure - pass it as parameter

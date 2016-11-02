@@ -24,15 +24,16 @@ def LEFT(i):
 def RIGHT(i):
     return 2*i + 2
 
-# A[i] "float down" in the max-heap so that
-# the sub-tree rooted at index i obeys the max-heap property.
+# A[i] "float down" in the max-heap so that the sub-tree rooted
+# at index i obeys the max-heap property.
 def MAX_HEAPIFY(A, i, size):
     left = LEFT(i)
     right = RIGHT(i)
 
-    largest = i
-    if left <= size and A[left] > A[largest]:
+    if left <= size and A[left] > A[i]:
         largest = left
+    else:
+        largest = i
 
     if right <= size and A[right] > A[largest]:
         largest = right
@@ -54,10 +55,12 @@ def BUILD_MAX_HEAP(A):
 def HEAPSORT(A):
     BUILD_MAX_HEAP(A)
     size = len(A) - 1
+
     for i in range(size, 0, -1):
         A[0], A[i] = A[i], A[0]
         size = size - 1
         MAX_HEAPIFY(A, 0, size)
+
     return A
 
 # ___________________________________________________________

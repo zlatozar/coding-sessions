@@ -44,6 +44,10 @@ A[PARENT(i) >= A[i]
 
 that is, the value of a node is at most the value of its parent.
 
+### Disadvantage
+
+Not a stable sort, that is, the order of equal value elements is not preserved.
+
 ### Priority queues
 
 A **priority queue** is a data structure for maintaining a set ```S``` of elements, each
