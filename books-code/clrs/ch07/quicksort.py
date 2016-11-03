@@ -2,27 +2,33 @@
 #
 # -*- coding: utf-8 -*-
 
+# Quicksort p.170
+
 # ___________________________________________________________
 #                                                      NOTES
 
-# Define recursively how to insert smaller element in a sorted array.
-# If you now how to insert smaller element could you define sorting algorithm?
+# The key to the algorithm is the PARTITION procedure, which rearranges the subarray
+# A[p..r] in place. The running time of QUICKSORT is dominated by the time spent in the
+# PARTITION procedure.
 
 # Code highlights:
 
-# Note how code is formatted.
+# Why to choose tail recursive algorithms?
 
 # ___________________________________________________________
 #                                             IMPLEMENTATION
 
-def INSERT_SMALLER(x, L):
-    if [] == L:      return [x]
-    elif x <= L[0]:  return [x] + L
-    else:            return [L[0]] + INSERT_SMALLER(x, L[1:])
+from partition import PARTITION
 
-def INSERTION_SORT(L):
-    if [] == L:  return []
-    else:        return INSERT_SMALLER(L[0], INSERTION_SORT(L[1:]))
+def QUICKSORT(A):
+
+    def SORT(A, p, r):
+        if p < r:
+            q = PARTITION(A, p, r)
+            SORT(A, p, q - 1)
+            SORT(A, q + 1, r)
+
+    SORT(A, 0, len(A) - 1)
 
 # ___________________________________________________________
 #                                                       TEST
@@ -33,4 +39,5 @@ if __name__ == '__main__':
     L = [random.randint(1, 50) for _ in range(10)]
 
     print L
-    print INSERTION_SORT(L)
+    QUICKSORT(L)
+    print L

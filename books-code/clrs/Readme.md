@@ -4,6 +4,10 @@
 
 Requires Python **2.5.x**
 
+### Python style
+
+Code is not very Pythoninc but close to the pseudo code in the book.
+
 ### Python code notes
 
 - In book array index starts from ```1```. That is very convenient because algorithm
