@@ -85,8 +85,8 @@ if __name__ == '__main__':
 
     MAX_HEAP_INSERT(L, 10)
     print 'after insert:    ', L, 'and remove 10 (index 2)'
-    assert L==[15, 13, 10, 5, 12, 9, 7, 4, 0, 6, 2, 1, 8]
+    assert L == [15, 13, 10, 5, 12, 9, 7, 4, 0, 6, 2, 1, 8]
 
     MAX_HEAP_DELETE(L, 2)
     print 'after delete:    ', L , 'heap is the same after insert/delete'
-    assert L==[15, 13, 9, 5, 12, 8, 7, 4, 0, 6, 2, 1]
+    assert L == [15, 13, 9, 5, 12, 8, 7, 4, 0, 6, 2, 1]
