@@ -10,13 +10,14 @@
 # Demonstrates divide and conquer technique.
 
 # This problem is interesting if there is positive and negative numbers.
-# Time complexity is 0(nlogn)
+# Time complexity is 0(n.log n)
 
 # ___________________________________________________________
 #                                             IMPLEMENTATION
 
 import sys
 
+# All calculations are made here
 def FIND_MAX_CROSSING_SUBARRAY(A, low, mid, high):
 
     # left
@@ -37,7 +38,7 @@ def FIND_MAX_CROSSING_SUBARRAY(A, low, mid, high):
     sum = 0
     for i in range(mid + 1, high + 1):
         sum = sum + A[i]
-        if sum > right_sum: # checks if sum increases
+        if sum > right_sum:  # checks if sum increases
             right_sum = sum
             max_r_idx = i
 
@@ -70,7 +71,7 @@ def FIND_MAXIMUM_SUBARRAY(A, low, high):
 
 def max_subarray(A):
     result = FIND_MAXIMUM_SUBARRAY(A, 0, len(A) - 1)
-    print 'A=%s' % A
+    print '\nA=%s' % A
     print 'Indices of max sub-array: (low: %s, high: %s)' % (result[0], result[1])
     return result[2]
 

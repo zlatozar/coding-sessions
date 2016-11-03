@@ -2,11 +2,14 @@
 #
 # -*- coding: utf-8 -*-
 
+# Exercise 2.5-3 p. 39
+
 # ___________________________________________________________
 #                                                      NOTES
 
 # In recursion we have to narrow the array for smaller we shrink upper bound 'mid - 1'
-# for bigger lower 'mid + 1' (closer to high)
+# for bigger lower 'mid + 1' (closer to high). Note that we do not include 'mid'
+# in recursion.
 
 # ___________________________________________________________
 #                                             IMPLEMENTATION

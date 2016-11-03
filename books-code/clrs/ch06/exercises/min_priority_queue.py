@@ -8,7 +8,7 @@
 #                                             IMPLEMENTATION
 
 import sys
-from min_heap import PARENT, LEFT, RIGHT, MIN_HEAPIFY, BUILD_MIN_HEAP
+from min_heap import PARENT, MIN_HEAPIFY, BUILD_MIN_HEAP
 
 def HEAP_MINIMUM(A):
     return A[0]

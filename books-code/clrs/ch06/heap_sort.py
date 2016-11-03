@@ -25,8 +25,6 @@ def HEAPSORT(A):
         size = size - 1
         MAX_HEAPIFY(A, 0, size)
 
-    return A
-
 # ___________________________________________________________
 #                                                       TEST
 
@@ -36,4 +34,5 @@ if __name__ == '__main__':
     L = [random.randint(1, 50) for _ in range(10)]
 
     print L
-    print HEAPSORT(L)
+    HEAPSORT(L)
+    print L

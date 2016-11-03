@@ -3,16 +3,22 @@
 # -*- coding: utf-8 -*-
 
 # ___________________________________________________________
+#                                                      NOTES
+
+# Define recursively what is to insert smaller element in a array.
+# If you now how to insert smaller element could you define sorting algorithm?
+
+# ___________________________________________________________
 #                                             IMPLEMENTATION
 
-def INSERT(x, L):
+def INSERT_SMALLER(x, L):
     if [] == L:      return [x]
     elif x <= L[0]:  return [x] + L
-    else:            return [L[0]] + INSERT(x, L[1:])
+    else:            return [L[0]] + INSERT_SMALLER(x, L[1:])
 
 def INSERTION_SORT(L):
     if [] == L:  return []
-    else:        return INSERT(L[0], INSERTION_SORT(L[1:]))
+    else:        return INSERT_SMALLER(L[0], INSERTION_SORT(L[1:]))
 
 # ___________________________________________________________
 #                                                       TEST

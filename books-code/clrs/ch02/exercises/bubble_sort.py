@@ -5,6 +5,16 @@
 # Exercise 2-2 p. 40
 
 # ___________________________________________________________
+#                                                      NOTES
+
+# Bubble sort, is a simple stable sorting algorithm that repeatedly steps through the list
+# to be sorted, compares each pair of adjacent items and swaps them if they are in the
+# wrong order. The pass through the list is repeated until no swaps are needed, which
+# indicates that the list is sorted.
+
+# In almost-sorted arrays and fix it with just linear complexity O(2n)!
+
+# ___________________________________________________________
 #                                             IMPLEMENTATION
 
 def BUBBLESORT(A):

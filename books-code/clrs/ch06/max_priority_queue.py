@@ -11,6 +11,15 @@
 # smallest element is assigned. We do that to keep the structure without gaps and easily
 # to heapify the resulted array.
 
+# Code highlights:
+
+# Move key forward:
+
+# A[i] = key
+# while i > 0 and A[PARENT(i)] < A[i]:
+#     A[i], A[PARENT(i)] = A[PARENT(i)], A[i]
+#     i = PARENT(i)
+
 # ___________________________________________________________
 #                                             IMPLEMENTATION
 

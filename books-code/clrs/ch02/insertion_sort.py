@@ -12,7 +12,15 @@
 # We could have if we imagine that current element (for which we search proper place) is
 # removed from the array and there is gap. Now int is not a problem to shift.
 
-# The numbers that we wish to sort are also known as the keys.
+# The numbers that we wish to sort are also known as the 'keys'.
+
+# Code highlights:
+
+# Shifting array elements forward
+
+# while (j >= 0) and (A[j] > key):
+#     A[j + 1] = A[j]
+#     j = j - 1
 
 # ___________________________________________________________
 #                                             IMPLEMENTATION

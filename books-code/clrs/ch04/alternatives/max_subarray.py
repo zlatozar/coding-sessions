@@ -2,12 +2,12 @@
 #
 # -*- coding: utf-8 -*-
 
-# Programming pearls. Chapter 8: Algorithm design techniques p.80
+# From "Programming pearls" book. Chapter 8: Algorithm design techniques p.80
 
 # ___________________________________________________________
 #                                                      NOTES
 
-# Very intuitive, but not optimal solution.
+# Very intuitive, but not optimal solution. See "Programming pearls" for more details.
 
 # ___________________________________________________________
 #                                             IMPLEMENTATION
@@ -30,14 +30,14 @@ def MAX_SUBARRAY(A):
         sum  = 0
 
         for i in range(mid, 0, -1):
-            sum += A[i]
+            sum = sum + A[i]
             lmax = max(lmax, sum)
 
         # Find max crossing to right
         rmax = 0
         sum = 0
         for i in range(mid + 1, high):
-            sum += A[i]
+            sum = sum + A[i]
             rmax = max(rmax, sum);
 
         return max(lmax + rmax,                            # crossing
@@ -52,5 +52,5 @@ def MAX_SUBARRAY(A):
 if __name__ == '__main__':
     #                                  |max subarray=43|
     A = [13, -3, -25, 20, -3, -16, -23, 18, 20, -7, 12, -5, -22, 15, -4, 7]
-    print 'A=%s' % A
+    print '\nA=%s' % A
     print 'Sum of max sub-array is: %s\n' % MAX_SUBARRAY(A)
