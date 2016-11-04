@@ -10,7 +10,7 @@ def exchange(A, i, j):
 def delete_last(A):
     del A[-1]
 
-def array_is_sorted(A):
+def is_sorted_array(A):
 
     for index in range(len(A)):
         next = index + 1
@@ -20,3 +20,10 @@ def array_is_sorted(A):
 
         elif A[index] > A[next]:
             return False
+
+def cross_product(A1, A2):
+    answer = []
+    for a in A1:
+        for b in A2:
+            answer.append((a, b))
+    return answer

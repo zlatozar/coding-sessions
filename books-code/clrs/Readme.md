@@ -4,6 +4,10 @@
 
 Requires Python **2.5.x**
 
+### Notation
+
+We use ```0``` for theta and ```O``` for big O.
+
 ### Python style
 
 Code is not very Pythoninc but close to the pseudo code in the book.
@@ -17,10 +21,10 @@ Code is not very Pythoninc but close to the pseudo code in the book.
 - Array length and last element index
 
 ```
-# in book examples
+- in book examples
 A = [1, 2, 3, 4, 5] => array length is 5 is equal to the last element index 5
 
-# in Python code
+- in Python code
 A = [0, 1, 2, 3, 4] => array length is 5 but last element index is len(A) - 1
 ```
 

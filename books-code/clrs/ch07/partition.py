@@ -16,23 +16,23 @@
 
 # Code highlights:
 
-# Note that initial value of 'i' is 'p - 1;
+# Note that initial value of 'i' is 'low - 1';
 
 # ___________________________________________________________
 #                                             IMPLEMENTATION
 
-def PARTITION(A, p, r):
+def PARTITION(A, low, high):
 
-    pivot = A[r]
-    i = p - 1
+    pivot = A[high]
+    i = low - 1
 
-    for j in range(p, r):
+    for j in range(low, high):
         if A[j] <= pivot:
             i = i + 1
             A[i], A[j] = A[j], A[i]
 
     # swap pivot so it lies between the two partitions
-    A[i + 1], A[r] = A[r], A[i + 1]
+    A[i + 1], A[high] = A[high], A[i + 1]
     return i + 1
 
 # ___________________________________________________________
