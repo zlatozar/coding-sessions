@@ -16,6 +16,9 @@ make no such guarantees. In other words will not exchange equal values. An unsta
 (of which the most famous sort, quicksort, is an example) wouldn't guarantee anything
 about the order of the equals, just that the smaller appear before.
 
+**Normally, the property of stability is important only when satellite data are carried
+around with the element being sorted.**
+
 - The best case occurs if the array is already sorted.
 
 - Running time is ```theta of n-squared```

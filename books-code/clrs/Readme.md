@@ -10,7 +10,7 @@ We use ```0``` for theta and ```O``` for big O.
 
 ### Python style
 
-Code is not very Pythoninc but close to the pseudo code in the book.
+Code is not very Pythonic but close to the pseudo code in the book.
 
 ### Python code notes
 

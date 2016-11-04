@@ -17,3 +17,12 @@ the decision tree down to a leaf.
 
 Counting sort assumes that each of the n input elements is an integer in the range ```0``` to ```k```,
 for some integer ```k```. When ```k = O(n)```, the sort runs in ```0(n)``` time.
+
+Counting-sort is very efficient for sorting an array of integers when the length, ```n```,
+of the array is not much smaller than the maximum value, ```k - 1```, that appears in the array.
+
+- Time Complexity: 0(n)
+- Space Complexity: 0(n)
+- Stable: Yes
+
+### Radix sort
