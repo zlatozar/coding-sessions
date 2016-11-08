@@ -13,7 +13,7 @@ array elements are stored outside the input array at any time.
 this case one we call a "heap," to manage information. Not only is the heap data structure
 useful for heapsort, but it also makes **an efficient priority queue.**
 
-![Sorting](images/sorting_compexity.png "Sorting time complexity")
+![Sorting](images/sorting_complexity.png "Sorting time complexity")
 
 The **(binary) heap data structure** is _an array object_ that we can view as a nearly
 complete **binary tree**. An array ```A``` that represents a heap is an object with two

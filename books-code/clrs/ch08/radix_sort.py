@@ -50,8 +50,8 @@ def RADIX_SORT(A):
     radix = 1
     key = max(A)
 
-    # Do counting sort for every digit. Note that instead
-    # of passing digit number, 'radix' is passed. 'radix' is [1, 10, 100...10*n]
+    # Do counting sort for every digit. Note that instead of passing digit number,
+    # 'radix' is passed. 'radix' is 1, 10, 100...10*n
 
     while key / radix > 0:
         COUNTING_SORT(A, radix)

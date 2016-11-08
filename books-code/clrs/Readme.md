@@ -41,7 +41,7 @@ for i in range(1, len(A)):
 - Like in ```range``` slicing do not include last e.g ```A[start : end]``` - items from ```start```
   through ```end - 1```
 
-- Algorithms intensively works with indices, use to use them
+- Algorithms intensively works with indices especially in divide and conquer strategy , use to use them
 
 - ```//``` floor divide is a convenient way to take lower bound
 

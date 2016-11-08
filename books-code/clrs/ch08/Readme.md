@@ -20,9 +20,19 @@ for some integer ```k```. When ```k = O(n)```, the sort runs in ```0(n)``` time.
 
 Counting-sort is very efficient for sorting an array of integers when the length, ```n```,
 of the array is not much smaller than the maximum value, ```k - 1```, that appears in the array.
+That means that it is not efficient if we have very large numbers.
 
 - Time Complexity: 0(n)
 - Space Complexity: 0(n)
 - Stable: Yes
 
-### Radix sort
+### Bucket sort
+
+It is very effective when either the data is evenly distributed over a range, or
+we have a hash function that disperses it evenly.
+
+If hashing function is ```hash(i) = i // 10```
+
+![Buckets](images/counting_bucket_sort.png "How buckets will look like")
+
+Bucket sort can be seen as ```k-way``` merge sort.
