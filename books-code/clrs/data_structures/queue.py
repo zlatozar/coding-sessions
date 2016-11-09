@@ -28,6 +28,41 @@
 # Exercise 10.1-4
 class Queue:
 
+    def DEQUEUE(self):
+
+        if self.head == None:
+            raise IndexError('Queue underflow')
+
+        x = self._store[self.head]
+
+        if self.head == self._size - 1:
+			self.head = 0
+        else:
+			self.head = self.head + 1
+
+        if self.head == self.tail:
+            self.head = None
+
+        return x
+
+    def ENQUEUE(self, elm):
+
+        if self.tail == self.head:
+            raise IndexError('Queue overflow')
+
+        self._store[self.tail] = elm
+
+        if self.head == None:
+            self.head = self.tail
+
+        if self.tail == self._size - 1:
+            self.tail = 0
+        else:
+			self.tail = self.tail + 1
+
+# ___________________________________________________________
+#                                                    HELPERS
+
     def __init__(self, n):
         self._size = n
         self._store = [None] * n
@@ -73,99 +108,3 @@ class Queue:
 
         else:
             return '<%s<' % self._store
-
-    def DEQUEUE(self):
-
-        if self.head == None:
-            raise IndexError('Queue underflow')
-
-        x = self._store[self.head]
-
-        if self.head == self._size - 1:
-			self.head = 0
-        else:
-			self.head = self.head + 1
-
-        if self.head == self.tail:
-            self.head = None
-
-        return x
-
-    def ENQUEUE(self, elm):
-
-        if self.tail == self.head:
-            raise IndexError('Queue overflow')
-
-        self._store[self.tail] = elm
-
-        if self.head == None:
-            self.head = self.tail
-
-        # wrap around
-        if self.tail == self._size - 1:
-            self.tail = 0
-        else:
-			self.tail = self.tail + 1
-
-# ___________________________________________________________
-#                                                       TEST
-
-if __name__ == '__main__':
-
-    print '\nStart inserting elements in Queue(3):'
-    queue = Queue(3)
-    print '\nEmpty. queue: %s, size: %s, head: %s, tail: %s' % (queue, len(queue), queue.head, queue.tail)
-
-    queue.ENQUEUE(4)
-    print '-> 4. queue: %s, size: %s, head: %s, tail: %s' % (queue, len(queue), queue.head, queue.tail)
-    queue.ENQUEUE(8)
-    print '-> 8. queue: %s, size: %s, head: %s, tail: %s' % (queue, len(queue), queue.head, queue.tail)
-    queue.ENQUEUE(9)
-    print '-> 9. queue: %s, size: %s, head: %s, tail: %s' % (queue, len(queue), queue.head, queue.tail)
-    print '\nFull. queue: %s, size: %s, head: %s, tail: %s' % (queue, len(queue), queue.head, queue.tail)
-
-    try:
-        queue.ENQUEUE(13)
-
-    except IndexError:
-        print 'Queue overflow'
-
-    print '\nStart removing elements from Queue(3):'
-
-    print queue.DEQUEUE()
-    print '<-. queue: %s, size: %s, head: %s, tail: %s' % (queue, len(queue), queue.head, queue.tail)
-    print queue.DEQUEUE()
-    print '<-. queue: %s, size: %s, head: %s, tail: %s' % (queue, len(queue), queue.head, queue.tail)
-    print queue.DEQUEUE()
-    print '\nEmpty. queue: %s, size: %s, head: %s, tail: %s' % (queue, len(queue), queue.head, queue.tail)
-
-    try:
-        queue.DEQUEUE()
-
-    except IndexError:
-        print 'Queue underflow\n'
-
-    print '\nStart trying combinations...'
-
-    queue.ENQUEUE(10)
-    queue.DEQUEUE()
-    queue.ENQUEUE(20)
-    print queue
-    queue.DEQUEUE()
-    queue.ENQUEUE(30)
-    queue.DEQUEUE()
-
-    print queue
-
-    queue.ENQUEUE(40)
-    print queue
-    queue.DEQUEUE()
-    print queue
-    queue.ENQUEUE(50)
-    print queue
-    queue.ENQUEUE(60)
-    print queue
-    queue.DEQUEUE()
-    print queue
-    queue.DEQUEUE()
-    print '\nEmpty. queue: %s, size: %s, head: %s, tail: %s' % (queue, len(queue), queue.head, queue.tail)
