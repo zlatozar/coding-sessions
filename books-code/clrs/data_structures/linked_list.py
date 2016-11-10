@@ -61,12 +61,20 @@ class LinkedList:
 # ___________________________________________________________
 #                                                    HELPERS
 
+    def __len__(self):
+        count = 0
+        x = self.head
+        while x != None:
+            count = count + 1
+            x = x.next
+        return count
+
     def __str__(self) :
-		s = "[None<-"
-		p = self.head
-		if p != None :
-			while p.next != None :
-				s += p.data + "<-"
-				p = p.next
-			s += p.data
-		return s + "]"
+        s = "[None<-"
+        x = self.head
+        while x != None:
+            s += x.data
+            if x.next != None:
+                s += ", "
+            x = x.next
+        return s + "]"
