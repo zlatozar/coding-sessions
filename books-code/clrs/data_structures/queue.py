@@ -68,7 +68,7 @@ class Queue:
 			self.tail = self.tail + 1
 
 # ___________________________________________________________
-#                                                    HELPERS
+#                             HELPERS(just for illustration)
 
     def __len__(self):
 

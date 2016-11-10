@@ -11,7 +11,7 @@
 # Code highlights:
 
 # L.next and L.prev points to the object Node not to its particular field. In this way
-# we can use 'head' as a temp variable in INSERT. Threat 'head' as the last element.
+# we can use 'head' as a temp variable in INSERT. Treat 'head' as the last element.
 
 # ___________________________________________________________
 #                                             IMPLEMENTATION
@@ -59,10 +59,11 @@ class LinkedList:
             x.next.prev = x.prev
 
 # ___________________________________________________________
-#                                                    HELPERS
+#                             HELPERS(just for illustration)
 
     def __len__(self):
         count = 0
+
         x = self.head
         while x != None:
             count = count + 1
@@ -71,10 +72,11 @@ class LinkedList:
 
     def __str__(self) :
         s = "[None<-"
+
         x = self.head
         while x != None:
-            s += x.data
-            if x.next != None:
+            s += str(x.data)
+            if x.next != None: # if not the last one
                 s += ", "
             x = x.next
         return s + "]"
