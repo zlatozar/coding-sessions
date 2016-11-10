@@ -12,6 +12,9 @@
 
 class Stack:
 
+    def __init__(self):
+        self._items = list()
+
     def STACK_EMPTY(self):
         return len(self._items) == 0
 
@@ -31,11 +34,8 @@ class Stack:
             raise IndexError('Cannot peek from an empty stack')
         return self._items[-1]
 
-    def __init__(self):
-        self._items = list()
-
     def __len__(self):
         return len(self._items)
 
-    def __repr__(self):
+    def __str__(self):
         return '%s>' % self._items

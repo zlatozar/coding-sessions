@@ -28,6 +28,13 @@
 # Exercise 10.1-4
 class Queue:
 
+    def __init__(self, n):
+        self._size = n
+        self._store = [None] * n
+
+        self.head = None
+        self.tail = 0
+
     def DEQUEUE(self):
 
         if self.head == None:
@@ -63,13 +70,6 @@ class Queue:
 # ___________________________________________________________
 #                                                    HELPERS
 
-    def __init__(self, n):
-        self._size = n
-        self._store = [None] * n
-
-        self.head = None
-        self.tail = 0
-
     def __len__(self):
 
         if self.head == None:
@@ -85,7 +85,7 @@ class Queue:
 
         return lengh
 
-    def __repr__(self):
+    def __str__(self):
 
         items = []
 

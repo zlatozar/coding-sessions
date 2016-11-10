@@ -8,95 +8,65 @@
 # The clue is that data should be wrapped with meta-information about connection to the
 # next element. In our implementation is the Node object.
 
+# Code highlights:
+
+# L.next and L.prev points to the object Node not to its particular field. In this way
+# we can use 'head' as a temp variable in INSERT. Threat 'head' as the last element.
+
 # ___________________________________________________________
 #                                             IMPLEMENTATION
 
 class Node:
 
-    def __init__(self, data=None, next_node=None):
+    def __init__(self, data):
+        self.prev = None
         self.data = data
-        self.next_node = next_node
-
-    def get_data(self):
-        return self.data
-
-    def get_next(self):
-        return self.next_node
-
-    def set_next(self, new_next):
-        self.next_node = new_next
-
+        self.next = None
 
 class LinkedList:
 
-    def SEARCH(self, data):
-        current = self.head
-        found = False
-
-        while current and found is False:
-            if current.get_data() == data:
-                found = True
-            else:
-                current = current.get_next()
-
-        if current is None:
-            raise ValueError('Data not in list')
-
-        return current
+    def __init__(self):
+        self.head = None
 
     def INSERT(self, data):
-        new_node = Node(data)
-        new_node.set_next(self.head)
-        self.head = new_node
+        x = Node(data)
 
-    # Fixme
-    def INSERT_TAIL(self, data):
-        current = self.head
-        while current:
-            previous = current
-            current = current.get_next()
-            previous.set_next(Node(data))
+        x.next = self.head
+        if self.head != None:
+            self.head.prev = x
 
-    def DELETE(self, data):
-        current = self.head
-        previous = None
-        found = False
+        # now head is the last element
+        self.head = x
+        x.prev = None
 
-        while current and found is False:
-            if current.get_data() == data:
-                found = True
-            else:
-                previous = current
-                current = current.get_next()
+    def SEARCH(self, k):
+        x = self.head
 
-        if current is None:
-            raise ValueError('Data not in list')
+        while x != None and x.data != k:
+            x = x.next
 
-        if previous is None:
-            self.head = current.get_next()
+        # None if nothing found
+        return x
+
+    # bypass x.next and x.prev connections
+    def DELETE(self, x):
+        if x.prev != None:
+            x.prev.next = x.next
         else:
-            previous.set_next(current.get_next())
+            self.head = x.next
+
+        if x.next != None:
+            x.next.prev = x.prev
 
 # ___________________________________________________________
 #                                                    HELPERS
 
-    def __init__(self, head=None):
-        self.head = head
-
-    def __len__(self):
-        current = self.head
-        count = 0
-        while current:
-            count += 1
-            current = current.get_next()
-
-        return count
-
-    def __repr__(self):
-        current = self.head
-        items = '['
-        while current:
-            items += str(current.data) + '->'
-            current = current.get_next()
-
-        return items + ']'
+    def __str__(self) :
+		s = "[None<-"
+		p = self.head
+		if p != None :
+			while p.next != None :
+				s += p.data + "<-"
+				p = p.next
+			s += p.data
+		return s + "]"
