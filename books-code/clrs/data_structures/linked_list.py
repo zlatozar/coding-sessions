@@ -6,7 +6,10 @@
 #                                                      NOTES
 
 # The clue is that data should be wrapped with meta-information about connection to the
-# next element. In our implementation is the Node object.
+# next element. In our implementation is the Node object. Deletion in double linked list
+# is faster than in single linked. With a doubly linked list you have ready access to both
+# elements because you have links to both of them (see DELETE). This assumes that you
+# already have a pointer to the element you need to delete and there is no searching involved.
 
 # Code highlights:
 
@@ -22,6 +25,9 @@ class Node:
         self.prev = None
         self.data = data
         self.next = None
+
+    def __str__(self):
+        return "Node(%s)" % self.data
 
 class LinkedList:
 

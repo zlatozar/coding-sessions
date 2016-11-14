@@ -22,6 +22,9 @@ class Node:
         self.data = data
         self.next = None
 
+    def __str__(self):
+        return "Node(%s)" % self.data
+
 class CircularLinkedList:
 
     def __init__(self):

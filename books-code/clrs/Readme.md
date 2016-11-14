@@ -2,11 +2,15 @@
 
 ### Requirements
 
-Requires Python **2.5.x**
+Requires Python **2.x**
 
 ### Notation
 
 We use ```0``` for theta and ```O``` for big O.
+
+### Problems and exercises solutions
+
+https://cyberzhg.gitbooks.io/clrs/content/
 
 ### Python style
 
