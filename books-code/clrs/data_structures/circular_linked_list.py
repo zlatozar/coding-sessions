@@ -17,13 +17,13 @@
 
 class Node:
 
-    def __init__(self, data):
+    def __init__(self, key):
         self.prev = None
-        self.data = data
+        self.key = key
         self.next = None
 
     def __str__(self):
-        return "Node(%s)" % self.data
+        return "%s" % self.key
 
 class CircularLinkedList:
 
@@ -35,9 +35,7 @@ class CircularLinkedList:
         self.nil.prev = self.nil
         self.nil.next = self.nil
 
-    def INSERT(self, data):
-        x = Node(data)
-
+    def INSERT(self, x):
         x.next = self.nil.next
         self.nil.next.prev = x
         self.nil.next = x
@@ -45,7 +43,8 @@ class CircularLinkedList:
 
     def SEARCH(self, k):
         x = self.nil.next
-        while x != self.nil and x.data != k:
+
+        while x != self.nil and x.key != k:
             x = x.next
 
         return x
@@ -62,9 +61,34 @@ class CircularLinkedList:
 
         x = self.nil.next
         while x != self.nil:
-            s += str(x.data)
+            s += str(x.key)
             if x.next != self.nil:
                 s += ", "
             x = x.next
 
         return s + "]"
+
+# ___________________________________________________________
+#                                                       TEST
+
+if __name__ == '__main__':
+
+    l = CircularLinkedList()
+
+    l.INSERT(Node(1))
+    l.INSERT(Node(2))
+
+    node3 = Node(3)
+    l.INSERT(node3)
+
+    l.INSERT(Node(4))
+
+    print l
+
+    # search by key
+    print l.SEARCH(3)
+
+    # delete by node reference
+    l.DELETE(node3)
+
+    print l
