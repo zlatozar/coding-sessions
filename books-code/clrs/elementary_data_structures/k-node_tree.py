@@ -27,53 +27,67 @@ class kTreeNode:
         self.right_sibling = right_sibling
 
     def __str__(self):
-        # 'parent' display is skipped to avoid endless recursion
+        # 'parent' display is skip to avoid endless recursion
         return "%s(l:%s, sib:%s)" % (self.data, self.left_child, self.right_sibling)
 
+global tree
 tree = None
-head = None
+
 l_head = None
+s_head = None
 
-def BUILD_TREE(elm, previous=None):
+def BUILD_TREE(elm, local_parent=None):
 
-    global tree, head, l_head
-
-    before_node = kTreeNode(previous)
+    global tree
 
     if len(elm) == 0:
         return
 
-    if previous:
+    for i in elm:
 
-        current = elm[0][0]
-        rest    = elm[0][1:]
+        if local_parent:
+            previous_node = kTreeNode(local_parent)
 
-        if not isinstance(previous, list):
-            left_child = kTreeNode(current)
-            before_node.left_child = left_child
-            left_child.parent = before_node
+            if not isinstance(local_parent, list):
+                left_child = kTreeNode(i[0])
+                previous_node.left_child = left_child
+                left_child.parent = previous_node
+                print "parent: %s, left_child: %s" % (local_parent, i[0])
 
-            l_head.left_child = left_child
-            l_head = l_head.left_child
+                local_parent = i[0]
+                BUILD_TREE(i[1:], local_parent)
 
-            BUILD_TREE(rest, current)
+            else:
+                right_sibling = kTreeNode(i[0])
+                previous_node.right_sibling = right_sibling
+                print "sibling: %s, right_sibling: %s" % (local_parent[0], i[0])
+
+                local_parent = i[0]
+                BUILD_TREE(i[1:], local_parent)
 
         else:
-            right_sibling = kTreeNode(current)
-            before_node.right_sibling = right_sibling
+            # root
+            tree = kTreeNode(i)
+            print "root: %s" % i
 
-            head.right_sibling = right_sibling
-            head = head.right_sibling
+        local_parent = i
 
-            l_head = head
-            BUILD_TREE(rest, current)
+# Exercise 10.4-4 p. 248
+def PRINT_TREE(node):
 
-    else:
-        tree = kTreeNode(elm[0])
-        head = tree
+    # go to the root
+    while node.parent != None:
+        node = node.parent
 
-    l_head = head
-    BUILD_TREE(elm[1:], elm[0])
+    while node != None:
+        print node.data
+        sibling = node.right_sibling
+
+        while sibling != None:
+            print sibling.data
+            sibling = sibling.right_sibling
+
+        node = node.left_child
 
 # ___________________________________________________________
 #                                                       TEST
@@ -89,7 +103,6 @@ if __name__ == '__main__':
     #          12
     #
     #
-    t = [1, [2, [6], [7], [8]], [3], [4, [9, [12]]], [5, [10], [11]]]
-
+    t = [1, [2, [6], [7], [8]],    [3],     [4, [9, [12]]],   [5, [10], [11]]]
+    print t
     BUILD_TREE(t)
-    print tree
