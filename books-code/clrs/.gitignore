@@ -1,8 +1,14 @@
 ## Emacs rope configuration
+*~
+\#*\#
+.\#*
+
 .ropeproject
 .project
 .pydevproject
 .settings
+.idea
+*.iml
 
 ## Python
 *.py[co]

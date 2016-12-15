@@ -30,15 +30,8 @@ class kTreeNode:
         # 'parent' display is skip to avoid endless recursion
         return "%s(l:%s, sib:%s)" % (self.data, self.left_child, self.right_sibling)
 
-global tree
-tree = None
-
-l_head = None
-s_head = None
 
 def BUILD_TREE(elm, local_parent=None):
-
-    global tree
 
     if len(elm) == 0:
         return
@@ -66,8 +59,7 @@ def BUILD_TREE(elm, local_parent=None):
                 BUILD_TREE(i[1:], local_parent)
 
         else:
-            # root
-            tree = kTreeNode(i)
+            # set root
             print "root: %s" % i
 
         local_parent = i
@@ -103,6 +95,9 @@ if __name__ == '__main__':
     #          12
     #
     #
+
     t = [1, [2, [6], [7], [8]],    [3],     [4, [9, [12]]],   [5, [10], [11]]]
+
     print t
+
     BUILD_TREE(t)
