@@ -5,16 +5,6 @@
 # Chapter 12
 
 # ___________________________________________________________
-#                                                      NOTES
-
-# SEARCH, MINIMUM, MAXIMUM, SUCCESSOR, PREDECESSOR, DELETE and INSERT each one in time O(h)
-# for search tree of height h.
-
-# Code highlights:
-
-# Implementation is not very Pythonic but very close to the book's code.
-
-# ___________________________________________________________
 #                                             IMPLEMENTATION
 
 class Node:
@@ -30,46 +20,7 @@ class BST(object):
     def __init__(self):
         self.root = None
 
-    # p. 288
-    def INORDER_WALK(self):
-        pass
-
-    # p. 290
-    def SEARCH(self, k, x=Node(None)):
-
-        if x != None and x.key == None:
-            x = self.root
-
-        if x == None or k == x.key:
-            return x
-
-        if k < x.key:
-            return self.SEARCH(k, x.left)
-
-        else:
-            return self.SEARCH(k, x.right)
-
-    # p. 291
-    def ITERATIVE_SEARCH(self, k):
-        x = self.root
-
-        while x != None and k != x.key:
-            if k < x.key:
-                x = x.left
-
-            else:
-                x = x.right
-
-        return x
-
-    def MINIMUM(self, x=None):
-        if not x:
-            x = self.root
-
-        while x.left:
-            x = x.left
-        return x
-
+    # Exercise 12.2-2
     def MAXIMUM(self, x=None):
         if not x:
             x = self.root
@@ -79,82 +30,81 @@ class BST(object):
 
         return x
 
-    # p. 292
-    def SUCCESSOR(self, x):
-        if x.right:
-            return self.MINIMUM(x.right)
+    # Exercise 12.2-2
+    def MINIMUM(self, x=None):
+        if not x:
+            x = self.root
+
+        while x.left:
+            x = x.left
+        return x
+
+    # Exercise 12.2-3
+    def PREDECESSOR(self, x):
+        if x.left:
+            return self.MAXIMUM(x.left)
 
         else:
-            # search backward trough the rights
             y = x.parent
-            while y != None and y.right == x:
+            while y != None and y.left == x:
                 x = y
                 y = x.parent
 
             return y
 
-    # p. 294
+    # Exercise 12.3-1
     def INSERT(self, z):
-        new = Node(z)
 
-        y = None       # trailing pointer
-        x = self.root
+        def inner(new, x):
+            if x is None:
+                return Node(new)
 
-        while x != None:
-            y = x
-            if new.key <= x.key:
-                x = x.left
+            if x.key > z:
+                x.left = inner(new, x.left)
+                x.left.parent = x
+
             else:
-                x = x.right
+                x.right = inner(new, x.right)
+                x.right.parent = x
 
-        new.parent = y
+            return x
 
-        if y == None:
+        if self.root == None:
+            self.root = Node(z)
+
+            return self.root
+
+        else:
+            return inner(z, self.root)
+
+    # alternative which is more intuitive
+    def insert(self, t):
+        new = Node(t)
+
+        if self.root == None:
             self.root = new
-
-        elif new.key < y.key:
-            y.left = new
-
         else:
-            y.right = new
+            node = self.root
 
+            while True:
+                if new.key < node.key:
+                    # Go left
+                    if node.left == None:
+                        node.left = new
+                        new.parent = node
+                        break
+
+                    node = node.left
+
+                else:
+                    # Go right
+                    if node.right == None:
+                        node.right = new
+                        new.parent = node
+                        break
+
+                    node = node.right
         return new
-
-    # Replace one subtree as a child of its parent with another subtree p. 296
-    def __TRANSPLANT(self, u, v):
-
-        if u.parent == None:        # u is the root
-            self.root = v
-
-        elif u == u.parent.left:    # u is the left child of its parent
-            u.parent.left = v
-
-        else:                       # u is the right child of its parent
-            u.parent.right = v
-
-        if v != None:
-            v.parent = u.parent
-
-    # p. 298
-    def DELETE(self, z):
-
-        if z.left == None:
-            self.__TRANSPLANT(z, z.right)
-
-        elif z.right == None:
-            self.__TRANSPLANT(z, z.left)
-
-        else:
-            y = self.MINIMUM(z.right)
-
-            if y.parent != z:
-                self.__TRANSPLANT(y, y.right)
-                y.right = z.right
-                y.right.parent = y
-
-            self.__TRANSPLANT(z, y)
-            y.left = z.left
-            y.left.parent = y
 
 # ___________________________________________________________
 #                                                    HELPERS
@@ -216,8 +166,8 @@ def build_test_tree():
     for item in items:
         if not found and item % 2 == 0:
             node = tree.INSERT(item)
-
             found = True
+
             continue
 
         tree.INSERT(item)
@@ -228,18 +178,12 @@ if __name__ == '__main__':
 
     (node, tree) = build_test_tree()
 
+    not_existing = 1000
+
     print
     print tree
     print
     print "Min: %s" % tree.MINIMUM().key
     print "Max: %s" % tree.MAXIMUM().key
     print
-    print "Search for: %s, found: %s" % (node.key, tree.SEARCH(node.key).key)
-    print "Iterative search for: %s, found: %s" % (node.key, tree.ITERATIVE_SEARCH(node.key).key)
-    print
-    print "The successor of %s is %s" % (node.key, tree.SUCCESSOR(node).key if tree.SUCCESSOR(node) else None)
-    print
-    print "Delete node: %s" % node.key
-    tree.DELETE(node)
-    print
-    print tree
+    print "The predecessor of %s is %s" % (node.key, tree.PREDECESSOR(node).key if tree.PREDECESSOR(node) else None)
