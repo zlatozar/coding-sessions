@@ -32,7 +32,14 @@ class BST(object):
 
     # p. 288
     def INORDER_WALK(self):
-        pass
+
+        def inner(x):
+            if x != None:
+                inner(x.left)
+                print x.key
+                inner(x.right)
+
+        inner(self.root)
 
     # p. 290
     def SEARCH(self, k, x=Node(None)):
@@ -236,6 +243,9 @@ if __name__ == '__main__':
     print
     print "Search for: %s, found: %s" % (node.key, tree.SEARCH(node.key).key)
     print "Iterative search for: %s, found: %s" % (node.key, tree.ITERATIVE_SEARCH(node.key).key)
+    print
+    print "Inorder walk (in sorted order):"
+    tree.INORDER_WALK()
     print
     print "The successor of %s is %s" % (node.key, tree.SUCCESSOR(node).key if tree.SUCCESSOR(node) else None)
     print
