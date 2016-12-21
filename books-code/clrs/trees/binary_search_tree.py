@@ -31,15 +31,16 @@ class BST(object):
         self.root = None
 
     # p. 288
+    # If x is the root of an n-node subtree, then the call INORDER_WALK takes 0(n) time.
     def INORDER_WALK(self):
 
-        def inner(x):
+        def inorder_walk(x):
             if x != None:
-                inner(x.left)
+                inorder_walk(x.left)
                 print x.key
-                inner(x.right)
+                inorder_walk(x.right)
 
-        inner(self.root)
+        inorder_walk(self.root)
 
     # p. 290
     def SEARCH(self, k, x=Node(None)):

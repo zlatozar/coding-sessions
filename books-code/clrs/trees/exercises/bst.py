@@ -22,22 +22,27 @@ class BST(object):
 
     # Exercise 12.2-2
     def MAXIMUM(self, x=None):
-        if not x:
-            x = self.root
+        def maximum(x):
+            if x.right == None:
+                return x
+            return maximum(x.right)
 
-        while x.right:
-            x = x.right
-
-        return x
+        if x != None:
+            return maximum(x)
+        else:
+            return maximum(self.root)
 
     # Exercise 12.2-2
     def MINIMUM(self, x=None):
-        if not x:
-            x = self.root
+        def minimum(x):
+            if x.left == None:
+                return x
+            return minimum(x.left)
 
-        while x.left:
-            x = x.left
-        return x
+        if x != None:
+            return minimum(x)
+        else:
+            return minimum(self.root)
 
     # Exercise 12.2-3
     def PREDECESSOR(self, x):
@@ -52,33 +57,8 @@ class BST(object):
 
             return y
 
-    # Exercise 12.3-1
-    def INSERT(self, z):
-
-        def inner(new, x):
-            if x is None:
-                return Node(new)
-
-            if x.key > z:
-                x.left = inner(new, x.left)
-                x.left.parent = x
-
-            else:
-                x.right = inner(new, x.right)
-                x.right.parent = x
-
-            return x
-
-        if self.root == None:
-            self.root = Node(z)
-
-            return self.root
-
-        else:
-            return inner(z, self.root)
-
     # alternative which is more intuitive
-    def insert(self, t):
+    def INSERT(self, t):
         new = Node(t)
 
         if self.root == None:
@@ -105,6 +85,10 @@ class BST(object):
 
                     node = node.right
         return new
+
+    # alternative
+    def DELETE(self, z):
+        pass
 
 # ___________________________________________________________
 #                                                    HELPERS
