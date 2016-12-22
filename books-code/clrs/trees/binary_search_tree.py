@@ -25,6 +25,9 @@ class Node:
         self.left = None
         self.right = None
 
+    def __str__(self):
+        return "Node(%s)" % self.key
+
 class BST(object):
 
     def __init__(self):

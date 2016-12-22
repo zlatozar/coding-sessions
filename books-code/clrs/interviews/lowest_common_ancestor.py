@@ -2,10 +2,28 @@
 #
 # -*- coding: utf-8 -*-
 
-# Chapter 12
+# ___________________________________________________________
+#                                                      NOTES
+
+# Given a binary tree, find the lowest common ancestor of two given nodes in the tree.
+
+# Given a binary tree, find the lowest common ancestor (LCA)
+# of two given nodes in the tree.
+#
+# According to the definition of LCA on Wikipedia: "The lowest
+# common ancestor is defined between two nodes v and w as the
+# lowest node in T that has both v and w as descendants (where we
+# allow a node to be a descendant of itself)."
+
+# Time:  O(n)
+# Space: O(h)
+
+# Note that this is not the optimal solution
 
 # ___________________________________________________________
 #                                             IMPLEMENTATION
+
+from random import random
 
 class Node:
 
@@ -15,49 +33,15 @@ class Node:
         self.left = None
         self.right = None
 
-class BST(object):
+    def __str__(self):
+        return "Node(%s)" % self.key
+
+class BinaryTree(object):
 
     def __init__(self):
         self.root = None
 
-    # Exercise 12.2-2
-    def MAXIMUM(self, x=None):
-        def maximum(x):
-            if x.right == None:
-                return x
-            return maximum(x.right)
 
-        if x != None:
-            return maximum(x)
-        else:
-            return maximum(self.root)
-
-    # Exercise 12.2-2
-    def MINIMUM(self, x=None):
-        def minimum(x):
-            if x.left == None:
-                return x
-            return minimum(x.left)
-
-        if x != None:
-            return minimum(x)
-        else:
-            return minimum(self.root)
-
-    # Exercise 12.2-3
-    def PREDECESSOR(self, x):
-        if x.left:
-            return self.MAXIMUM(x.left)
-
-        else:
-            y = x.parent
-            while y != None and y.left == x:
-                x = y
-                y = x.parent
-
-            return y
-
-    # alternative which is more intuitive
     def INSERT(self, t):
         new = Node(t)
 
@@ -67,8 +51,8 @@ class BST(object):
             node = self.root
 
             while True:
-                if new.key < node.key:
-                    # Go left
+                # Order doesn't matter - choose randomly left or right
+                if random() < 0.5:
                     if node.left == None:
                         node.left = new
                         new.parent = node
@@ -77,7 +61,6 @@ class BST(object):
                     node = node.left
 
                 else:
-                    # Go right
                     if node.right == None:
                         node.right = new
                         new.parent = node
@@ -86,12 +69,28 @@ class BST(object):
                     node = node.right
         return new
 
-    # TODO: alternative
-    def DELETE(self, z):
-        pass
+    def LCA(self, l, r):
 
-# ___________________________________________________________
-#                                                    HELPERS
+        def lca(x, p, q):
+
+            if x == None:
+                return x
+
+            if p == x or q == x:
+                return x
+
+            left = lca(x.left, p, q)
+            right = lca(x.right, p, q)
+
+            if left and right:
+                return x
+
+            return lca(x.left, p, q) or lca(x.right, p, q)
+
+        return lca(self.root, l, r)
+
+    # ___________________________________________________________
+    #                                                    HELPERS
 
     def __str__(self):
         if self.root is None:
@@ -115,7 +114,7 @@ class BST(object):
                 right_lines.append(' ' * right_width)
 
             if (middle - len(label)) % 2 == 1 and node.parent is not None and \
-               node is node.parent.left and len(label) < middle:
+                            node is node.parent.left and len(label) < middle:
                 label += '.'
 
             label = label.center(middle, '.')
@@ -128,8 +127,8 @@ class BST(object):
             lines = [' ' * left_pos + label + ' ' * (right_width - right_pos),
                      ' ' * left_pos + '/' + ' ' * (middle-2) +
                      '\\' + ' ' * (right_width - right_pos)] + \
-              [left_line + ' ' * (width - left_width - right_width) + right_line
-               for left_line, right_line in zip(left_lines, right_lines)]
+                    [left_line + ' ' * (width - left_width - right_width) + right_line
+                     for left_line, right_line in zip(left_lines, right_lines)]
 
             return lines, pos, width
 
@@ -143,31 +142,31 @@ def build_test_tree():
 
     items = (random.randrange(100) for i in xrange(20))
 
-    tree = BST()
-    node = None
+    tree = BinaryTree()
 
-    found = False
+    p = None
+    q = None
+
     for item in items:
-        if not found and item % 2 == 0:
-            node = tree.INSERT(item)
-            found = True
-
+        if item % 2 == 0:
+            p = tree.INSERT(item)
             continue
+        elif item % 3 == 0:
+            q = tree.INSERT(item)
+            continue
+        else:
+            tree.INSERT(item)
 
-        tree.INSERT(item)
-
-    return (node, tree)
+    return (p, q, tree)
 
 if __name__ == '__main__':
 
-    (node, tree) = build_test_tree()
+    (p, q, tree) = build_test_tree()
 
-    not_existing = 1000
-
-    print
-    print tree
-    print
-    print "Min: %s" % tree.MINIMUM().key
-    print "Max: %s" % tree.MAXIMUM().key
-    print
-    print "The predecessor of %s is %s" % (node.key, tree.PREDECESSOR(node).key if tree.PREDECESSOR(node) else None)
+    if p and q:
+        print
+        print tree
+        print
+        print 'The LCA for %s and %s is %s' % (p, q, tree.LCA(p, q))
+    else:
+        print 'Try again, please'
