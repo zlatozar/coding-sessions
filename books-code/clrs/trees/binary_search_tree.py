@@ -167,6 +167,36 @@ class BST(object):
             y.left = z.left
             y.left.parent = y
 
+    def DELETE_MIN(self):
+
+        if self.root is None:
+            return None, None
+
+        else:
+            # Walk to leftmost node.
+            node = self.root
+            while node.left != None:
+                node = node.left
+
+            # Remove that node and promote its right subtree.
+            if node.parent !=  None:
+                node.parent.left = node.right
+
+            else: # The root was smallest.
+                self.root = node.right
+
+            if node.right != None:
+                node.right.parent = node.parent
+
+            parent = node.parent
+
+            # disconnect the node
+            node.left = None
+            node.right = None
+            node.parent = None
+
+            return node, parent
+
 # ___________________________________________________________
 #                                                    HELPERS
 

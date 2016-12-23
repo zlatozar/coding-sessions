@@ -11,14 +11,14 @@
 # of two given nodes in the tree.
 #
 # According to the definition of LCA on Wikipedia: "The lowest
-# common ancestor is defined between two nodes v and w as the
-# lowest node in T that has both v and w as descendants (where we
+# common ancestor is defined between two nodes 'p' and 'q' as the
+# lowest node in T that has both 'p' and 'q' as descendants (where we
 # allow a node to be a descendant of itself)."
 
 # Time:  O(n)
 # Space: O(h)
 
-# Note that this is not the optimal solution
+# Note that this is not the optimal solution!
 
 # ___________________________________________________________
 #                                             IMPLEMENTATION
