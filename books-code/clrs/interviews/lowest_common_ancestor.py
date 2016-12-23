@@ -69,12 +69,15 @@ class BinaryTree(object):
                     node = node.right
         return new
 
+    # We have to traverse the tree(visit all the notes with DFS) and check if the note is
+    # the root of the p and q. If not then return the e.g p (or q) and hope that feature
+    # iterations(recursion) will find q (or p)
     def LCA(self, l, r):
 
         def lca(x, p, q):
 
             if x == None:
-                return x
+                return None
 
             if p == x or q == x:
                 return x
@@ -89,53 +92,10 @@ class BinaryTree(object):
 
         return lca(self.root, l, r)
 
-    # ___________________________________________________________
-    #                                                    HELPERS
-
-    def __str__(self):
-        if self.root is None:
-            return '<empty tree>'
-
-        def recurse(node):
-            if node is None:
-                return [], 0, 0
-
-            label = str(node.key)
-            left_lines, left_pos, left_width = recurse(node.left)
-            right_lines, right_pos, right_width = recurse(node.right)
-            middle = max(right_pos + left_width - left_pos + 1, len(label), 2)
-            pos = left_pos + middle // 2
-            width = left_pos + middle + right_width - right_pos
-
-            while len(left_lines) < len(right_lines):
-                left_lines.append(' ' * left_width)
-
-            while len(right_lines) < len(left_lines):
-                right_lines.append(' ' * right_width)
-
-            if (middle - len(label)) % 2 == 1 and node.parent is not None and \
-                            node is node.parent.left and len(label) < middle:
-                label += '.'
-
-            label = label.center(middle, '.')
-            if label[0] == '.':
-                label = ' ' + label[1:]
-
-            if label[-1] == '.':
-                label = label[:-1] + ' '
-
-            lines = [' ' * left_pos + label + ' ' * (right_width - right_pos),
-                     ' ' * left_pos + '/' + ' ' * (middle-2) +
-                     '\\' + ' ' * (right_width - right_pos)] + \
-                    [left_line + ' ' * (width - left_width - right_width) + right_line
-                     for left_line, right_line in zip(left_lines, right_lines)]
-
-            return lines, pos, width
-
-        return '\n'.join(recurse(self.root) [0])
-
 # ___________________________________________________________
 #                                                       TEST
+
+from common import pprint_tree
 
 def build_test_tree():
     import random
@@ -165,7 +125,7 @@ if __name__ == '__main__':
 
     if p and q:
         print
-        print tree
+        print pprint_tree(tree)
         print
         print 'The LCA for %s and %s is %s' % (p, q, tree.LCA(p, q))
     else:
