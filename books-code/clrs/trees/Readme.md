@@ -29,3 +29,18 @@ the right subtree of **N**), is also greater than everything in the left subtree
 Thus, as far as the left subtree of **N** is concerned, **Y** is a suitable element at
 **N**. As far as the right subtree of **N** is concerned, **Y** is also suitable as the
 root, because **Y** was chosen to be the smallest element in the right subtree.
+
+## Chapter 13
+
+### Red-Black properties
+
+```
+1. Every node is either red or black.
+2. The root is black.
+3. Every leaf (NIL) is black.
+4. If a node is red, then both its children are black.
+5. For each node, all simple paths from the node to descendant leaves contain the
+   same number of black nodes.
+```
+
+A red-black tree with ```N``` internal nodes has height at most ```2 * lg(n + 1)```
