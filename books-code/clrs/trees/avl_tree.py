@@ -10,7 +10,7 @@
 # Supports INSERT, FIND, and DELETE_MIN operations in O(lg n) time.
 
 # ___________________________________________________________
-#                                             IMPLEMENTATION
+#                                                    HELPERS
 
 def height(node):
     if node is None:
