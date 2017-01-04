@@ -141,13 +141,13 @@ class Red_Black_Tree():
             y.color = z.color
 
         if y_original_color == BLACK:
-            self.DELETE_FIX(x)
+            self.DELETE_FIXUP(x)
 
-    def DELETE_FIX(self, x):
+    def DELETE_FIXUP(self, x):
 
         while self.nil != x and x.color == BLACK:
 
-            if x.parent.left == x:
+            if x == x.parent.left:
                 w = x.parent.right
 
                 if w.color == RED:
@@ -168,13 +168,13 @@ class Red_Black_Tree():
                         w = x.parent.right
 
                     w.color = x.parent.color
-                    w.right.color = BLACK
                     x.parent.color = BLACK
+                    w.right.color = BLACK
+
                     self.LEFT_ROTATE(x.parent)
-                    self.root = x
+                    x = self.root
 
             else:
-                w = x.parent.left
 
                 if w.color == RED:
                     w.color = BLACK
@@ -182,7 +182,7 @@ class Red_Black_Tree():
                     self.RIGHT_ROTATE(x.parent)
                     w = x.parent.left
 
-                if w.left.color == BLACK and w.right.color == BLACK:
+                if w.right.color == BLACK and w.left.color == BLACK:
                     w.color = RED
                     x = x.parent
 
@@ -194,11 +194,11 @@ class Red_Black_Tree():
                         w = x.parent.left
 
                     w.color = x.parent.color
-
-                    w.left.color = BLACK
                     x.parent.color = BLACK
+                    w.left.color = BLACK
+
                     self.RIGHT_ROTATE(x.parent)
-                    self.root = x
+                    x = self.root
 
         x.color = BLACK
 
@@ -206,7 +206,7 @@ class Red_Black_Tree():
         if u.parent == self.nil:
             self.root = v
 
-        elif u.parent.left == u:
+        elif u == u.parent.left:
             u.parent.left = v
 
         else:
@@ -273,12 +273,10 @@ class Red_Black_Tree():
         else:
             return self.SEARCH(k, x.right)
 
-    def MINIMUM(self, x=None):
-        if not x:
-            x = self.root
-
-        while x.left:
+    def MINIMUM(self, x):
+        while x.left != self.nil:
             x = x.left
+
         return x
 
 # ___________________________________________________________
