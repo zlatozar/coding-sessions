@@ -2,7 +2,7 @@
 #
 # -*- coding: utf-8 -*-
 
-# Chapter 12
+# Chapter 13
 
 # ___________________________________________________________
 #                                                      NOTES
@@ -35,45 +35,48 @@ class Red_Black_Tree():
 
         self.root = self.nil
 
-    def INSERT(self, z):
+    def INSERT(self, new):
+        z = Node(new)
 
         y = self.nil
         x = self.root
 
         while x != self.nil:
             y = x
-            if x.key < z.key:
-                x = x.right
-            else:
+            if z.key < x.key:
                 x = x.left
+            else:
+                x = x.right
 
         z.parent = y
 
         if y == self.nil:
             self.root = z
 
-        elif y.key < z.key:
-            y.right = z
+        elif z.key < y.key:
+            y.left = z
 
         else:
-            y.left = z
+            y.right = z
 
         z.left = self.nil
         z.right = self.nil
         z.color = RED
 
-        self.INSERT_FIX(z)
+        self.INSERT_FIXUP(z)
 
-    def INSERT_FIX(self, z):
+        return z
+
+    def INSERT_FIXUP(self, z):
 
         while z.parent.color == RED:
 
-            if z.parent.parent.left == z.parent:
+            if z.parent == z.parent.parent.left:
                 y = z.parent.parent.right
 
                 if y.color == RED:
-                    y.color = BLACK
                     z.parent.color = BLACK
+                    y.color = BLACK
                     z.parent.parent.color = RED
                     z = z.parent.parent
 
@@ -90,8 +93,8 @@ class Red_Black_Tree():
                 y = z.parent.parent.left
 
                 if y.color == RED:
-                    y.color = BLACK
                     z.parent.color = BLACK
+                    y.color = BLACK
                     z.parent.parent.color = RED
                     z = z.parent.parent
 
@@ -211,50 +214,50 @@ class Red_Black_Tree():
 
         v.parent = u.parent
 
-    def LEFT_ROTATE(self, z):
+    def LEFT_ROTATE(self, x):
 
-        y = z.right
-        z.right = y.left
+        y = x.right
+        x.right = y.left
 
         if y.left != self.nil:
-            y.left.parent = z
+            y.left.parent = x
 
-        y.parent = z.parent
+        y.parent = x.parent
 
-        if z.parent == self.nil:
+        if x.parent == self.nil:
             self.root = y
 
-        elif z.parent.left == z:
-            z.parent.left = y
+        elif x == x.parent.left:
+            x.parent.left = y
 
         else:
-            z.parent.right = y
+            x.parent.right = y
 
-        y.left = z
-        z.parent = y
+        y.left = x
+        x.parent = y
 
 
-    def RIGHT_ROTATE(self, z):
+    def RIGHT_ROTATE(self, x):
 
-        y = z.left
-        z.right = y.right
+        y = x.left
+        x.left = y.right
 
         if y.right != self.nil:
-            y.right.parent = z
+            y.right.parent = x
 
-        y.parent = z.parent
+        y.parent = x.parent
 
-        if z.parent == self.nil:
+        if x.parent == self.nil:
             self.root = y
 
-        elif z.parent.left == z:
-            z.parent.left = y
+        elif x == x.parent.right:
+            x.parent.right = y
 
         else:
-            z.parent.right = y
+            x.parent.left = y
 
-        y.right = z
-        z.parent = y
+        y.right = x
+        x.parent = y
 
     def SEARCH(self, k, x=Node(None)):
 
