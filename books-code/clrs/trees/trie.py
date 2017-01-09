@@ -12,6 +12,7 @@
 #                                             IMPLEMENTATION
 
 class Node:
+
     def __init__(self, label=None, data=None):
         self.label = label
         self.data = data
@@ -25,16 +26,10 @@ class Node:
         else:
             self.children[key.label] = key
 
-    def __getitem__(self, key):
-        return self.children[key]
-
 class Trie:
 
     def __init__(self):
         self.head = Node()
-
-    def __getitem__(self, key):
-        return self.head.children[key]
 
     def ADD(self, word):
         current_node = self.head
