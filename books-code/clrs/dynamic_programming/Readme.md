@@ -29,6 +29,14 @@ there should be only a polynomial number of different subproblem.
 
 - Optimal substructure
 
+Note that if we arbitrary select a value Y < X, divide the original problem to find the
+optimal solutions for sub problems Y and X − Y . Combine the two optimal solutions doesn't
+necessarily yield optimal solution for X. Consider this example. There are coins with
+value 1, 2, and 4. The optimal solution for making value 6, is to use 2 coins of value 2,
+and 4; However, if we divide ```6 = 3 + 3```, since each 3 can be made with optimal solution
+```3 = 1 + 2```, the combined solution contains 4 coins ```(1 + 1 + 2 + 2)```.
+_If an optimal problem can be divided into several sub optimal problems, we call it has optimal substructure._
+
 1. You show that a solution to the problem consists of making a choice.
 Making this choice leaves one or more subproblems to be solved.
 
