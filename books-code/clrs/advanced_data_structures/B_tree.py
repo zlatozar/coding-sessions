@@ -38,33 +38,30 @@ class BTree:
         z = BTreeNode()
 
         y = x.c[i]
-        z.leaf = y.leaf
 
+        z.leaf = y.leaf
         z.n = self.t - 1
 
-        for j in range(self.t - 1):
-            self.__add_or_overwrite_at(z.keys, j, y.keys[j + self.t])
+        for j in range(0, self.t - 1):
+            self.__upsert(z.keys, j, y.keys[j + self.t])
 
         if not y.leaf:
-            for j in range(self.t):
-                self.__add_or_overwrite_at(z.c, j, y.c[j + self.t])
+            for j in range(0, self.t):
+                self.__upsert(z.c, j, y.c[j + self.t])
 
         y.n = self.t - 1
 
         for j in reversed(range(i, x.n + 1)):
-            self.__add_or_overwrite_at(x.c, j + 1, x.c[j])
+            self.__upsert(x.c, j + 1, x.c[j])
 
         x.c[i + 1] = z
 
         for j in reversed(range(i, x.n)):
-            self.__add_or_overwrite_at(x.keys, j + 1, x.keys[j])
+            self.__upsert(x.keys, j + 1, x.keys[j])
 
-        self.__add_or_overwrite_at(x.keys, i, y.keys[self.t - 1])
+        self.__upsert(x.keys, i, y.keys[self.t - 1])
 
         x.n = x.n + 1
-
-        y.keys = y.keys[:self.t - 1]
-        y.c = y.c[:self.t]
 
         # DISK_WRITE(y)
         # DISK_WRITE(z)
@@ -96,23 +93,23 @@ class BTree:
 
         if x.leaf:
             while i > 0 and value < x.keys[i - 1]:
-                self.__add_or_overwrite_at(x.keys, i, x.keys[i - 1])
-                i -= 1
+                self.__upsert(x.keys, i, x.keys[i - 1])
+                i = i - 1
 
-            self.__add_or_overwrite_at(x.keys, i, value)
-            x.n += 1
+            self.__upsert(x.keys, i, value)
+            x.n = x.n + 1
             # DISK_WRITE(x)
 
         else:
             while i > 0 and value < x.keys[i - 1]:
-                i -= 1
+                i = i - 1
 
             # DISK_READ(x.c[i])
             if x.c[i].n == 2 * self.t - 1:
                 self.B_TREE_SPLIT_CHILD(x, i)
 
                 if value > x.keys[i]:
-                    i += 1
+                    i = i + 1
 
             self.B_TREE_INSERT_NON_FULL(x.c[i], value)
 
@@ -121,7 +118,7 @@ class BTree:
         def search_element(x, element):
             i = 0
             while i < x.n and element > x.keys[i]:
-                i += 1
+                i = i + 1
 
             if i < x.n and  element == x.keys[i]:
                 return x, i
@@ -138,14 +135,14 @@ class BTree:
 # ___________________________________________________________
 #                                                    HELPERS
 
-    def __add_or_overwrite_at(self, arr, index, value):
+    def __upsert(self, arr, index, value):
         if len(arr) <= index:
             arr.insert(index, value)
 
         else:
             arr[index] = value
 
-    def B_TREE_TRAVERSE(self):
+    def b_tree_traverse(self):
         self.result = ""
 
         # with side effect - change 'self.result'
@@ -162,13 +159,13 @@ class BTree:
                     self.result += str(x.keys[i]) + ", \n"
                     if not is_read[i + 1]:
                         tree_traversel(x.c[i + 1])
-                        is_read[i+1] = True
+                        is_read[i + 1] = True
 
-                    i += 1
+                    i = i + 1
             else:
                 while i <= x.n - 1:
                     self.result += str(x.keys[i]) + ":"
-                    i += 1
+                    i = i + 1
 
             return self.result
 
@@ -198,4 +195,4 @@ if __name__ == '__main__':
     print "Searching 7 ... found %s" % tree.B_TREE_SEARCH(7)[0].keys
     print "Searching missing 28 ... found %s" % tree.B_TREE_SEARCH(28)
     print
-    print "Here is the tree:\n\n%s\n" % tree.B_TREE_TRAVERSE()
+    print "Here is the tree:\n\n%s\n" % tree.b_tree_traverse()
