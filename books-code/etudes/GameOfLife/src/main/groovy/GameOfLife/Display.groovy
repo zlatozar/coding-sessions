@@ -1,7 +1,5 @@
 package GameOfLife
 
-import jline.console.ConsoleReader
-
 /**
  * Visualise grid containing values(0s and 1s) in ASCII format
  */
@@ -11,8 +9,6 @@ class Display {
     private static final String NOTHING = " ."
 
     static void display(Grid grid) {
-
-        new ConsoleReader().clearScreen()
 
         for (int row = 0; row < grid.getRowSize(); row++) {
             for (int column = 0; column < grid.getColumnSize(row); column++) {
