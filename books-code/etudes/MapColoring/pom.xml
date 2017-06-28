@@ -11,11 +11,11 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>GameOfLife</artifactId>
+    <artifactId>MapColoring</artifactId>
     <version>1.0</version>
 
-    <name>Etude 1: Game of Life</name>
-    <description>'Game of life' implementation</description>
+    <name>Etude 2: Why is the Ocean Blue, Daddy?</name>
+    <description>Map coloring by exhaustive search</description>
 
     <build>
         <plugins>
@@ -32,7 +32,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                        GameOfLife.demo.Main
+                                        MapColoring.demo.Main
                                     </mainClass>
                                 </manifest>
                             </archive>
@@ -46,4 +46,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

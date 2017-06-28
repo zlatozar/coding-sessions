@@ -1,4 +1,4 @@
-## Game of life
+## 'Game of life' rules
 
 1. The immediate neighbors of a cell are those cells occupying the eight horizontally,
 vertically, and diagonally adjacent cells.

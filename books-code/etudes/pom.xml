@@ -82,6 +82,7 @@
 
     <modules>
         <module>GameOfLife</module>
+        <module>MapColoring</module>
 
     </modules>
 </project>
