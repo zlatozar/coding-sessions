@@ -5,7 +5,7 @@ paragraphs, and so on.  The formattor handles text as words, sentences, paragrap
 is, at the level that humans read it.
 
 - [Commands](#commands)
-    - [?papersize](#?papersize)
+    - [?papersize](#papersize)
     - [?mode](#?mode)
     - [?paragraph](#?paragraph)
     - [?margin](#?margin)

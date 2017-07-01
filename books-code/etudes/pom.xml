@@ -83,6 +83,7 @@
     <modules>
         <module>GameOfLife</module>
         <module>MapColoring</module>
+        <module>PrintersDevil</module>
 
     </modules>
 </project>
