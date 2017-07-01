@@ -31,7 +31,7 @@ class GeographicMaps {
         }
     }
 
-    class America implements Territory {
+    public static class America implements Territory {
 
         private String AL = 'Alabama'
         private String AK = 'Alaska'

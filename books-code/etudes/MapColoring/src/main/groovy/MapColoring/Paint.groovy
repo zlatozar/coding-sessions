@@ -37,7 +37,7 @@ class Paint {
             colors.add(DEFINED_COLORS[i])
         }
 
-        println("Following colors $colors will be used")
+        println("Following colors $colors will be used\n")
         return this
     }
 

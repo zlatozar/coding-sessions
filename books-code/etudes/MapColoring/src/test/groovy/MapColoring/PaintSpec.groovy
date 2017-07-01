@@ -34,4 +34,18 @@ class PaintSpec extends Specification {
         assert paint.start().size() == 7
     }
 
+    def 'Check if coloring works (part 2)'() {
+
+        given: 'America country map'
+        def boundaries = new GeographicMaps.America().borders()
+        Set<Country> countryAmerica = new DefineCountries(boundaries).build()
+
+        when: 'Start painting'
+        Paint paint = new Paint(countryAmerica).withNumberOfColors(4)
+
+        then: 'Only 4 colors will be needed'
+        assert paint.numberOfColors == 4
+        assert paint.start().size() == 51
+    }
+
 }
