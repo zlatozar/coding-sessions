@@ -12,7 +12,7 @@ class DefineCountriesSpec extends Specification {
         def borders = new GeographicMaps.America().borders()
 
         when: 'Use soring by number of neighbors'
-        def ordered = new DefineCountries(borders).withNumberOfNeighborsOrder().build()
+        def ordered = new DefineCountries(borders).withMostNeighborsOrder().build()
 
         then: 'Country with most neighbors should be first'
         assert ordered[0].getNeighbors().size() == 8

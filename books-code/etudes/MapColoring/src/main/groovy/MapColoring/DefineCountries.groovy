@@ -25,7 +25,7 @@ class DefineCountries {
         return orderFunction(countries)
     }
 
-    DefineCountries withNumberOfNeighborsOrder() {
+    DefineCountries withMostNeighborsOrder() {
         orderFunction = { borders -> order(borders)}
         return this
     }

@@ -13,7 +13,7 @@ class PaintSpec extends Specification {
 
         when: 'Start implementation'
         Set<Country> countriesMap = new DefineCountries(borders)
-                .withNumberOfNeighborsOrder().build()
+                .withMostNeighborsOrder().build()
 
         then: 'Painting API should be friendly'
         Paint paint = new Paint(countriesMap).withNumberOfColors(4)
