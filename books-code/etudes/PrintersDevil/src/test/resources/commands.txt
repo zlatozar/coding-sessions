@@ -1,0 +1,20 @@
+?papersize
+WRONG?papersize
+?mode VALID VALID
+?paragraph
+??paragraph
+?margin
+                                 ?margin?
+?linespacing
+?linespacing?linespacing
+?space
+?space.
+?blank ?blank
+?center
+?page
+?testpage
+?heading
+?number
+?break
+?footnote
+?alias

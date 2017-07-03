@@ -23,18 +23,43 @@ is, at the level that humans read it.
 
 ## Commands
 
-Commands must begin the first character of a record and always start with ```?``` to set
+Commands must begin the **first** character of a record and always start with ```?``` to set
 them off from ordinary text, at least in our example.
 
 Arguments to commands come in two forms. Some arguments are integers and give either an
 explicit value for some formattor parameter or the number of source lines to be affected by the
 command. Other arguments are words or characters that are to be used in their literal senses. In
-both forms, arguments are separated by blanks, and extra blanks are ignored. The ?alias command
+both forms, arguments are separated by blanks, and _extra blanks are ignored_. The ```?alias``` command
 may have a missing second argument, which is then assumed to be blank (otherwise hard to 
-represent under these conventions). Be careful to have error messages for malformed commands.
+represent under these conventions). _Be careful to have error messages for malformed commands._
+
+### ?papersize
+
+```?papersize``` _height width_ (default 40 72) (break: FALSE)
+
+The ```?papersize``` command sets the limits on each page of text; a page may have height
+lines and width characters per line. Every time height lines are output, the formattor
+must create a new page. Text output lines will fit the entire space between columns 1 and
+width as necessary. A new ```?papersize``` command may be issued at any time, but such a
+command **automatically terminates the previous paragraph**. The broken paragraph is
+finished with the old values of height and width before the new values take effect. 
+Changing the paper size might also cause a new page if the new value of height is
+less than the old one. At the start of each format run, _height_ should be set to **40**,
+and _width_ to **72**, and no ```?papersize``` is necessary if these values are
+satisfactory.
+
+### ?mode
+
+```?mode``` _[unfilled | fill | justify]_ (default 'fill') (break: FALSE)
+
+The ```?mode``` command sets the processing mode for text passed to the output. Argument
+filltype may be one of the three strings ```unfilled```, ```fill```, or ```justify``` (any
+other value is an error).  Use of ```?mode``` breaks the previous paragraph, which is
+finished by using the old value of filltype. The initial mode is ```fill```; if this is
+satisfactory, no ```?mode``` command need be issued.
 
 Within any one paragraph, the source text may be passed to the output file in one of three
-modes.
+**modes**.
 
 ```Unfilled``` - the lines from the source text are passed to the output exactly as they
 appear.
@@ -49,44 +74,18 @@ mark.
 paragraph. Then each line of the filled paragraph, except the last, has enough extra
 blanks added between words so that the last word of each line ends exactly on the right
 margin.
-
-No interword gaps should have ```n+1``` blanks added until all have ```n``` blanks, and
+ No interword gaps should have ```n + 1``` blanks added until all have ```n``` blanks, and
 blanks should not be added after sentence terminators until all single gaps have two
-blanks.  The blanks should be added to randomly selected gaps; if a pattern is used to add
-blanks, there will be unsightly stripes in the output.
-
-### ?papersize
-
-```?papersize``` _height width_ (default 40 72)
-
-The ```?papersize``` command sets the limits on each page of text; a page may have height
-lines and width characters per line. Every time height lines are output, the formattor
-must create a new page. Text output lines will fit the entire space between columns 1 and
-width as necessary. A new ```?papersize``` command may be issued at any time, but such a
-command **automatically terminates the previous paragraph**. The broken paragraph is
-finished with the old values of height and width before the new values take
-effect. Changing the paper size might also cause a new page if the new value of height is
-less than the old one. At the start of each format run, _height_ should be set to **40,**
-and _width_ to **72**, and no ```?papersize``` is necessary if these values are
-satisfactory.
-
-### ?mode
-
-```?mode``` _[unfilled | fill | justify]_
-
-The ```?mode``` command sets the processing mode for text passed to the output. Argument
-filltype may be one of the three strings ```unfilled```, ```fill```, or ```justify``` (any
-other value is an error).  Use of ```?mode``` breaks the previous paragraph, which is
-finished by using the old value of filltype. The initial mode is ```fill```; if this is
-satisfactory, no ```?mode``` command need be issued.
+blanks. In other words gaps length should be equal. The blanks should be added to randomly
+selected gaps; if a pattern is used to add blanks, there will be unsightly stripes in the output.
 
 ### ?paragraph
 
-```?paragraph``` _indent gap_ (default 3 0)
+```?paragraph``` _indent gap_ (default 3 0) (break: FALSE)
 
 The ```?paragraph``` command breaks one paragraph off and begins another. The new
-paragraph's first line is started _indent_ spaces in from the left margin (indent might be
-zero, and later we will see how it could be **negative**) and gap blank lines are left
+paragraph's first line is started _indent_ spaces in from the left margin (**indent might be**
+**zero, and later we will see how it could be negative**) and gap blank lines are left
 between the old paragraph and the new. If _gap_, or _gap_ and _indent_, are not specified,
 they retain their values from their **last previous settings**. The initial value of
 indent is **3** and of gap is **0**; if these values are satisfactory, there is no need to
@@ -95,7 +94,7 @@ line of the new paragraph starts in column 4.**
 
 ### ?margin
 
-```?margin``` _left right_
+```?margin``` _left right_ (break: TRUE)
 
 The ```?margin``` command causes the left and right margins of the output text to be set into
 columns left and right. Naturally the _left_ margin must be **1** or **more**, and the _right_ margin
@@ -109,50 +108,51 @@ first line of the paragraph toward the left edge of the paper.
 
 ### ?linespacing
 
-```?linespacing``` _gap_
+```?linespacing``` _gap_ (default 1) (break: TRUE)
 
-The ```?linespacing``` command causes _gap-1_ blank lines to be left between output lines. A gap
-of 1 is thus like typewriter single spacing, of 2 like double spacing, of 3 like triple
-spacing, and so on. This command breaks the previous paragraph.
+The ```?linespacing``` command causes _gap - 1_ blank lines to be left between output lines.
+This command breaks the previous paragraph. By default output will be single spaced.
 
 ### ?space
 
-```?space``` _n_ (default 0)
+```?space``` _n_ (default 0) (break: TRUE)
 
 The ```?space``` command breaks the previous paragraph and inserts _n_ times the current line-
 spacing blank lines into the output. The action is similar to hitting the carriage return
-```n+1``` times on the typewriter. If a new output page is created because the blank lines more
-than fill the bottom of the current page, the page is turned, but no blank lines appear at
-the top of the new page. The default value of _n_ is zero.
+```n + 1``` times on the typewriter. If the bottom of a page is reached before all of the blank
+ lines have been printed, the excess ones are thrown away, so that all pages will normally start
+ at the same first line. The default value of _n_ is zero.
 
 ### ?blank
 
-```?blank``` _n_
+```?blank``` _n_ (break: FALSE)
 
 The ```?blank``` command works like the ```?space``` command except that exactly _n_ blank lines are
 inserted into the output; there is no interaction with the ```?linespacing``` argument. This
-action is similar to rolling the typewriter platen ```n+1``` clicks.
+action is similar to rolling the typewriter platen ```n + 1``` clicks.
+
+NOTE: ```?space``` is **new line**, ```?blank``` is a SPACE key hitting 
 
 ### ?center
 
-```?center```
+```?center``` (break: FALSE)
 
-The ```?center``` command takes the next source line, _strips trailing and leading blanks_, and
+The ```?center``` command takes the **next source line**, _strips trailing and leading blanks_, and
 centers the result between the left and right margins of the next output line. The
 previous paragraph is not completely broken, but the line before the centered one may be
-short. The centered line does follow the normal linespacing. Naturally an error occurs if
-the centered text is too long to fit the current margins.
+short. The centered line does follow the normal linespacing. Naturally an **error occurs if
+the centered text is too long to fit the current margins**.
 
 ### ?page
 
-```?page```
+```?page```  (break: TRUE)
 
 The ```?page``` command breaks the current paragraph and, after the last line of the paragraph
 has been moved to the output, causes a move to a new output page.
 
 ### ?testpage
 
-```?testpage``` _n_
+```?testpage``` _n_ (break: TRUE)
 
 The ```?testpage``` command breaks the previous paragraph and moves it to the output. If there
 are fewer than _n_ blank lines now on the current page, ```?testpage``` works like ```?page```;
@@ -160,7 +160,7 @@ otherwise it is completely ignored. Thus ```?testpage``` checks the space remain
 
 ### ?heading
 
-```?heading``` _depth place position_
+```?heading``` _depth place position_ (break: FALSE)
 
 The ```?heading``` command sets a title to be used at the top of each page, beginning after the
 next page - turn in the output. The next depth lines of the source are taken exactly as is
@@ -173,20 +173,20 @@ depth of zero**. The ```?heading``` command does not cause a break.
 
 ### ?number
 
-```?number``` _n_
+```?number``` _n_ (break: FALSE)
 
 The ```?number``` command sets the current page number to _n_ and does not cause a break in the
 previous paragraph.
 
 ### ?break
 
-```?break```
+```?break``` (break: TRUE)
 
 The ```?break``` command causes a break in the previous paragraph.
 
 ### ?footnote
 
-```?footnote``` _depth_
+```?footnote``` _depth_ (break: FALSE)
 
 The ```?footnote``` command causes the following depth lines of source text, including any
 commands, to be placed **at the bottom of the page in footnote position**. The controlling
@@ -205,7 +205,7 @@ within another.
 
 ### ?alias
 
-```?alias``` _fake real_
+```?alias``` _fake real_ (break: FALSE)
 
 The ```?alias``` command sets the single character _fake_ to stand for the single character _real_
 until ```?alias``` is issued again. As each line is passed to output, all instances of _fake_ are
