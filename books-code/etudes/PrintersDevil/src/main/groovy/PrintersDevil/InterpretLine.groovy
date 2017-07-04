@@ -18,10 +18,12 @@ package PrintersDevil
  * - ?break
  * - ?footnote
  * - ?alias
- *
- * ATTENTION: Passed lines should be trimmed
  */
-class FormattingCmd {
+class InterpretLine {
+
+    private final Environment env = new Environment()
+
+    private final InterpretCmd interpret
 
     String $PAPERSIZE   = '?papersize'
     String $MODE        = '?mode'
@@ -41,88 +43,112 @@ class FormattingCmd {
 
     Set<String> ALL_COMMANDS = this.getProperties().findAll({ it -> it.getValue() instanceof String }).values()
 
-    String[] process(String line) {
+    InterpretLine() {
+        this.interpret = new InterpretCmd(env)
+    }
+
+    Environment getEnvironment() {
+        return env
+    }
+
+    String process(String line) {
 
         if (!line.size()) {
-            return []
+            return ""
         }
 
-        String possibleCmd = line.split(' ')[0]
+        String[] possibleCmdParams = line.split(env.WORDS_SEP)
+        String possibleCmd = possibleCmdParams[0]
 
         if (ALL_COMMANDS.contains(possibleCmd)) {
-            interpret(possibleCmd)
+            interpretCmd(possibleCmdParams)
 
-            return []
+            return ""
         }
 
-        return possibleCmd
+        return line
     }
 
     // Helper functions
 
-    private void interpret(String[] command) {
+    private void interpretCmd(String[] command) {
 
         String commandKeyWord = command[0]
 
         switch (commandKeyWord) {
             case $PAPERSIZE:
                 println("${$PAPERSIZE}")
+                interpret.$PAPERSIZE(command)
                 break
 
             case $MODE:
                 println("${$MODE}")
+                interpret.$MODE(command)
                 break
 
             case $PARAGRAPH:
                 println("${$PARAGRAPH}")
+                interpret.$PARAGRAPH(command)
                 break
 
             case $MARGIN:
                 println("${$MARGIN}")
+                interpret.$MARGIN(command)
                 break
 
             case $LINESPACING:
                 println("${$LINESPACING}")
+                interpret.$LINESPACING(command)
                 break
 
             case $SPACE:
                 println("${$SPACE}")
+                interpret.$SPACE(command)
                 break
 
             case $BLANK:
                 println("${$BLANK}")
+                interpret.$BLANK(command)
                 break
 
             case $CENTER:
                 println("${$CENTER}")
+                interpret.$CENTER(command)
                 break
 
             case $PAGE:
                 println("${$PAGE}")
+                interpret.$PAGE(command)
                 break
 
             case $TESTPAGE:
                 println("${$TESTPAGE}")
+                interpret.$TESTPAGE(command)
                 break
 
             case $HEADING:
                 println("${$HEADING}")
+                interpret.$HEADING(command)
                 break
 
             case $NUMBER:
                 println("${$NUMBER}")
+                interpret.$NUMBER(command)
                 break
 
             case $BREAK:
                 println("${$BREAK}")
+                interpret.$BREAK(command)
                 break
 
             case $FOOTNOTE:
                 println("${$FOOTNOTE}")
+                interpret.$FOOTNOTE(command)
                 break
 
             case $ALIAS:
                 println("${$ALIAS}")
+                interpret.$ALIAS(command)
                 break
 
             // Indicates logical error

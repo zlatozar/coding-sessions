@@ -1,9 +1,10 @@
-import PrintersDevil.FormattingCmd
+package PrintersDevil
+
 import spock.lang.Specification
 import spock.lang.Title
 
-@Title('Commands syntax and verification')
-class FormattingCmdSpec extends Specification {
+@Title('How lines are interpreted')
+class InterpretLineSpec extends Specification {
 
     private static final NUMBER_OF_DEFINED_CMD = 15
 
@@ -17,10 +18,21 @@ class FormattingCmdSpec extends Specification {
         assert commandsFile
 
         when: 'Reading file line by line (pass trimmed)'
-        FormattingCmd formattingCmd = new FormattingCmd()
+        InterpretLine formattingCmd = new InterpretLine()
 
         commandsFile.eachLine({
-            line -> if (formattingCmd.process(line.trim()).length == 0) commandsNumber++
+            line ->
+                def processed = []
+                try {
+                    processed = formattingCmd.process(line)
+
+                } catch (Exception _) {
+                    println("Error: $line")
+                }
+
+                if (processed.size() == 0) {
+                    commandsNumber++
+                }
         })
 
         then: 'All commands should be found'
