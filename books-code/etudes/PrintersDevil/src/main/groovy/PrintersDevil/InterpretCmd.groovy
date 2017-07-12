@@ -9,12 +9,9 @@ class InterpretCmd {
     }
 
     /**
-     * Defines page size. Lines should obey:
-     *
-     * $PAPERSIZE WIDTH (consider $MARGIN right) <= ($MARGIN left) + ($PARAGRAPH indent) + $BLANK + line
-     * $PAPERSIZE HEIGHT <= ($HEADING depth) + $PARAGRAPH(lines) + ($FOOTNOTE depth)
+     * Defines page size. Parameters are stored in environment
      */
-    void $PAPERSIZE(String[] command) {
+    String[] $PAPERSIZE(String[] command) {
 
         String commandName = command[0]
 
@@ -33,22 +30,21 @@ class InterpretCmd {
                 int width = castToInteger(command[0], command[2])
 
                 env.setPapersize(height, width)
-                env.setParagraphBreak(true)
         }
+
+        return [Constants.$BREAK]
     }
 
     /**
-     * Defines how $PARAGRAPH should be displayed
+     * Defines how $PARAGRAPH should be displayed. Parameters are stored in environment
      */
-    void $MODE(String[] command) {
+    String[] $MODE(String[] command) {
 
         String commandName = command[0]
 
-        Set<String> possibleModes = [env.FILL_mode, env.JUSTIFY_mode, env.UNFILLED_mode]
-
         switch (command.length) {
             case 1:
-                sendError("No parameters. $commandName accepts one parameter with possible values: $possibleModes")
+                sendError("No parameters. $commandName accepts one parameter with possible values: $Constants.POSSIBLE_MODES")
                 break
 
             default:
@@ -58,18 +54,21 @@ class InterpretCmd {
 
                 String mode = command[1]
 
-                if (!possibleModes.contains(mode)) {
-                    sendError("Possible values of '$commandName' command are $possibleModes")
+                if (!Constants.POSSIBLE_MODES.contains(mode)) {
+                    sendError("Possible values of '$commandName' command are $Constants.POSSIBLE_MODES")
                 }
 
                 env.setParagraphMode(mode)
         }
+
+        return [Constants.$BREAK]
     }
 
     /**
-     * Defines group of lines and $MODE defines how it should looks like
+     * Defines group of lines and $MODE defines how it should looks like. Only indent parameter
+     * is stored in environment.
      */
-    void $PARAGRAPH(String[] command) {
+    String[] $PARAGRAPH(String[] command) {
 
         String commandName = command[0]
 
@@ -84,16 +83,19 @@ class InterpretCmd {
                     sendWarn("Only '${command[1]}' and '${command[2]} will be used. ${command[3..-1]} are ignored")
                 }
                 int indent = castToInteger(command[0], command[1])
-                int gap = castToInteger(command[0], command[2])
+                castToInteger(command[0], command[2])
 
-                env.setParagraph(indent, gap)
+                env.setParagraph(indent)
         }
+
+        // mimic ?blank command
+        return [Constants.$BLANK, command[2]]
     }
 
     /**
      * Defines from outdent from paper size beginning
      */
-    void $MARGIN(String[] command) {
+    String[] $MARGIN(String[] command) {
 
         final int marginWindowWidth = 5
         String commandName = command[0]
@@ -124,14 +126,15 @@ class InterpretCmd {
                 int marginRight = validateInteger(right, 5, env.getPapersizeWidth() + 1) ?: right
 
                 env.setMargin(marginLeft, marginRight)
-                env.setParagraphBreak(true)
         }
+
+        return [Constants.$BREAK]
     }
 
     /**
-     * Defines how many empty lines should be added between text lines
+     * Defines line separator dimension. Parameter is stored in environment.
      */
-    void $LINESPACING(String[] command) {
+    String[] $LINESPACING(String[] command) {
 
         String commandName = command[0]
 
@@ -148,15 +151,15 @@ class InterpretCmd {
                 int gap = castToInteger(command[0], command[1])
 
                 env.setLinespacingGap(gap)
-                env.setParagraphBreak(true)
         }
+
+        return [Constants.$BREAK]
     }
 
     /**
-     * Defines how many empty lines should be added in text.
-     * It will be invalidated after next line is placed
+     * Defines how many line separators (see {@link InterpretCmd#$LINESPACING}) should be added
      */
-    void $SPACE(String[] command) {
+    String[] $SPACE(String[] command) {
         String commandName = command[0]
 
         switch (command.length) {
@@ -169,17 +172,16 @@ class InterpretCmd {
                     sendWarn("Only '${command[1]}' will be used. ${command[2..-1]} are ignored")
                 }
 
-                int n = castToInteger(command[0], command[1])
-
-                env.setSpace_N(n)
-                env.setParagraphBreak(true)
+                castToInteger(command[0], command[1])
         }
+
+        return [command[0], command[1]]
     }
 
     /**
-     * Defines how many spaces should be added at the beginning of the line
+     * Defines how many empty lines should be added in the page
      */
-    void $BLANK(String[] command) {
+    String[] $BLANK(String[] command) {
         String commandName = command[0]
 
         switch (command.length) {
@@ -192,41 +194,43 @@ class InterpretCmd {
                     sendWarn("Only '${command[1]}' will be used. ${command[2..-1]} are ignored")
                 }
 
-                int n = castToInteger(command[0], command[1])
+                castToInteger(command[0], command[1])
 
-                env.setBlank_N(n)
         }
+
+        return [command[0], command[1]]
     }
 
     /**
      * Place next trimmed line in center if possible (left and right margin could be too tight)
      * Invalidate after line is placed or send error if imposable
      */
-    void $CENTER(String[] command) {
-        env.setCenter(true)
+    String[] $CENTER(String[] command) {
 
         if (command.length > 1) {
             sendWarn("Command '${command[0]}' do not take parametes. ${command[1..-1]} are ignored")
         }
+
+        return [command[0]]
     }
 
     /**
      * Explicitly defines the beginning of new page
      */
-    void $PAGE(String[] command) {
-        env.setNewPage(true)
-        env.setParagraphBreak(true)
+    String[] $PAGE(String[] command) {
 
         if (command.length > 1) {
             sendWarn("Command '${command[0]}' do not take parametes. ${command[1..-1]} are ignored")
         }
+
+        return [command[0]]
     }
 
     /**
      * Checks the remaining lines on a page and if they are fewer than N
      * it works as $PAGE otherwise is completely ignored
      */
-    void $TESTPAGE(String[] command) {
+    String[] $TESTPAGE(String[] command) {
         String commandName = command[0]
 
         switch (command.length) {
@@ -239,11 +243,10 @@ class InterpretCmd {
                     sendWarn("Only '${command[1]}' will be used. ${command[2..-1]} are ignored")
                 }
 
-                int n = castToInteger(command[0], command[1])
-
-                env.setTestpage_N(n)
-                env.setParagraphBreak(true)
+                castToInteger(command[0], command[1])
         }
+
+        return [command[0], command[1]]
     }
 
     /**
@@ -252,7 +255,7 @@ class InterpretCmd {
      *
      * Note that heading must be invalidated if ?HEADING with depth 0 is met
      */
-    void $HEADING(String[] command) {
+    String[] $HEADING(String[] command) {
 
         final String[] possiblePlaces = ['left', 'center', 'right']
 
@@ -285,12 +288,14 @@ class InterpretCmd {
                 // heading should be removed if depth is 0
                 env.setHeading(depth, place, position)
         }
+
+        return [Constants.$NOTBREAK]
     }
 
     /**
-     * Force page number changing
+     * Force page number changing. Stored in the environment.
      */
-    void $NUMBER(String[] command) {
+    String[] $NUMBER(String[] command) {
         String commandName = command[0]
 
         switch (command.length) {
@@ -307,25 +312,27 @@ class InterpretCmd {
 
                 env.setPageNumber(n)
         }
+
+        return [Constants.$NOTBREAK]
     }
 
     /**
      * Force finish of the current paragraph (cause break)
      */
-    void $BREAK(String[] command) {
+    String[] $BREAK(String[] command) {
 
         if (command.length > 1) {
             sendWarn("${command[0]} do not accept parameters. ${command[1..-1]} are ignored")
         }
 
-        env.setParagraphBreak(true)
+        return [command[0]]
     }
 
     /**
      * Defines footer as taking following N lines.
      * Note that following lines could contain commands that should be interpreted too.
      */
-    void $FOOTNOTE(String[] command) {
+    String[] $FOOTNOTE(String[] command) {
         String commandName = command[0]
 
         switch (command.length) {
@@ -334,6 +341,10 @@ class InterpretCmd {
                 break
 
             default:
+                if (env.inFootnote()) {
+                    sendError("Can't footnote in footnote. ${Constants.$FOOTNOTE} found in footnote")
+                }
+
                 if (command.length > 2) {
                     sendWarn("Only '${command[1]}' will be used. ${command[2..-1]} are ignored")
                 }
@@ -342,6 +353,8 @@ class InterpretCmd {
 
                 env.setFootnoteDepth(depth)
         }
+
+        return [Constants.$NOTBREAK]
     }
 
     /**
@@ -350,7 +363,7 @@ class InterpretCmd {
      * Defines character alias that should be used instead of the real one.
      * Note that all aliases are invalidated if $ALIAS without parameters is met.
      */
-    void $ALIAS(String[] command) {
+    String[] $ALIAS(String[] command) {
         String commandName = command[0]
 
         switch (command.length) {
@@ -371,6 +384,8 @@ class InterpretCmd {
 
                 env.setAlias(command[2], command[1])
         }
+
+        return [Constants.$NOTBREAK]
     }
 
     // Helper methods

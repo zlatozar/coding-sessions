@@ -12,7 +12,7 @@ class Heading {
 
         final StringBuilder sbHeading = new StringBuilder()
 
-        if (env.getHeadingDepth() > 0) {
+        if (env.hasHeading()) {
 
             int headingLineNumb = 0
             for (int i = 0; i < env.getHeadingPosition() - 1; i++) {
@@ -24,7 +24,7 @@ class Heading {
             switch (env.getHeadingPlace()) {
 
                 case 'left':
-                    for (int i = 0; i < env.getTextStartPosition(); i++) {
+                    for (int i = 0; i < env.getMarginLeft(); i++) {
                         sbHeading.append(Constants.WORDS_SEP)
                     }
                     break
@@ -59,4 +59,7 @@ class Heading {
         return ''
     }
 
+    int getSize() {
+        return env.getHeadingDepth()
+    }
 }

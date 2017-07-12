@@ -6,7 +6,8 @@ import spock.lang.Title
 @Title('Checks how well interpretation works')
 class InterpretCmdSpec extends Specification {
 
-    private InterpretLine interpretLine = new InterpretLine()
+    private Environment env = new Environment()
+    private InterpretLine interpretLine = new InterpretLine(env)
 
     def '?papersize [height width] (default 40 72) (break: TRUE)'() {
 
@@ -14,13 +15,13 @@ class InterpretCmdSpec extends Specification {
         String papersise = '?papersize 50 80 4'
 
         when: 'It is interpreted'
-        interpretLine.getEnvironment().getPapersizeHeight() == 40
-        interpretLine.getEnvironment().getPapersizeWidth() == 72
+        env.getPapersizeHeight() == 40
+        env.getPapersizeWidth() == 72
         interpretLine.process(papersise)
 
         then: 'Parameters should be set'
-        assert interpretLine.getEnvironment().getPapersizeHeight() == 50
-        assert interpretLine.getEnvironment().getPapersizeWidth() == 80
+        assert env.getPapersizeHeight() == 50
+        assert env.getPapersizeWidth() == 80
     }
 
     def 'Check ?mode [unfilled|fill|justify]'() {
@@ -32,7 +33,7 @@ class InterpretCmdSpec extends Specification {
         interpretLine.process(mode)
 
         then: 'Parameters should be set'
-        assert interpretLine.getEnvironment().getParagraphMode() == 'justify'
+        assert env.getParagraphMode() == 'justify'
     }
 
     def '?paragraph [indent gap] (default 3 0) (break: FALSE)'() {
@@ -44,8 +45,7 @@ class InterpretCmdSpec extends Specification {
         interpretLine.process(paragraph)
 
         then: 'Parameters should be set'
-        assert interpretLine.getEnvironment().getParagraphIndent() == 4
-        assert interpretLine.getEnvironment().getParagraphGap() == 2
+        assert env.getParagraphIndent() == 4
     }
 
     def '?margin [left right] (break: TRUE)'() {
@@ -57,9 +57,8 @@ class InterpretCmdSpec extends Specification {
         interpretLine.process(margin)
 
         then: '$margin should be set'
-        assert interpretLine.getEnvironment().getMarginLeft() == 10
-        assert interpretLine.getEnvironment().getMarginRight() == 20
-        assert interpretLine.getEnvironment().breakParagraph()
+        assert env.getMarginLeft() == 10
+        assert env.getMarginRight() == 20
     }
 
     def '?linespacing [gap] (default 1) (break: TRUE)'() {
@@ -71,8 +70,7 @@ class InterpretCmdSpec extends Specification {
         interpretLine.process(linespacing)
 
         then: 'Parameters should be set'
-        assert interpretLine.getEnvironment().getLinespacingGap() == 10
-        assert interpretLine.getEnvironment().breakParagraph()
+        assert env.getLinespacingGap() == 10
     }
 
     def '?space [n] (default 0) (break: TRUE)'() {
@@ -84,8 +82,6 @@ class InterpretCmdSpec extends Specification {
         interpretLine.process(space)
 
         then: 'Parameters should be set'
-        assert interpretLine.getEnvironment().getSpace_N() == 10
-        assert interpretLine.getEnvironment().breakParagraph()
     }
 
     def '?blank [n] (break: FALSE)'() {
@@ -97,8 +93,6 @@ class InterpretCmdSpec extends Specification {
         interpretLine.process(blank)
 
         then: 'Parameters should be set'
-        assert interpretLine.getEnvironment().getBlank_N() == 10
-        assert !interpretLine.getEnvironment().breakParagraph()
     }
 
     def '?center (break: FALSE)'() {
@@ -110,8 +104,6 @@ class InterpretCmdSpec extends Specification {
         interpretLine.process(center)
 
         then: 'Parameters should be set'
-        assert interpretLine.getEnvironment().toCenter()
-        assert !interpretLine.getEnvironment().breakParagraph()
     }
 
     def '?page  (break: TRUE)'() {
@@ -123,8 +115,6 @@ class InterpretCmdSpec extends Specification {
         interpretLine.process(page)
 
         then: 'Parameters should be set'
-        assert interpretLine.getEnvironment().toNewPage()
-        assert interpretLine.getEnvironment().breakParagraph()
     }
 
     def '?testpage [n] (break: TRUE)'() {
@@ -136,8 +126,6 @@ class InterpretCmdSpec extends Specification {
         interpretLine.process(testpage)
 
         then: 'Parameters should be set'
-        assert interpretLine.getEnvironment().getTestpage_N() == 10
-        assert interpretLine.getEnvironment().breakParagraph()
     }
 
     def '?heading [depth place position] (break: FALSE)'() {
@@ -149,11 +137,9 @@ class InterpretCmdSpec extends Specification {
         interpretLine.process(heading)
 
         then: 'Parameters should be set'
-        assert interpretLine.getEnvironment().getHeadingDepth() == 10
-        assert interpretLine.getEnvironment().getHeadingPlace() == 'center'
-        assert interpretLine.getEnvironment().getHeadingPosition() == 4
-
-        assert !interpretLine.getEnvironment().breakParagraph()
+        assert env.getHeadingDepth() == 10
+        assert env.getHeadingPlace() == 'center'
+        assert env.getHeadingPosition() == 4
     }
 
     def '?number [n] (break: FALSE)'() {
@@ -165,8 +151,7 @@ class InterpretCmdSpec extends Specification {
         interpretLine.process(number)
 
         then: 'Parameters should be set'
-        assert interpretLine.getEnvironment().getPageNumber() == 10
-        assert !interpretLine.getEnvironment().breakParagraph()
+        assert env.getPageNumber() == 10
     }
 
     def '?break (break: TRUE)'() {
@@ -178,7 +163,6 @@ class InterpretCmdSpec extends Specification {
         interpretLine.process(breakCMD)
 
         then: 'Parameters should be set'
-        assert interpretLine.getEnvironment().breakParagraph()
     }
 
     def '?footnote [depth] (break: FALSE)'() {
@@ -190,7 +174,7 @@ class InterpretCmdSpec extends Specification {
         interpretLine.process(footnote)
 
         then: 'Parameters should be set'
-        assert interpretLine.getEnvironment().getFootnoteDepth() == 10
+        assert env.getFootnoteDepth() == 10
     }
 
     def '?alias [fake real] (break: FALSE)'() {
@@ -202,6 +186,6 @@ class InterpretCmdSpec extends Specification {
         interpretLine.process(alias)
 
         then: 'Parameters should be set'
-        assert interpretLine.getEnvironment().getAliasFor('real') == 'fake'
+        assert env.getAliasFor('real') == 'fake'
     }
 }

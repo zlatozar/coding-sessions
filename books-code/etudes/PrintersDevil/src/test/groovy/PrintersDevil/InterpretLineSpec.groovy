@@ -6,10 +6,8 @@ import spock.lang.Title
 @Title('How lines are interpreted')
 class InterpretLineSpec extends Specification {
 
-    private static final NUMBER_OF_DEFINED_CMD = 15
-
     private static final COMMANDS_FILE_NAME = 'src/test/resources/commands.txt'
-    private int commandsNumber = 0
+    private int breakCommands = 0
 
     def 'Discover commands'() {
 
@@ -18,11 +16,12 @@ class InterpretLineSpec extends Specification {
         assert commandsFile
 
         when: 'Reading file line by line (pass trimmed)'
-        InterpretLine formattingCmd = new InterpretLine()
+        Environment env = new Environment()
+        InterpretLine formattingCmd = new InterpretLine(env)
 
         commandsFile.eachLine({
             line ->
-                def processed = []
+                String processed = ''
                 try {
                     processed = formattingCmd.process(line)
 
@@ -30,15 +29,16 @@ class InterpretLineSpec extends Specification {
                     println("Error: $line")
                 }
 
-                if (processed.size() == 0) {
-                    commandsNumber++
+                String[] command = processed.split(Constants.WORDS_SEP)
+                if (command.size() > 0 && Constants.BREAK_COMMANDS.contains(command[0])) {
+                    breakCommands++
                 }
         })
 
-        then: 'All commands should be found'
-        assert commandsNumber == NUMBER_OF_DEFINED_CMD
+        then: 'All immediate commands should be found'
+        assert breakCommands == Constants.BREAK_COMMANDS.size()
 
         and: 'All commands should be included'
-        assert formattingCmd.ALL_COMMANDS.size() == 15
+        assert Constants.ALL_COMMANDS.size() == 15
     }
 }

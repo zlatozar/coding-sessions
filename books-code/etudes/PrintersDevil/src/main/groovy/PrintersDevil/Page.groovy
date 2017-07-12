@@ -1,5 +1,8 @@
 package PrintersDevil
 
+/**
+ * Used for illustration of the formatted text
+ */
 class Page {
 
     private static final String LEFT = '|'
@@ -14,15 +17,15 @@ class Page {
 
     /**
      * Content is bunch of lines that are already
-     * processed
+     * processed and ready to be passed to the printer
      */
     void display(String content) {
 
         StringBuilder pageContent = new StringBuilder()
         String[] lines = content.split(Constants.LINE_SEP)
 
-        int paperHeightBorder = env.getPapersizeHeight() + 2
-        int paperWideBorder = env.getPapersizeWidth() + 2
+        int paperHeightBorder = env.getPapersizeHeight() + 3
+        int paperWideBorder = env.getPapersizeWidth() + 3
 
         // top border
         for (int i = 0; i < paperWideBorder - 1; i++) {
@@ -44,7 +47,7 @@ class Page {
             pageContent.append(RIGHT)
         }
 
-        int fillRestHeight = paperHeightBorder - lines.size() - 1
+        int fillRestHeight = paperHeightBorder - lines.size() - 2
         for (int i = 0; i < fillRestHeight; i++) {
             pageContent.append(LEFT)
 

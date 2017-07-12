@@ -1,69 +1,30 @@
 package PrintersDevil
 
 /**
- * Here is all 15th commands:
- *
- * - ?papersize
- * - ?mode
- * - ?paragraph
- * - ?margin
- * - ?linespacing
- * - ?space
- * - ?blank
- * - ?center
- * - ?page
- * - ?testpage
- * - ?heading
- * - ?number
- * - ?break
- * - ?footnote
- * - ?alias
+ * Detects commands and pass them to {@link Formattor}
  */
 class InterpretLine {
 
-    private final Environment env = new Environment()
-
+    private final Environment env
     private final InterpretCmd interpret
 
-    String $PAPERSIZE   = '?papersize'
-    String $MODE        = '?mode'
-    String $PARAGRAPH   = '?paragraph'
-    String $MARGIN      = '?margin'
-    String $LINESPACING = '?linespacing'
-    String $SPACE       = '?space'
-    String $BLANK       = '?blank'
-    String $CENTER      = '?center'
-    String $PAGE        = '?page'
-    String $TESTPAGE    = '?testpage'
-    String $HEADING     = '?heading'
-    String $NUMBER      = '?number'
-    String $BREAK       = '?break'
-    String $FOOTNOTE    = '?footnote'
-    String $ALIAS       = '?alias'
-
-    Set<String> ALL_COMMANDS = this.getProperties().findAll({ it -> it.getValue() instanceof String }).values()
-
-    InterpretLine() {
+    InterpretLine(Environment env) {
+        this.env = env
         this.interpret = new InterpretCmd(env)
-    }
-
-    Environment getEnvironment() {
-        return env
     }
 
     String process(String line) {
 
         if (!line.size()) {
-            return ""
+            return ''
         }
 
-        String[] possibleCmdParams = line.split(env.WORDS_SEP)
+        String[] possibleCmdParams = line.split(Constants.WORDS_SEP)
         String possibleCmd = possibleCmdParams[0]
 
-        if (ALL_COMMANDS.contains(possibleCmd)) {
-            interpretCmd(possibleCmdParams)
+        if (Constants.ALL_COMMANDS.contains(possibleCmd)) {
 
-            return ""
+            return interpretCmd(possibleCmdParams).join(Constants.WORDS_SEP)
         }
 
         return line
@@ -71,90 +32,80 @@ class InterpretLine {
 
     // Helper functions
 
-    private void interpretCmd(String[] command) {
+    private String[] interpretCmd(String[] command) {
 
         String commandKeyWord = command[0]
 
+        String[] resultingCommand
+
         switch (commandKeyWord) {
-            case $PAPERSIZE:
-                println("${$PAPERSIZE}")
-                interpret.$PAPERSIZE(command)
+
+            case Constants.$PAPERSIZE:
+                resultingCommand = interpret.$PAPERSIZE(command)
                 break
 
-            case $MODE:
-                println("${$MODE}")
-                interpret.$MODE(command)
+            case Constants.$MODE:
+                resultingCommand = interpret.$MODE(command)
                 break
 
-            case $PARAGRAPH:
-                println("${$PARAGRAPH}")
-                interpret.$PARAGRAPH(command)
+            case Constants.$PARAGRAPH:
+                resultingCommand = interpret.$PARAGRAPH(command)
                 break
 
-            case $MARGIN:
-                println("${$MARGIN}")
-                interpret.$MARGIN(command)
+            case Constants.$MARGIN:
+                resultingCommand = interpret.$MARGIN(command)
                 break
 
-            case $LINESPACING:
-                println("${$LINESPACING}")
-                interpret.$LINESPACING(command)
+            case Constants.$LINESPACING:
+                resultingCommand = interpret.$LINESPACING(command)
                 break
 
-            case $SPACE:
-                println("${$SPACE}")
-                interpret.$SPACE(command)
+            case Constants.$SPACE:
+                resultingCommand = interpret.$SPACE(command)
                 break
 
-            case $BLANK:
-                println("${$BLANK}")
-                interpret.$BLANK(command)
+            case Constants.$BLANK:
+                resultingCommand = interpret.$BLANK(command)
                 break
 
-            case $CENTER:
-                println("${$CENTER}")
-                interpret.$CENTER(command)
+            case Constants.$CENTER:
+                resultingCommand = interpret.$CENTER(command)
                 break
 
-            case $PAGE:
-                println("${$PAGE}")
-                interpret.$PAGE(command)
+            case Constants.$PAGE:
+                resultingCommand = interpret.$PAGE(command)
                 break
 
-            case $TESTPAGE:
-                println("${$TESTPAGE}")
-                interpret.$TESTPAGE(command)
+            case Constants.$TESTPAGE:
+                resultingCommand = interpret.$TESTPAGE(command)
                 break
 
-            case $HEADING:
-                println("${$HEADING}")
-                interpret.$HEADING(command)
+            case Constants.$HEADING:
+                resultingCommand = interpret.$HEADING(command)
                 break
 
-            case $NUMBER:
-                println("${$NUMBER}")
-                interpret.$NUMBER(command)
+            case Constants.$NUMBER:
+                resultingCommand = interpret.$NUMBER(command)
                 break
 
-            case $BREAK:
-                println("${$BREAK}")
-                interpret.$BREAK(command)
+            case Constants.$BREAK:
+                resultingCommand = interpret.$BREAK(command)
                 break
 
-            case $FOOTNOTE:
-                println("${$FOOTNOTE}")
-                interpret.$FOOTNOTE(command)
+            case Constants.$FOOTNOTE:
+                resultingCommand = interpret.$FOOTNOTE(command)
                 break
 
-            case $ALIAS:
-                println("${$ALIAS}")
-                interpret.$ALIAS(command)
+            case Constants.$ALIAS:
+                resultingCommand = interpret.$ALIAS(command)
                 break
 
             // Indicates logical error
             default:
                 throw new IllegalArgumentException("There is no defined interpretation for command: '$commandKeyWord'")
         }
+
+        return resultingCommand
     }
 
 }

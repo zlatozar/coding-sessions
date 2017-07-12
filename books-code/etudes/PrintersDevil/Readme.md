@@ -57,7 +57,7 @@ satisfactory.
 
 **NOTE** For tests use ```example-page.txt``` file located in resources directory.
 
-```?mode``` _[unfilled | fill | justify]_ (default 'fill') (break: FALSE)
+```?mode``` _[unfilled | fill | justify]_ (default 'fill') (break: TRUE)
 
 The ```?mode``` command sets the processing mode for text passed to the output. Argument
 filltype may be one of the three strings ```unfilled```, ```fill```, or ```justify``` (any
@@ -91,7 +91,7 @@ selected gaps.
 
 ### ?paragraph
 
-```?paragraph``` _indent gap_ (default 3 0) (break: FALSE)
+```?paragraph``` _indent gap_ (default 3 0) (break: TRUE, env: TRUE)
 
 The ```?paragraph``` command breaks one paragraph off and begins another. The new
 paragraph's first line is started _indent_ spaces in from the left margin (**indent might be**
@@ -104,7 +104,7 @@ line of the new paragraph starts in column 4.**
 
 ### ?margin
 
-```?margin``` _left right_ (break: TRUE)
+```?margin``` _left right_ (break: TRUE, env: TRUE)
 
 The ```?margin``` command causes the left and right margins of the output text to be set into
 columns left and right. Naturally the _left_ margin must be **1** or **more**, and the _right_ margin
@@ -132,14 +132,14 @@ first line of the paragraph toward the left edge of the paper. Example:
 
 ### ?linespacing
 
-```?linespacing``` _gap_ (default 1) (break: TRUE)
+```?linespacing``` _gap_ (default 1) (break: TRUE, env: TRUE)
 
 The ```?linespacing``` command causes _gap - 1_ blank lines to be left between output lines.
 This command breaks the previous paragraph. By default output will be single spaced.
 
 ### ?space
 
-```?space``` _n_ (default 0) (break: TRUE)
+```?space``` _n_ (default 0) (break: TRUE, env: FALSE)
 
 The ```?space``` command breaks the previous paragraph and inserts _n_ times the current line-
 spacing blank lines into the output. The action is similar to hitting the **carriage return**
@@ -149,7 +149,7 @@ spacing blank lines into the output. The action is similar to hitting the **carr
 
 ### ?blank
 
-```?blank``` _n_ (break: FALSE)
+```?blank``` _n_ (break: FALSE, env: FALSE)
 
 The ```?blank``` command works like the ```?space``` command **except that exactly** _n_ blank lines are
 inserted into the output; there is no interaction with the ```?linespacing``` argument. This
@@ -157,7 +157,7 @@ action is similar to rolling the typewriter platen ```n + 1``` clicks.
 
 ### ?center
 
-```?center``` (break: FALSE)
+```?center``` (break: FALSE, env: FALSE)
 
 The ```?center``` command takes the **next source line**, _strips trailing and leading blanks_, and
 centers the result between the _left and right margins_ of the next output line. The
@@ -167,14 +167,14 @@ the centered text is too long to fit the current margins**.
 
 ### ?page
 
-```?page```  (break: TRUE)
+```?page```  (break: TRUE, env: FALSE)
 
 The ```?page``` command breaks the current paragraph and, after the last line of the paragraph
 has been moved to the output, causes a move to a new output page.
 
 ### ?testpage
 
-```?testpage``` _n_ (break: TRUE)
+```?testpage``` _n_ (break: TRUE, env: FALSE)
 
 The ```?testpage``` command breaks the previous paragraph and moves it to the output. If there
 are fewer than _n_ blank lines now on the current page, ```?testpage``` works like ```?page```;
@@ -182,7 +182,7 @@ otherwise it is completely ignored. Thus ```?testpage``` checks the space remain
 
 ### ?heading
 
-```?heading``` _depth place position_ (break: FALSE)
+```?heading``` _depth place position_ (break: FALSE, env: TRUE)
 
 _depth_ - how many lines should be heading
 _place_ - in which line of heading should be placed page number
@@ -199,20 +199,20 @@ depth of zero**. The ```?heading``` command does not cause a break.
 
 ### ?number
 
-```?number``` _n_ (break: FALSE)
+```?number``` _n_ (break: FALSE, env: TRUE)
 
 The ```?number``` command sets the current page number to _n_ and does not cause a break in the
 previous paragraph.
 
 ### ?break
 
-```?break``` (break: TRUE)
+```?break``` (break: TRUE, env: FALSE)
 
 The ```?break``` command causes a break in the previous paragraph.
 
 ### ?footnote
 
-```?footnote``` _depth_ (break: FALSE)
+```?footnote``` _depth_ (break: FALSE, env: TRUE)
 
 _depth_ - number of following lines (including lines that contains commands)
 
@@ -233,7 +233,7 @@ within another.
 
 ### ?alias
 
-```?alias``` _fake real_ (break: FALSE)
+```?alias``` _fake real_ (break: FALSE, env: TRUE)
 
 The ```?alias``` command sets the *single character* _fake_ to stand for the single character _real_
 until ```?alias``` is issued again. As each line is passed to output, all instances of _fake_ are

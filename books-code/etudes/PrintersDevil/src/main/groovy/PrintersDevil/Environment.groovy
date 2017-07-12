@@ -1,52 +1,28 @@
 package PrintersDevil
 
-class Environment extends Constants {
+class Environment {
 
-    // Keeps track of the current line in source file
-    private int lineNumber = 0
-
-    // Formatting commands
-    private boolean shouldBreak = false
     private int $papersise_HEIGHT = 40
     private int $papersise_WIDTH  = 72
-    private String $mode          = FILL_mode
+
+    private String $mode          = Constants.FILL_mode
+
     private int $paragraph_INDENT = 3
-    private int $paragraph_GAP    = 0
+
     private int $margin_LEFT      = 0
     private int $margin_RIGHT     = 72
+
     private int $linespacing_GAP  = 1
-    private int $space_N          = 0
-    private int $blank_N          = 0
-    private boolean $center       = false
-    private boolean $page         = false
-    private int $testpage_N
+
     private int $heading_DEPTH    = 0
     private String $heading_PLACE = ''  // left, right or center
     private int $heading_POSITION = 0
+
     private int $number_N         = 0
     private int $footnote_DEPTH   = 0
 
     // real:fake
     private Map<String, String> $alias_MAP = [:]
-
-    // It is possible BLANK(aka space used as word separator) to be replaced
-    private String wordSeparator = $alias_MAP.get(WORDS_SEP) ? $alias_MAP.get(WORDS_SEP) : WORDS_SEP
-
-    int getLineNumber() {
-        return lineNumber
-    }
-
-    void setLineNumber(int number) {
-        this.lineNumber = number
-    }
-
-    boolean breakParagraph() {
-        return shouldBreak
-    }
-
-    void setParagraphBreak(boolean shouldBreak) {
-        this.shouldBreak = shouldBreak
-    }
 
     int getPapersizeHeight() {
         return $papersise_HEIGHT
@@ -72,16 +48,23 @@ class Environment extends Constants {
     }
 
     int getParagraphIndent() {
-        return $paragraph_INDENT
+        return $paragraph_INDENT + $margin_LEFT
     }
 
-    int getParagraphGap() {
-        return $paragraph_GAP
+    /**
+     * Note that line separator could have alias
+     */
+    String getLineSeparator() {
+        StringBuilder sep = new StringBuilder()
+        for (int i = 0; i < $linespacing_GAP; i++) {
+            sep.append($alias_MAP.containsKey(Constants.LINE_SEP) ? $alias_MAP.get(Constants.LINE_SEP) : Constants.LINE_SEP)
+        }
+
+        return sep.toString()
     }
 
-    void setParagraph(int indent, int gap) {
+    void setParagraph(int indent) {
         this.$paragraph_INDENT = indent
-        this.$paragraph_GAP = gap
     }
 
     int getMarginLeft() {
@@ -105,46 +88,6 @@ class Environment extends Constants {
         this.$linespacing_GAP = linespacingGap
     }
 
-    int getSpace_N() {
-        return $space_N
-    }
-
-    void setSpace_N(int n) {
-        this.$space_N = n
-    }
-
-    int getBlank_N() {
-        return $blank_N
-    }
-
-    void setBlank_N(int n) {
-        this.$blank_N = n
-    }
-
-    boolean toCenter() {
-        return $center
-    }
-
-    void setCenter(boolean center) {
-        this.$center = center
-    }
-
-    boolean toNewPage() {
-        return $page
-    }
-
-    void setNewPage(boolean page) {
-        this.$page = page
-    }
-
-    int getTestpage_N() {
-        return $testpage_N
-    }
-
-    void setTestpage_N(int n) {
-        this.$testpage_N = n
-    }
-
     int getHeadingDepth() {
         return $heading_DEPTH
     }
@@ -155,6 +98,10 @@ class Environment extends Constants {
 
     int getHeadingPosition() {
         return $heading_POSITION
+    }
+
+    boolean hasHeading() {
+        return $heading_DEPTH > 0
     }
 
     void setHeading(int depth, String place, int position) {
@@ -171,12 +118,20 @@ class Environment extends Constants {
         this.$number_N = n
     }
 
+    void incrementPageNumber() {
+        this.$number_N++
+    }
+
     int getFootnoteDepth() {
         return $footnote_DEPTH
     }
 
     void setFootnoteDepth(int depth) {
         this.$footnote_DEPTH = depth
+    }
+
+    boolean inFootnote() {
+        return $footnote_DEPTH > 0
     }
 
     Map<String, String> getAliases() {
@@ -195,22 +150,6 @@ class Environment extends Constants {
         this.$alias_MAP[key]
     }
 
-    String getWordSeparator() {
-        return wordSeparator
-    }
-
-    void setWordSeparator(String wordSeparator) {
-        this.wordSeparator = wordSeparator
-    }
-
-    int getTextStartPosition() {
-        return getMarginLeft()
-    }
-
-    int getParagraphFirstLineStartPosition() {
-        return getMarginLeft() + getParagraphIndent()
-    }
-
     int getTextWidth() {
         int rightOutdent = getPapersizeWidth() - getMarginRight()
         return getPapersizeWidth() - getMarginLeft() - rightOutdent
@@ -221,21 +160,15 @@ class Environment extends Constants {
         return "Environment {\n" +
                 "     ?papersize ${getPapersizeHeight()} ${getPapersizeWidth()}\n" +
                 "     ?mode ${getParagraphMode()}\n" +
-                "     ?paragraph ${getParagraphIndent()} ${getParagraphGap()}\n" +
+                "     ?paragraph ${getParagraphIndent()}\n" +
                 "     ?margin ${getMarginLeft()}, ${getMarginRight()}\n" +
                 "     ?linespacing ${getLinespacingGap()}\n" +
-                "     ?space ${getSpace_N()}\n" +
-                "     ?blank ${getBlank_N()}\n" +
-                "     ?center ${toCenter()}\n" +
-                "     ?page ${toNewPage()}\n" +
-                "     ?testpage ${getTestpage_N()}\n" +
                 "     ?heading ${getHeadingDepth()} ${getHeadingPlace()} ${getHeadingPosition()}\n" +
                 "     ?number ${getPageNumber()}\n" +
-                "     Should break? ${breakParagraph()}\n" +
                 "     ?footnote ${getFootnoteDepth()}\n" +
                 "     ?alias ${getAliases()}\n" +
                 "--------Meta---------\n" +
-                "     real start position: ${getTextStartPosition()}\n" +
+                "     text start position: ${getMarginLeft()}\n" +
                 "     real page width: ${getTextWidth()}\n" +
                 "}\n"
     }
