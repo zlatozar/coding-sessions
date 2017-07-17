@@ -84,6 +84,7 @@
         <module>GameOfLife</module>
         <module>MapColoring</module>
         <module>PrintersDevil</module>
+        <module>WinningIsTheOnlyThing</module>
 
     </modules>
 </project>
