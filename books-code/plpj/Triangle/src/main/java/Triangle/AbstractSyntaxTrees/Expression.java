@@ -22,6 +22,7 @@ public abstract class Expression extends AST {
 
     public Expression(SourcePosition thePosition) {
         super(thePosition);
-        type = null;
+
+        this.type = null;
     }
 }

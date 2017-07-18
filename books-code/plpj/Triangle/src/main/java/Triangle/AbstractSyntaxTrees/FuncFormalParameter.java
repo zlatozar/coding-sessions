@@ -22,23 +22,30 @@ public class FuncFormalParameter extends FormalParameter {
     public FormalParameterSequence FPS;
     public TypeDenoter T;
 
-    public FuncFormalParameter(Identifier iAST, FormalParameterSequence fpsAST,
-                               TypeDenoter tAST, SourcePosition thePosition) {
+    public FuncFormalParameter(Identifier iAST, FormalParameterSequence fpsAST, TypeDenoter tAST,
+                               SourcePosition thePosition) {
+
         super(thePosition);
-        I = iAST;
-        FPS = fpsAST;
-        T = tAST;
+
+        this.I = iAST;
+        this.FPS = fpsAST;
+        this.T = tAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitFuncFormalParameter(this, o);
     }
 
+    @Override
     public boolean equals(Object fpAST) {
+
         if (fpAST instanceof FuncFormalParameter) {
             FuncFormalParameter ffpAST = (FuncFormalParameter) fpAST;
             return FPS.equals(ffpAST.FPS) && T.equals(ffpAST.T);
-        } else
+
+        } else {
             return false;
+        }
     }
 }

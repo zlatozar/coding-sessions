@@ -20,12 +20,13 @@ public class SingleActualParameterSequence extends ActualParameterSequence {
 
     public ActualParameter AP;
 
-    public SingleActualParameterSequence(ActualParameter apAST,
-                                         SourcePosition thePosition) {
+    public SingleActualParameterSequence(ActualParameter apAST, SourcePosition thePosition) {
         super(thePosition);
-        AP = apAST;
+
+        this.AP = apAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitSingleActualParameterSequence(this, o);
     }

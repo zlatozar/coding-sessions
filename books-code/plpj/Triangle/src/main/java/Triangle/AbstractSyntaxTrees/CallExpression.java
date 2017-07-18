@@ -21,13 +21,14 @@ public class CallExpression extends Expression {
     public Identifier I;
     public ActualParameterSequence APS;
 
-    public CallExpression(Identifier iAST, ActualParameterSequence apsAST,
-                          SourcePosition thePosition) {
+    public CallExpression(Identifier iAST, ActualParameterSequence apsAST, SourcePosition thePosition) {
         super(thePosition);
-        I = iAST;
-        APS = apsAST;
+
+        this.I = iAST;
+        this.APS = apsAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitCallExpression(this, o);
     }

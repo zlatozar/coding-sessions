@@ -22,14 +22,19 @@ public class BoolTypeDenoter extends TypeDenoter {
         super(thePosition);
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitBoolTypeDenoter(this, o);
     }
 
+    @Override
     public boolean equals(Object obj) {
-        if ((obj != null) && (obj instanceof ErrorTypeDenoter))
+
+        if ((obj != null) && (obj instanceof ErrorTypeDenoter)) {
             return true;
-        else
+
+        } else {
             return ((obj != null) && (obj instanceof BoolTypeDenoter));
+        }
     }
 }

@@ -22,9 +22,11 @@ public class SimpleVname extends Vname {
 
     public SimpleVname(Identifier iAST, SourcePosition thePosition) {
         super(thePosition);
-        I = iAST;
+
+        this.I = iAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitSimpleVname(this, o);
     }

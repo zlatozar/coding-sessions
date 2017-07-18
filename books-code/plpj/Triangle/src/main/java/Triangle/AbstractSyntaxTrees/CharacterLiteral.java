@@ -22,6 +22,7 @@ public class CharacterLiteral extends Terminal {
         super(theSpelling, thePosition);
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitCharacterLiteral(this, o);
     }

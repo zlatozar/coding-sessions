@@ -18,16 +18,20 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public class CallCommand extends Command {
 
+    // procedure name
     public Identifier I;
+
+    // parameter
     public ActualParameterSequence APS;
 
-    public CallCommand(Identifier iAST, ActualParameterSequence apsAST,
-                       SourcePosition thePosition) {
+    public CallCommand(Identifier iAST, ActualParameterSequence apsAST, SourcePosition thePosition) {
         super(thePosition);
-        I = iAST;
-        APS = apsAST;
+
+        this.I = iAST;
+        this.APS = apsAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitCallCommand(this, o);
     }

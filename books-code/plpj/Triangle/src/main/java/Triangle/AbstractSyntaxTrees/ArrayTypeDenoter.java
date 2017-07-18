@@ -21,24 +21,29 @@ public class ArrayTypeDenoter extends TypeDenoter {
     public IntegerLiteral IL;
     public TypeDenoter T;
 
-    public ArrayTypeDenoter(IntegerLiteral ilAST, TypeDenoter tAST,
-                            SourcePosition thePosition) {
+    public ArrayTypeDenoter(IntegerLiteral ilAST, TypeDenoter tAST, SourcePosition thePosition) {
         super(thePosition);
-        IL = ilAST;
-        T = tAST;
+
+        this.IL = ilAST;
+        this.T = tAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitArrayTypeDenoter(this, o);
     }
 
+    @Override
     public boolean equals(Object obj) {
-        if (obj != null && obj instanceof ErrorTypeDenoter)
+
+        if (obj != null && obj instanceof ErrorTypeDenoter) {
             return true;
-        else if (obj != null && obj instanceof ArrayTypeDenoter)
-            return this.IL.spelling.compareTo(((ArrayTypeDenoter) obj).IL.spelling) == 0 &&
-                    this.T.equals(((ArrayTypeDenoter) obj).T);
-        else
+
+        } else if (obj != null && obj instanceof ArrayTypeDenoter) {
+            return this.IL.spelling.compareTo(((ArrayTypeDenoter) obj).IL.spelling) == 0 && this.T.equals(((ArrayTypeDenoter) obj).T);
+
+        } else {
             return false;
+        }
     }
 }

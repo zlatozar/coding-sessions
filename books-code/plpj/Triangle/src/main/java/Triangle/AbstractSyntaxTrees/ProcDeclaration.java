@@ -21,14 +21,16 @@ public class ProcDeclaration extends Declaration {
     public Identifier I;
     public FormalParameterSequence FPS;
     public Command C;
-    public ProcDeclaration(Identifier iAST, FormalParameterSequence fpsAST,
-                           Command cAST, SourcePosition thePosition) {
+
+    public ProcDeclaration(Identifier iAST, FormalParameterSequence fpsAST, Command cAST, SourcePosition thePosition) {
         super(thePosition);
-        I = iAST;
-        FPS = fpsAST;
-        C = cAST;
+
+        this.I = iAST;
+        this.FPS = fpsAST;
+        this.C = cAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitProcDeclaration(this, o);
     }

@@ -21,13 +21,14 @@ public class MultipleArrayAggregate extends ArrayAggregate {
     public Expression E;
     public ArrayAggregate AA;
 
-    public MultipleArrayAggregate(Expression eAST, ArrayAggregate aaAST,
-                                  SourcePosition thePosition) {
+    public MultipleArrayAggregate(Expression eAST, ArrayAggregate aaAST, SourcePosition thePosition) {
         super(thePosition);
-        E = eAST;
-        AA = aaAST;
+
+        this.E = eAST;
+        this.AA = aaAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitMultipleArrayAggregate(this, o);
     }

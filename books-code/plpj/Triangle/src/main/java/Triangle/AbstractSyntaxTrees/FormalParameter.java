@@ -22,6 +22,7 @@ public abstract class FormalParameter extends Declaration {
         super(thePosition);
     }
 
+    @Override
     public abstract boolean equals(Object fpAST);
 
 }

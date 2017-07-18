@@ -18,7 +18,10 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public class ConstDeclaration extends Declaration {
 
+    // const name
     public Identifier I;
+
+    // const value
     public Expression E;
 
     public ConstDeclaration(Identifier iAST, Expression eAST,
@@ -28,6 +31,7 @@ public class ConstDeclaration extends Declaration {
         E = eAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitConstDeclaration(this, o);
     }

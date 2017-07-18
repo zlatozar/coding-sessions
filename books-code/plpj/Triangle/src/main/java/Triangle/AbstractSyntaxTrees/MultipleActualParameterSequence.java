@@ -24,10 +24,12 @@ public class MultipleActualParameterSequence extends ActualParameterSequence {
     public MultipleActualParameterSequence(ActualParameter apAST, ActualParameterSequence apsAST,
                                            SourcePosition thePosition) {
         super(thePosition);
-        AP = apAST;
-        APS = apsAST;
+
+        this.AP = apAST;
+        this.APS = apsAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitMultipleActualParameterSequence(this, o);
     }

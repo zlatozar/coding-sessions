@@ -20,12 +20,13 @@ public class ArrayExpression extends Expression {
 
     public ArrayAggregate AA;
 
-    public ArrayExpression(ArrayAggregate aaAST,
-                           SourcePosition thePosition) {
+    public ArrayExpression(ArrayAggregate aaAST, SourcePosition thePosition) {
         super(thePosition);
-        AA = aaAST;
+
+        this.AA = aaAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitArrayExpression(this, o);
     }

@@ -21,13 +21,14 @@ public class TypeDeclaration extends Declaration {
     public Identifier I;
     public TypeDenoter T;
 
-    public TypeDeclaration(Identifier iAST, TypeDenoter tAST,
-                           SourcePosition thePosition) {
+    public TypeDeclaration(Identifier iAST, TypeDenoter tAST, SourcePosition thePosition) {
         super(thePosition);
-        I = iAST;
-        T = tAST;
+
+        this.I = iAST;
+        this.T = tAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitTypeDeclaration(this, o);
     }

@@ -19,18 +19,22 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 public class BinaryOperatorDeclaration extends Declaration {
 
     public Operator O;
-    public TypeDenoter ARG1, ARG2, RES;
 
-    public BinaryOperatorDeclaration(Operator oAST, TypeDenoter arg1AST,
-                                     TypeDenoter arg2AST, TypeDenoter resultAST,
+    public TypeDenoter ARG1;
+    public TypeDenoter ARG2;
+    public TypeDenoter RES;
+
+    public BinaryOperatorDeclaration(Operator oAST, TypeDenoter arg1AST, TypeDenoter arg2AST, TypeDenoter resultAST,
                                      SourcePosition thePosition) {
         super(thePosition);
-        O = oAST;
-        ARG1 = arg1AST;
-        ARG2 = arg2AST;
-        RES = resultAST;
+
+        this.O = oAST;
+        this.ARG1 = arg1AST;
+        this.ARG2 = arg2AST;
+        this.RES = resultAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitBinaryOperatorDeclaration(this, o);
     }

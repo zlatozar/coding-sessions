@@ -22,9 +22,11 @@ public class IntegerExpression extends Expression {
 
     public IntegerExpression(IntegerLiteral ilAST, SourcePosition thePosition) {
         super(thePosition);
-        IL = ilAST;
+
+        this.IL = ilAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitIntegerExpression(this, o);
     }

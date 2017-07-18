@@ -19,14 +19,18 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 public class Identifier extends Terminal {
 
     public TypeDenoter type;
-    public AST decl; // Either a Declaration or a FieldTypeDenoter
+
+    // Either a Declaration or a FieldTypeDenoter
+    public AST decl;
 
     public Identifier(String theSpelling, SourcePosition thePosition) {
         super(theSpelling, thePosition);
-        type = null;
-        decl = null;
+
+        this.type = null;
+        this.decl = null;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitIdentifier(this, o);
     }

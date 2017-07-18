@@ -28,10 +28,12 @@ public class ConstFormalParameter extends FormalParameter {
         T = tAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitConstFormalParameter(this, o);
     }
 
+    @Override
     public boolean equals(Object fpAST) {
         if (fpAST instanceof ConstFormalParameter) {
             ConstFormalParameter cfpAST = (ConstFormalParameter) fpAST;

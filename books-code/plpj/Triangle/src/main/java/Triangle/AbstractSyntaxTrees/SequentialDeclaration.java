@@ -18,15 +18,17 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public class SequentialDeclaration extends Declaration {
 
+    // sub-declarations
     public Declaration D1, D2;
 
-    public SequentialDeclaration(Declaration d1AST, Declaration d2AST,
-                                 SourcePosition thePosition) {
+    public SequentialDeclaration(Declaration d1AST, Declaration d2AST, SourcePosition thePosition) {
         super(thePosition);
-        D1 = d1AST;
-        D2 = d2AST;
+
+        this.D1 = d1AST;
+        this.D2 = d2AST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitSequentialDeclaration(this, o);
     }

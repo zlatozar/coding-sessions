@@ -21,14 +21,16 @@ public class MultipleRecordAggregate extends RecordAggregate {
     public Identifier I;
     public Expression E;
     public RecordAggregate RA;
-    public MultipleRecordAggregate(Identifier iAST, Expression eAST, RecordAggregate raAST,
-                                   SourcePosition thePosition) {
+
+    public MultipleRecordAggregate(Identifier iAST, Expression eAST, RecordAggregate raAST, SourcePosition thePosition) {
         super(thePosition);
-        I = iAST;
-        E = eAST;
-        RA = raAST;
+
+        this.I = iAST;
+        this.E = eAST;
+        this.RA = raAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitMultipleRecordAggregate(this, o);
     }

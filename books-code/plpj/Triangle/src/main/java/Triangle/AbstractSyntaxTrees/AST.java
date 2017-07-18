@@ -17,14 +17,17 @@ package Triangle.AbstractSyntaxTrees;
 import Triangle.CodeGenerator.RuntimeEntity;
 import Triangle.SyntacticAnalyzer.SourcePosition;
 
+/**
+ * Each AST node has a tag that determines what (if any) subtrees that node has.
+ */
 public abstract class AST {
 
     public SourcePosition position;
     public RuntimeEntity entity;
 
     public AST(SourcePosition thePosition) {
-        position = thePosition;
-        entity = null;
+        this.position = thePosition;
+        this.entity = null;
     }
 
     public SourcePosition getPosition() {

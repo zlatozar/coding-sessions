@@ -22,6 +22,7 @@ public abstract class RecordAggregate extends AST {
 
     public RecordAggregate(SourcePosition thePosition) {
         super(thePosition);
-        type = null;
+
+        this.type = null;
     }
 }

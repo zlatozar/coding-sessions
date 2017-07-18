@@ -22,9 +22,11 @@ public class CharacterExpression extends Expression {
 
     public CharacterExpression(CharacterLiteral clAST, SourcePosition thePosition) {
         super(thePosition);
-        CL = clAST;
+
+        this.CL = clAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitCharacterExpression(this, o);
     }

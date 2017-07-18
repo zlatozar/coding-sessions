@@ -22,6 +22,7 @@ public abstract class ArrayAggregate extends AST {
 
     public ArrayAggregate(SourcePosition thePosition) {
         super(thePosition);
-        elemCount = 0;
+
+        this.elemCount = 0;
     }
 }

@@ -18,12 +18,16 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public abstract class Vname extends AST {
 
-    public boolean variable, indexed;
+    public boolean variable;
+    public boolean indexed;
+
     public int offset;
     public TypeDenoter type;
+
     public Vname(SourcePosition thePosition) {
         super(thePosition);
-        variable = false;
-        type = null;
+
+        this.variable = false;
+        this.type = null;
     }
 }

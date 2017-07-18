@@ -22,6 +22,7 @@ public class AnyTypeDenoter extends TypeDenoter {
         super(thePosition);
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitAnyTypeDenoter(this, o);
     }

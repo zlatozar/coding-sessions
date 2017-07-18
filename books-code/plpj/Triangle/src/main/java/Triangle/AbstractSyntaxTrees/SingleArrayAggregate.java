@@ -20,12 +20,13 @@ public class SingleArrayAggregate extends ArrayAggregate {
 
     public Expression E;
 
-    public SingleArrayAggregate(Expression eAST,
-                                SourcePosition thePosition) {
+    public SingleArrayAggregate(Expression eAST, SourcePosition thePosition) {
         super(thePosition);
-        E = eAST;
+
+        this.E = eAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitSingleArrayAggregate(this, o);
     }

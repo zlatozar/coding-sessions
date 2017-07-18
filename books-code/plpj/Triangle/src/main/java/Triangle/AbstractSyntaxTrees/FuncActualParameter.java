@@ -22,9 +22,11 @@ public class FuncActualParameter extends ActualParameter {
 
     public FuncActualParameter(Identifier iAST, SourcePosition thePosition) {
         super(thePosition);
-        I = iAST;
+
+        this.I = iAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitFuncActualParameter(this, o);
     }

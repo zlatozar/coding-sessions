@@ -19,15 +19,18 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 public class UnaryExpression extends Expression {
 
     public Expression E;
+
+    // unary operator symbol
     public Operator O;
 
-    public UnaryExpression(Operator oAST, Expression eAST,
-                           SourcePosition thePosition) {
+    public UnaryExpression(Operator oAST, Expression eAST, SourcePosition thePosition) {
         super(thePosition);
-        O = oAST;
-        E = eAST;
+
+        this.O = oAST;
+        this.E = eAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitUnaryExpression(this, o);
     }

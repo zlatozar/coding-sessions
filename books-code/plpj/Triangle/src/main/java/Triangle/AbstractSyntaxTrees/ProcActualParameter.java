@@ -22,9 +22,11 @@ public class ProcActualParameter extends ActualParameter {
 
     public ProcActualParameter(Identifier iAST, SourcePosition thePosition) {
         super(thePosition);
-        I = iAST;
+
+        this.I = iAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitProcActualParameter(this, o);
     }

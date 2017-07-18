@@ -18,15 +18,20 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public class WhileCommand extends Command {
 
+    // loop condition
     public Expression E;
+
+    // body of loop
     public Command C;
 
     public WhileCommand(Expression eAST, Command cAST, SourcePosition thePosition) {
         super(thePosition);
-        E = eAST;
-        C = cAST;
+
+        this.E = eAST;
+        this.C = cAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitWhileCommand(this, o);
     }

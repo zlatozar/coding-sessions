@@ -18,16 +18,20 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public class VarDeclaration extends Declaration {
 
+    // variable name
     public Identifier I;
+
+    // variable type
     public TypeDenoter T;
 
-    public VarDeclaration(Identifier iAST, TypeDenoter tAST,
-                          SourcePosition thePosition) {
+    public VarDeclaration(Identifier iAST, TypeDenoter tAST, SourcePosition thePosition) {
         super(thePosition);
-        I = iAST;
-        T = tAST;
+
+        this.I = iAST;
+        this.T = tAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitVarDeclaration(this, o);
     }

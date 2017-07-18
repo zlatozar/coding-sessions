@@ -21,13 +21,14 @@ public class SingleRecordAggregate extends RecordAggregate {
     public Identifier I;
     public Expression E;
 
-    public SingleRecordAggregate(Identifier iAST, Expression eAST,
-                                 SourcePosition thePosition) {
+    public SingleRecordAggregate(Identifier iAST, Expression eAST, SourcePosition thePosition) {
         super(thePosition);
-        I = iAST;
-        E = eAST;
+
+        this.I = iAST;
+        this.E = eAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitSingleRecordAggregate(this, o);
     }

@@ -18,17 +18,21 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public class SimpleTypeDenoter extends TypeDenoter {
 
+    // type name
     public Identifier I;
 
     public SimpleTypeDenoter(Identifier iAST, SourcePosition thePosition) {
         super(thePosition);
-        I = iAST;
+
+        this.I = iAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitSimpleTypeDenoter(this, o);
     }
 
+    @Override
     public boolean equals(Object obj) {
         return false; // should not happen
     }

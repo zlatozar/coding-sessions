@@ -22,9 +22,10 @@ public class ConstActualParameter extends ActualParameter {
 
     public ConstActualParameter(Expression eAST, SourcePosition thePosition) {
         super(thePosition);
-        E = eAST;
+        this.E = eAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitConstActualParameter(this, o);
     }

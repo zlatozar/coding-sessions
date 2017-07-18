@@ -22,9 +22,11 @@ public class VarActualParameter extends ActualParameter {
 
     public VarActualParameter(Vname vAST, SourcePosition thePosition) {
         super(thePosition);
-        V = vAST;
+
+        this.V = vAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitVarActualParameter(this, o);
     }

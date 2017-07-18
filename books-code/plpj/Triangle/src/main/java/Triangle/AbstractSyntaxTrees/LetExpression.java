@@ -23,10 +23,12 @@ public class LetExpression extends Expression {
 
     public LetExpression(Declaration dAST, Expression eAST, SourcePosition thePosition) {
         super(thePosition);
-        D = dAST;
-        E = eAST;
+
+        this.D = dAST;
+        this.E = eAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitLetExpression(this, o);
     }

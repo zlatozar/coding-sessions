@@ -23,10 +23,12 @@ public class DotVname extends Vname {
 
     public DotVname(Vname vAST, Identifier iAST, SourcePosition thePosition) {
         super(thePosition);
-        V = vAST;
-        I = iAST;
+
+        this.V = vAST;
+        this.I = iAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitDotVname(this, o);
     }

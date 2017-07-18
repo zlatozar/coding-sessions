@@ -21,22 +21,27 @@ public class ProcFormalParameter extends FormalParameter {
     public Identifier I;
     public FormalParameterSequence FPS;
 
-    public ProcFormalParameter(Identifier iAST, FormalParameterSequence fpsAST,
-                               SourcePosition thePosition) {
+    public ProcFormalParameter(Identifier iAST, FormalParameterSequence fpsAST, SourcePosition thePosition) {
         super(thePosition);
-        I = iAST;
-        FPS = fpsAST;
+
+        this.I = iAST;
+        this.FPS = fpsAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitProcFormalParameter(this, o);
     }
 
+    @Override
     public boolean equals(Object fpAST) {
+
         if (fpAST instanceof ProcFormalParameter) {
             ProcFormalParameter pfpAST = (ProcFormalParameter) fpAST;
             return FPS.equals(pfpAST.FPS);
-        } else
+
+        } else {
             return false;
+        }
     }
 }

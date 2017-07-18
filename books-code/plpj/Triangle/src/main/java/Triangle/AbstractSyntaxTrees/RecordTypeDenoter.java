@@ -22,19 +22,26 @@ public class RecordTypeDenoter extends TypeDenoter {
 
     public RecordTypeDenoter(FieldTypeDenoter ftAST, SourcePosition thePosition) {
         super(thePosition);
-        FT = ftAST;
+
+        this.FT = ftAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitRecordTypeDenoter(this, o);
     }
 
+    @Override
     public boolean equals(Object obj) {
-        if (obj != null && obj instanceof ErrorTypeDenoter)
+
+        if (obj != null && obj instanceof ErrorTypeDenoter) {
             return true;
-        else if (obj != null && obj instanceof RecordTypeDenoter)
+
+        } else if (obj != null && obj instanceof RecordTypeDenoter) {
             return this.FT.equals(((RecordTypeDenoter) obj).FT);
-        else
+
+        } else {
             return false;
+        }
     }
 }

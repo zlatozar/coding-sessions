@@ -22,9 +22,11 @@ public class Program extends AST {
 
     public Program(Command cAST, SourcePosition thePosition) {
         super(thePosition);
-        C = cAST;
+
+        this.C = cAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitProgram(this, o);
     }

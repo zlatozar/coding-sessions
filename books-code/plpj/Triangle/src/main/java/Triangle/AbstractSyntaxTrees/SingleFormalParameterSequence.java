@@ -20,22 +20,27 @@ public class SingleFormalParameterSequence extends FormalParameterSequence {
 
     public FormalParameter FP;
 
-    public SingleFormalParameterSequence(FormalParameter fpAST,
-                                         SourcePosition thePosition) {
+    public SingleFormalParameterSequence(FormalParameter fpAST, SourcePosition thePosition) {
         super(thePosition);
-        FP = fpAST;
+
+        this.FP = fpAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitSingleFormalParameterSequence(this, o);
     }
 
+    @Override
     public boolean equals(Object fpsAST) {
+
         if (fpsAST instanceof SingleFormalParameterSequence) {
-            SingleFormalParameterSequence sfpsAST =
-                    (SingleFormalParameterSequence) fpsAST;
+            SingleFormalParameterSequence sfpsAST = (SingleFormalParameterSequence) fpsAST;
+
             return FP.equals(sfpsAST.FP);
-        } else
+
+        } else {
             return false;
+        }
     }
 }

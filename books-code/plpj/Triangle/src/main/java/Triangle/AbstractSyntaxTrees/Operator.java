@@ -22,9 +22,11 @@ public class Operator extends Terminal {
 
     public Operator(String theSpelling, SourcePosition thePosition) {
         super(theSpelling, thePosition);
-        decl = null;
+
+        this.decl = null;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitOperator(this, o);
     }

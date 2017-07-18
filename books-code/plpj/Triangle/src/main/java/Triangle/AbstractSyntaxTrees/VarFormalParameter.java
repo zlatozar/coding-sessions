@@ -21,22 +21,28 @@ public class VarFormalParameter extends FormalParameter {
     public Identifier I;
     public TypeDenoter T;
 
-    public VarFormalParameter(Identifier iAST, TypeDenoter tAST,
-                              SourcePosition thePosition) {
+    public VarFormalParameter(Identifier iAST, TypeDenoter tAST, SourcePosition thePosition) {
         super(thePosition);
-        I = iAST;
-        T = tAST;
+
+        this.I = iAST;
+        this.T = tAST;
     }
 
+    @Override
     public Object visit(Visitor v, Object o) {
         return v.visitVarFormalParameter(this, o);
     }
 
+    @Override
     public boolean equals(Object fpAST) {
+
         if (fpAST instanceof VarFormalParameter) {
             VarFormalParameter vfpAST = (VarFormalParameter) fpAST;
+
             return T.equals(vfpAST.T);
-        } else
+
+        } else {
             return false;
+        }
     }
 }
