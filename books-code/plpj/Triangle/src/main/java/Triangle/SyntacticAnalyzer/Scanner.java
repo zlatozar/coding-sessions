@@ -14,28 +14,36 @@
 
 package Triangle.SyntacticAnalyzer;
 
+/**
+ * Since the source  program text actually consists of individual characters, and a token
+ * may consist of several characters, scanning is needed to group the characters into tokens,
+ * and to discard other text such as blank space and comments.
+ */
 public final class Scanner {
 
-    private SourceFile sourceFile;
+    // defines from where code is taken
+    private final SourceFile sourceFile;
+    private char currentChar;
     private boolean debug;
 
-    private char currentChar;
     private StringBuffer currentSpelling;
     private boolean currentlyScanningToken;
 
     public Scanner(SourceFile source) {
-        sourceFile = source;
-        currentChar = sourceFile.getSource();
-        debug = false;
+        this.sourceFile = source;
+        this.currentChar = sourceFile.getSource();
+        this.debug = false;
     }
 
     public Token scan() {
-        Token tok;
+
+        Token token;
         SourcePosition pos;
         int kind;
 
         currentlyScanningToken = false;
 
+        // part of the scanner's function is to discard blank space and comments
         while (currentChar == '!' || currentChar == ' ' || currentChar == '\n' || currentChar == '\r' || currentChar == '\t') {
             scanSeparator();
         }
@@ -44,18 +52,18 @@ public final class Scanner {
         currentSpelling = new StringBuffer("");
 
         pos = new SourcePosition();
-        pos.start = sourceFile.getCurrentLine();
+        pos.start = sourceFile.getCurrentLineNumber();
 
         kind = scanToken();
 
-        pos.finish = sourceFile.getCurrentLine();
-        tok = new Token(kind, currentSpelling.toString(), pos);
+        pos.finish = sourceFile.getCurrentLineNumber();
+        token = new Token(kind, currentSpelling.toString(), pos);
 
         if (debug) {
-            System.out.println(tok);
+            System.out.println(token);
         }
 
-        return tok;
+        return token;
     }
 
     public void enableDebugging() {
@@ -85,8 +93,9 @@ public final class Scanner {
     }
 
 
-    /** Appends the current character to the current token, and gets
-    * the next character from the source program.
+    /**
+     * Appends the current character to the current token, and gets
+     * the next character from the source program.
      */
     private void takeIt() {
 

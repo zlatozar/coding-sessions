@@ -14,6 +14,11 @@
 
 package Triangle.SyntacticAnalyzer;
 
+/**
+ * The interface between the scanner and the parser is a stream of tokens.
+ * A token is an atomic symbol of the source program. The interface between
+ * the scanner and the parser is a stream of tokens.
+ */
 final class Token {
 
     private final static int firstReservedWord = Token.ARRAY;
@@ -62,63 +67,13 @@ final class Token {
             };
 
     protected int kind;
-    protected String spelling;
-    protected SourcePosition position;
+    protected final String spelling;
+    protected final SourcePosition position;
 
-    // literals, identifiers, operators...
-
-    public static final int INTLITERAL  = 0;
-    public static final int CHARLITERAL = 1;
-    public static final int IDENTIFIER  = 2;
-    public static final int OPERATOR    = 3;
-
-    // reserved words - must be in alphabetical order...
-
-    public static final int ARRAY  = 4;
-    public static final int BEGIN  = 5;
-    public static final int CONST  = 6;
-    public static final int DO     = 7;
-    public static final int ELSE   = 8;
-    public static final int END    = 9;
-    public static final int FUNC   = 10;
-    public static final int IF     = 11;
-    public static final int IN     = 12;
-    public static final int LET    = 13;
-    public static final int OF     = 14;
-    public static final int PROC   = 15;
-    public static final int RECORD = 16;
-    public static final int THEN   = 17;
-    public static final int TYPE   = 18;
-    public static final int VAR    = 19;
-    public static final int WHILE  = 20;
-
-    // punctuation...
-
-    public static final int DOT       = 21;
-    public static final int COLON     = 22;
-    public static final int SEMICOLON = 23;
-    public static final int COMMA     = 24;
-    public static final int BECOMES   = 25; // :=
-    public static final int IS        = 26; // ~
-
-    // brackets...
-
-    public static final int LPAREN   = 27;
-    public static final int RPAREN   = 28;
-    public static final int LBRACKET = 29;
-    public static final int RBRACKET = 30;
-    public static final int LCURLY   = 31;
-    public static final int RCURLY   = 32;
-
-    // special tokens...
-
-    public static final int EOT   = 33; // end of file
-    public static final int ERROR = 34;
-
-    // Token classes...
-
+    // Each token is completely described by its kind and spelling
     public Token(int kind, String spelling, SourcePosition position) {
 
+        // this.kind = ...
         if (kind == Token.IDENTIFIER) {
 
             int currentKind = firstReservedWord;
@@ -153,9 +108,78 @@ final class Token {
         return tokenTable[kind];
     }
 
+//_____________________________________________________________________________
+//                                 Constants denoting different kinds of token
+
+    // literals, identifiers, operators...
+
+    public static final int INTLITERAL  = 0;
+    public static final int CHARLITERAL = 1;
+    public static final int IDENTIFIER  = 2;
+    public static final int OPERATOR    = 3;
+
+    // reserved words - must be in alphabetical order...
+
+    public static final int ARRAY  = 4;   // first reserved word
+    public static final int BEGIN  = 5;
+    public static final int CONST  = 6;
+    public static final int DO     = 7;
+    public static final int ELSE   = 8;
+    public static final int END    = 9;
+    public static final int FUNC   = 10;
+    public static final int IF     = 11;
+    public static final int IN     = 12;
+    public static final int LET    = 13;
+    public static final int OF     = 14;
+    public static final int PROC   = 15;
+    public static final int RECORD = 16;
+    public static final int THEN   = 17;
+    public static final int TYPE   = 18;
+    public static final int VAR    = 19;
+    public static final int WHILE  = 20;  // last reserved word
+
+    // punctuation...
+
+    public static final int DOT       = 21;
+    public static final int COLON     = 22;
+    public static final int SEMICOLON = 23;
+    public static final int COMMA     = 24;
+    public static final int BECOMES   = 25;  // :=
+    public static final int IS        = 26;  // ~
+
+    // brackets...
+
+    public static final int LPAREN   = 27;
+    public static final int RPAREN   = 28;
+    public static final int LBRACKET = 29;
+    public static final int RBRACKET = 30;
+    public static final int LCURLY   = 31;
+    public static final int RCURLY   = 32;
+
+    // special tokens...
+
+    // Note that EOT represents the end of the source text
+    public static final int EOT   = 33;
+    public static final int ERROR = 34;
+
     @Override
     public String toString() {
         return "Kind=" + kind + ", spelling=" + spelling + ", position=" + position;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Token token = (Token) o;
+        return kind == token.kind && spelling.equals(token.spelling);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = kind;
+        result = 31 * result + spelling.hashCode();
+        return result;
+    }
 }

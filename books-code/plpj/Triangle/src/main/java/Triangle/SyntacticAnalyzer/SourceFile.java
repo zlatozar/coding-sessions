@@ -20,8 +20,8 @@ import java.io.IOException;
 
 public class SourceFile {
 
-    public static final char EOL = '\n';
-    public static final char EOT = '\u0000';
+    public static final char EOL = '\n';      // end of line
+    public static final char EOT = '\u0000';  // end of transition
 
     File sourceFile;
     FileInputStream source;
@@ -30,19 +30,25 @@ public class SourceFile {
     public SourceFile(String filename) {
 
         try {
-            sourceFile = new File(filename);
-            source = new FileInputStream(sourceFile);
+            this.sourceFile = new File(filename);
+            this.source = new FileInputStream(sourceFile);
 
-            currentLine = 1;
+            this.currentLine = 1;
 
-        } catch (java.io.IOException s) {
-            sourceFile = null;
-            source = null;
+        } catch (IOException s) {
+            this.sourceFile = null;
+            this.source = null;
 
-            currentLine = 0;
+            this.currentLine = 0;
         }
     }
 
+    /**
+     * Read given file that contains Triangle language code
+     *
+     * @return chars one by one from the source file
+     * @see Scanner
+     */
     char getSource() {
 
         try {
@@ -62,7 +68,7 @@ public class SourceFile {
         }
     }
 
-    int getCurrentLine() {
+    int getCurrentLineNumber() {
         return currentLine;
     }
 }

@@ -17,17 +17,25 @@ package Triangle.SyntacticAnalyzer;
 import Triangle.AbstractSyntaxTrees.*;
 import Triangle.ErrorReporter;
 
+/**
+ * In parsing it is convenient to view the source program as a stream of tokens: symbols
+ * such as identifiers, literals, operators, keywords, and punctuation.
+ *
+ * The parser treats each token as a terminal symbol. Note that the parser examines only
+ * the kind of the current token, ignoring its spelling.
+ */
 public class Parser {
 
-    private Scanner lexicalAnalyser;
-    private ErrorReporter errorReporter;
+    private final Scanner lexicalAnalyser;
+    private final ErrorReporter errorReporter;
+
     private Token currentToken;
     private SourcePosition previousTokenPosition;
 
     public Parser(Scanner lexer, ErrorReporter reporter) {
-        lexicalAnalyser = lexer;
-        errorReporter = reporter;
-        previousTokenPosition = new SourcePosition();
+        this.lexicalAnalyser = lexer;
+        this.errorReporter = reporter;
+        this.previousTokenPosition = new SourcePosition();
     }
 
     /**
@@ -48,6 +56,9 @@ public class Parser {
         }
     }
 
+    /**
+     * Unconditionally fetches the next token from the source
+     */
     void acceptIt() {
         previousTokenPosition = currentToken.position;
         currentToken = lexicalAnalyser.scan();
@@ -58,7 +69,6 @@ public class Parser {
      * This is defined to be the position of the first
      * character of the first token of the phrase.
      */
-
     void start(SourcePosition position) {
         position.start = currentToken.position.start;
     }
@@ -79,6 +89,11 @@ public class Parser {
         throw new SyntaxError();
     }
 
+// Recursive descent is a top-down parsing algorithm. A recursive-descent parser for a
+// grammar G consists of a group of methods 'parseN', one for each nonterminal symbol
+// N of G. The task of each method 'parseN' is to parse a single N-phrase. These parsing
+// methods cooperate to parse complete sentences.
+
 //_____________________________________________________________________________
 //                                                                    PROGRAMS
 
@@ -88,6 +103,7 @@ public class Parser {
 
         previousTokenPosition.start = 0;
         previousTokenPosition.finish = 0;
+
         currentToken = lexicalAnalyser.scan();
 
         try {
@@ -118,6 +134,7 @@ public class Parser {
         if (currentToken.kind == Token.INTLITERAL) {
             previousTokenPosition = currentToken.position;
             String spelling = currentToken.spelling;
+
             IL = new IntegerLiteral(spelling, previousTokenPosition);
 
             currentToken = lexicalAnalyser.scan();
@@ -156,6 +173,9 @@ public class Parser {
     /**
      * Parses an identifier, and constructs a leaf AST to
      * represent it.
+     *
+     * Note: The nonterminal symbol identifier corresponds to a single token,
+     * so the method is similar to {@link Parser#accept}
      */
     Identifier parseIdentifier() throws SyntaxError {
         Identifier I;
@@ -163,6 +183,7 @@ public class Parser {
         if (currentToken.kind == Token.IDENTIFIER) {
             previousTokenPosition = currentToken.position;
             String spelling = currentToken.spelling;
+
             I = new Identifier(spelling, previousTokenPosition);
 
             currentToken = lexicalAnalyser.scan();
@@ -178,6 +199,8 @@ public class Parser {
     /**
      * Parses an operator, and constructs a leaf AST to
      * represent it.
+     *
+     * Note: Similar to {@link Parser#parseIdentifier}
      */
     Operator parseOperator() throws SyntaxError {
         Operator O;
@@ -185,6 +208,7 @@ public class Parser {
         if (currentToken.kind == Token.OPERATOR) {
             previousTokenPosition = currentToken.position;
             String spelling = currentToken.spelling;
+
             O = new Operator(spelling, previousTokenPosition);
 
             currentToken = lexicalAnalyser.scan();
@@ -214,8 +238,11 @@ public class Parser {
         start(commandPos);
         commandAST = parseSingleCommand();
 
+        // Command ::= single-Command(; single-Command)*
+        // That's why use while loop
         while (currentToken.kind == Token.SEMICOLON) {
             acceptIt();
+
             Command c2AST = parseSingleCommand();
             finish(commandPos);
 
@@ -240,6 +267,7 @@ public class Parser {
 
                 if (currentToken.kind == Token.LPAREN) {
                     acceptIt();
+
                     ActualParameterSequence apsAST = parseActualParameterSequence();
                     accept(Token.RPAREN);
                     finish(commandPos);
@@ -259,15 +287,18 @@ public class Parser {
 
             case Token.BEGIN:
                 acceptIt();
+
                 commandAST = parseCommand();
                 accept(Token.END);
                 break;
 
             case Token.LET: {
                 acceptIt();
+
                 Declaration dAST = parseDeclaration();
                 accept(Token.IN);
-                Command cAST = parseSingleCommand();
+
+                Command cAST = parseSingleCommand();  // recursive call
                 finish(commandPos);
 
                 commandAST = new LetCommand(dAST, cAST, commandPos);
@@ -276,10 +307,13 @@ public class Parser {
 
             case Token.IF: {
                 acceptIt();
+
                 Expression eAST = parseExpression();
                 accept(Token.THEN);
+
                 Command c1AST = parseSingleCommand();
                 accept(Token.ELSE);
+
                 Command c2AST = parseSingleCommand();
                 finish(commandPos);
 
@@ -289,8 +323,10 @@ public class Parser {
 
             case Token.WHILE: {
                 acceptIt();
+
                 Expression eAST = parseExpression();
                 accept(Token.DO);
+
                 Command cAST = parseSingleCommand();
                 finish(commandPos);
 
@@ -310,7 +346,6 @@ public class Parser {
             default:
                 syntacticError("\"%\" cannot start a command", currentToken.spelling);
                 break;
-
         }
 
         return commandAST;
@@ -328,12 +363,15 @@ public class Parser {
 
         start(expressionPos);
 
+        // many recursive calls
         switch (currentToken.kind) {
 
             case Token.LET: {
                 acceptIt();
+
                 Declaration dAST = parseDeclaration();
                 accept(Token.IN);
+
                 Expression eAST = parseExpression();
                 finish(expressionPos);
 
@@ -343,10 +381,13 @@ public class Parser {
 
             case Token.IF: {
                 acceptIt();
+
                 Expression e1AST = parseExpression();
                 accept(Token.THEN);
+
                 Expression e2AST = parseExpression();
                 accept(Token.ELSE);
+
                 Expression e3AST = parseExpression();
                 finish(expressionPos);
 
@@ -410,6 +451,7 @@ public class Parser {
 
             case Token.LBRACKET: {
                 acceptIt();
+
                 ArrayAggregate aaAST = parseArrayAggregate();
                 accept(Token.RBRACKET);
                 finish(expressionPos);
@@ -420,6 +462,7 @@ public class Parser {
 
             case Token.LCURLY: {
                 acceptIt();
+
                 RecordAggregate raAST = parseRecordAggregate();
                 accept(Token.RCURLY);
                 finish(expressionPos);
@@ -434,6 +477,7 @@ public class Parser {
 
                 if (currentToken.kind == Token.LPAREN) {
                     acceptIt();
+
                     ActualParameterSequence apsAST = parseActualParameterSequence();
                     accept(Token.RPAREN);
                     finish(expressionPos);
@@ -450,7 +494,7 @@ public class Parser {
 
             case Token.OPERATOR: {
                 Operator opAST = parseOperator();
-                Expression eAST = parsePrimaryExpression();
+                Expression eAST = parsePrimaryExpression();  // recursive call
                 finish(expressionPos);
 
                 expressionAST = new UnaryExpression(opAST, eAST, expressionPos);
@@ -459,6 +503,7 @@ public class Parser {
 
             case Token.LPAREN:
                 acceptIt();
+
                 expressionAST = parseExpression();
                 accept(Token.RPAREN);
                 break;
@@ -485,7 +530,8 @@ public class Parser {
 
         if (currentToken.kind == Token.COMMA) {
             acceptIt();
-            RecordAggregate aAST = parseRecordAggregate();
+
+            RecordAggregate aAST = parseRecordAggregate();  // recursive call
             finish(aggregatePos);
 
             aggregateAST = new MultipleRecordAggregate(iAST, eAST, aAST, aggregatePos);
@@ -509,7 +555,8 @@ public class Parser {
         Expression eAST = parseExpression();
         if (currentToken.kind == Token.COMMA) {
             acceptIt();
-            ArrayAggregate aAST = parseArrayAggregate();
+
+            ArrayAggregate aAST = parseArrayAggregate();   // recursive call
             finish(aggregatePos);
 
             aggregateAST = new MultipleArrayAggregate(eAST, aAST, aggregatePos);
@@ -546,14 +593,17 @@ public class Parser {
 
             if (currentToken.kind == Token.DOT) {
                 acceptIt();
+
                 Identifier iAST = parseIdentifier();
                 vAST = new DotVname(vAST, iAST, vnamePos);
 
             } else {
                 acceptIt();
+
                 Expression eAST = parseExpression();
                 accept(Token.RBRACKET);
                 finish(vnamePos);
+
                 vAST = new SubscriptVname(vAST, eAST, vnamePos);
             }
         }
@@ -575,6 +625,7 @@ public class Parser {
 
         while (currentToken.kind == Token.SEMICOLON) {
             acceptIt();
+
             Declaration d2AST = parseSingleDeclaration();
             finish(declarationPos);
 
@@ -596,8 +647,10 @@ public class Parser {
 
             case Token.CONST: {
                 acceptIt();
+
                 Identifier iAST = parseIdentifier();
                 accept(Token.IS);
+
                 Expression eAST = parseExpression();
                 finish(declarationPos);
 
@@ -607,8 +660,10 @@ public class Parser {
 
             case Token.VAR: {
                 acceptIt();
+
                 Identifier iAST = parseIdentifier();
                 accept(Token.COLON);
+
                 TypeDenoter tAST = parseTypeDenoter();
                 finish(declarationPos);
 
@@ -618,11 +673,14 @@ public class Parser {
 
             case Token.PROC: {
                 acceptIt();
+
                 Identifier iAST = parseIdentifier();
                 accept(Token.LPAREN);
+
                 FormalParameterSequence fpsAST = parseFormalParameterSequence();
                 accept(Token.RPAREN);
                 accept(Token.IS);
+
                 Command cAST = parseSingleCommand();
                 finish(declarationPos);
 
@@ -632,13 +690,17 @@ public class Parser {
 
             case Token.FUNC: {
                 acceptIt();
+
                 Identifier iAST = parseIdentifier();
                 accept(Token.LPAREN);
+
                 FormalParameterSequence fpsAST = parseFormalParameterSequence();
                 accept(Token.RPAREN);
                 accept(Token.COLON);
+
                 TypeDenoter tAST = parseTypeDenoter();
                 accept(Token.IS);
+
                 Expression eAST = parseExpression();
                 finish(declarationPos);
 
@@ -648,8 +710,10 @@ public class Parser {
 
             case Token.TYPE: {
                 acceptIt();
+
                 Identifier iAST = parseIdentifier();
                 accept(Token.IS);
+
                 TypeDenoter tAST = parseTypeDenoter();
                 finish(declarationPos);
 
@@ -698,8 +762,10 @@ public class Parser {
         FormalParameter fpAST = parseFormalParameter();
         if (currentToken.kind == Token.COMMA) {
             acceptIt();
-            FormalParameterSequence fpsAST = parseProperFormalParameterSequence();
+
+            FormalParameterSequence fpsAST = parseProperFormalParameterSequence();  // recursive call
             finish(formalsPos);
+
             formalsAST = new MultipleFormalParameterSequence(fpAST, fpsAST, formalsPos);
 
         } else {
@@ -730,8 +796,10 @@ public class Parser {
 
             case Token.VAR: {
                 acceptIt();
+
                 Identifier iAST = parseIdentifier();
                 accept(Token.COLON);
+
                 TypeDenoter tAST = parseTypeDenoter();
                 finish(formalPos);
 
@@ -741,8 +809,10 @@ public class Parser {
 
             case Token.PROC: {
                 acceptIt();
+
                 Identifier iAST = parseIdentifier();
                 accept(Token.LPAREN);
+
                 FormalParameterSequence fpsAST = parseFormalParameterSequence();
                 accept(Token.RPAREN);
                 finish(formalPos);
@@ -753,11 +823,13 @@ public class Parser {
 
             case Token.FUNC: {
                 acceptIt();
+
                 Identifier iAST = parseIdentifier();
                 accept(Token.LPAREN);
                 FormalParameterSequence fpsAST = parseFormalParameterSequence();
                 accept(Token.RPAREN);
                 accept(Token.COLON);
+
                 TypeDenoter tAST = parseTypeDenoter();
                 finish(formalPos);
 
@@ -804,7 +876,8 @@ public class Parser {
 
         if (currentToken.kind == Token.COMMA) {
             acceptIt();
-            ActualParameterSequence apsAST = parseProperActualParameterSequence();
+
+            ActualParameterSequence apsAST = parseProperActualParameterSequence();  // recursive call
             finish(actualsPos);
 
             actualsAST = new MultipleActualParameterSequence(apAST, apsAST, actualsPos);
@@ -845,6 +918,7 @@ public class Parser {
 
             case Token.VAR: {
                 acceptIt();
+
                 Vname vAST = parseVname();
                 finish(actualPos);
 
@@ -854,6 +928,7 @@ public class Parser {
 
             case Token.PROC: {
                 acceptIt();
+
                 Identifier iAST = parseIdentifier();
                 finish(actualPos);
 
@@ -863,6 +938,7 @@ public class Parser {
 
             case Token.FUNC: {
                 acceptIt();
+
                 Identifier iAST = parseIdentifier();
                 finish(actualPos);
 
@@ -901,8 +977,10 @@ public class Parser {
 
             case Token.ARRAY: {
                 acceptIt();
+
                 IntegerLiteral ilAST = parseIntegerLiteral();
                 accept(Token.OF);
+
                 TypeDenoter tAST = parseTypeDenoter();
                 finish(typePos);
 
@@ -912,6 +990,7 @@ public class Parser {
 
             case Token.RECORD: {
                 acceptIt();
+
                 FieldTypeDenoter fAST = parseFieldTypeDenoter();
                 accept(Token.END);
                 finish(typePos);
@@ -943,6 +1022,7 @@ public class Parser {
 
         if (currentToken.kind == Token.COMMA) {
             acceptIt();
+
             FieldTypeDenoter fAST = parseFieldTypeDenoter();
             finish(fieldPos);
 

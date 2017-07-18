@@ -16,18 +16,20 @@ package Triangle.SyntacticAnalyzer;
 
 public class SourcePosition {
 
-    public int start, finish;
+    public int start;
+    public int finish;
 
     public SourcePosition() {
-        start = 0;
-        finish = 0;
+        this.start = 0;
+        this.finish = 0;
     }
 
     public SourcePosition(int s, int f) {
-        start = s;
-        finish = f;
+        this.start = s;
+        this.finish = f;
     }
 
+    @Override
     public String toString() {
         return "(" + start + ", " + finish + ")";
     }
