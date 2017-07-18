@@ -14,7 +14,6 @@
 
 package Triangle.SyntacticAnalyzer;
 
-
 public final class Scanner {
 
     private SourceFile sourceFile;
@@ -30,49 +29,92 @@ public final class Scanner {
         debug = false;
     }
 
-    private boolean isLetter(char c) {
-        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
-    }
+    public Token scan() {
+        Token tok;
+        SourcePosition pos;
+        int kind;
 
-// isOperator returns true iff the given character is an operator character.
+        currentlyScanningToken = false;
 
-    private boolean isDigit(char c) {
-        return (c >= '0' && c <= '9');
-    }
+        while (currentChar == '!' || currentChar == ' ' || currentChar == '\n' || currentChar == '\r' || currentChar == '\t') {
+            scanSeparator();
+        }
 
+        currentlyScanningToken = true;
+        currentSpelling = new StringBuffer("");
 
-///////////////////////////////////////////////////////////////////////////////
+        pos = new SourcePosition();
+        pos.start = sourceFile.getCurrentLine();
 
-    private boolean isOperator(char c) {
-        return (c == '+' || c == '-' || c == '*' || c == '/' ||
-                c == '=' || c == '<' || c == '>' || c == '\\' ||
-                c == '&' || c == '@' || c == '%' || c == '^' ||
-                c == '?');
+        kind = scanToken();
+
+        pos.finish = sourceFile.getCurrentLine();
+        tok = new Token(kind, currentSpelling.toString(), pos);
+
+        if (debug) {
+            System.out.println(tok);
+        }
+
+        return tok;
     }
 
     public void enableDebugging() {
         debug = true;
     }
 
-    // takeIt appends the current character to the current token, and gets
-    // the next character from the source program.
+//_____________________________________________________________________________
+//
 
+    private boolean isLetter(char c) {
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+}
+
+    private boolean isDigit(char c) {
+        return (c >= '0' && c <= '9');
+    }
+
+    /**
+     * Returns true iff the given character is an operator character.
+     */
+    private boolean isOperator(char c) {
+
+        return (c == '+' || c == '-' || c == '*' || c == '/' ||
+                c == '=' || c == '<' || c == '>' || c == '\\' ||
+                c == '&' || c == '@' || c == '%' || c == '^' ||
+                c == '?');
+    }
+
+
+    /** Appends the current character to the current token, and gets
+    * the next character from the source program.
+     */
     private void takeIt() {
-        if (currentlyScanningToken)
+
+        if (currentlyScanningToken) {
             currentSpelling.append(currentChar);
+        }
+
         currentChar = sourceFile.getSource();
     }
 
-    // scanSeparator skips a single separator.
-
+    /**
+     * Skips a single separator.
+     */
     private void scanSeparator() {
+
         switch (currentChar) {
+
             case '!': {
+
                 takeIt();
-                while ((currentChar != SourceFile.EOL) && (currentChar != SourceFile.EOT))
+
+                while ((currentChar != SourceFile.EOL) && (currentChar != SourceFile.EOT)) {
                     takeIt();
-                if (currentChar == SourceFile.EOL)
+                }
+
+                if (currentChar == SourceFile.EOL) {
                     takeIt();
+                }
             }
             break;
 
@@ -141,9 +183,13 @@ public final class Scanner {
             case 'X':
             case 'Y':
             case 'Z':
+
                 takeIt();
-                while (isLetter(currentChar) || isDigit(currentChar))
+
+                while (isLetter(currentChar) || isDigit(currentChar)) {
                     takeIt();
+                }
+
                 return Token.IDENTIFIER;
 
             case '0':
@@ -156,9 +202,13 @@ public final class Scanner {
             case '7':
             case '8':
             case '9':
+
                 takeIt();
-                while (isDigit(currentChar))
+
+                while (isDigit(currentChar)) {
                     takeIt();
+                }
+
                 return Token.INTLITERAL;
 
             case '+':
@@ -174,19 +224,27 @@ public final class Scanner {
             case '%':
             case '^':
             case '?':
+
                 takeIt();
-                while (isOperator(currentChar))
+
+                while (isOperator(currentChar)) {
                     takeIt();
+                }
+
                 return Token.OPERATOR;
 
             case '\'':
+
                 takeIt();
                 takeIt(); // the quoted character
+
                 if (currentChar == '\'') {
                     takeIt();
                     return Token.CHARLITERAL;
-                } else
+
+                } else {
                     return Token.ERROR;
+                }
 
             case '.':
                 takeIt();
@@ -197,6 +255,7 @@ public final class Scanner {
                 if (currentChar == '=') {
                     takeIt();
                     return Token.BECOMES;
+
                 } else
                     return Token.COLON;
 
@@ -243,33 +302,6 @@ public final class Scanner {
                 takeIt();
                 return Token.ERROR;
         }
-    }
-
-    public Token scan() {
-        Token tok;
-        SourcePosition pos;
-        int kind;
-
-        currentlyScanningToken = false;
-        while (currentChar == '!'
-                || currentChar == ' '
-                || currentChar == '\n'
-                || currentChar == '\r'
-                || currentChar == '\t')
-            scanSeparator();
-
-        currentlyScanningToken = true;
-        currentSpelling = new StringBuffer("");
-        pos = new SourcePosition();
-        pos.start = sourceFile.getCurrentLine();
-
-        kind = scanToken();
-
-        pos.finish = sourceFile.getCurrentLine();
-        tok = new Token(kind, currentSpelling.toString(), pos);
-        if (debug)
-            System.out.println(tok);
-        return tok;
     }
 
 }

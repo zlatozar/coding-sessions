@@ -14,38 +14,50 @@
 
 package Triangle.SyntacticAnalyzer;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
 public class SourceFile {
 
     public static final char EOL = '\n';
     public static final char EOT = '\u0000';
 
-    java.io.File sourceFile;
-    java.io.FileInputStream source;
+    File sourceFile;
+    FileInputStream source;
     int currentLine;
 
     public SourceFile(String filename) {
+
         try {
-            sourceFile = new java.io.File(filename);
-            source = new java.io.FileInputStream(sourceFile);
+            sourceFile = new File(filename);
+            source = new FileInputStream(sourceFile);
+
             currentLine = 1;
+
         } catch (java.io.IOException s) {
             sourceFile = null;
             source = null;
+
             currentLine = 0;
         }
     }
 
     char getSource() {
+
         try {
             int c = source.read();
 
             if (c == -1) {
                 c = EOT;
+
             } else if (c == EOL) {
                 currentLine++;
             }
+
             return (char) c;
-        } catch (java.io.IOException s) {
+
+        } catch (IOException s) {
             return EOT;
         }
     }

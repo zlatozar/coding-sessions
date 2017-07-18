@@ -20,29 +20,47 @@ public final class StdEnvironment {
 
     // These are small ASTs representing standard types.
 
-    public static TypeDenoter
-            booleanType, charType, integerType, anyType, errorType;
+    public static TypeDenoter booleanType;
+    public static TypeDenoter charType;
+    public static TypeDenoter integerType;
+    public static TypeDenoter anyType;
+    public static TypeDenoter errorType;
 
-    public static TypeDeclaration
-            booleanDecl, charDecl, integerDecl;
+    public static TypeDeclaration booleanDecl;
+    public static TypeDeclaration charDecl;
+    public static TypeDeclaration integerDecl;
 
     // These are small ASTs representing "declarations" of standard entities.
 
-    public static ConstDeclaration
-            falseDecl, trueDecl, maxintDecl;
+    public static ConstDeclaration falseDecl;
+    public static ConstDeclaration trueDecl;
+    public static ConstDeclaration maxintDecl;
 
-    public static UnaryOperatorDeclaration
-            notDecl;
+    public static UnaryOperatorDeclaration notDecl;
 
-    public static BinaryOperatorDeclaration
-            andDecl, orDecl,
-            addDecl, subtractDecl, multiplyDecl, divideDecl, moduloDecl,
-            equalDecl, unequalDecl, lessDecl, notlessDecl, greaterDecl, notgreaterDecl;
+    public static BinaryOperatorDeclaration andDecl;
+    public static BinaryOperatorDeclaration orDecl;
+    public static BinaryOperatorDeclaration addDecl;
+    public static BinaryOperatorDeclaration subtractDecl;
+    public static BinaryOperatorDeclaration multiplyDecl;
+    public static BinaryOperatorDeclaration divideDecl;
+    public static BinaryOperatorDeclaration moduloDecl;
+    public static BinaryOperatorDeclaration equalDecl;
+    public static BinaryOperatorDeclaration unequalDecl;
+    public static BinaryOperatorDeclaration lessDecl;
+    public static BinaryOperatorDeclaration notlessDecl;
+    public static BinaryOperatorDeclaration greaterDecl;
+    public static BinaryOperatorDeclaration notgreaterDecl;
 
-    public static ProcDeclaration
-            getDecl, putDecl, getintDecl, putintDecl, geteolDecl, puteolDecl;
+    public static ProcDeclaration getDecl;
+    public static ProcDeclaration putDecl;
+    public static ProcDeclaration getintDecl;
+    public static ProcDeclaration putintDecl;
+    public static ProcDeclaration geteolDecl;
+    public static ProcDeclaration puteolDecl;
 
-    public static FuncDeclaration
-            chrDecl, ordDecl, eolDecl, eofDecl;
-
+    public static FuncDeclaration chrDecl;
+    public static FuncDeclaration ordDecl;
+    public static FuncDeclaration eolDecl;
+    public static FuncDeclaration eofDecl;
 }

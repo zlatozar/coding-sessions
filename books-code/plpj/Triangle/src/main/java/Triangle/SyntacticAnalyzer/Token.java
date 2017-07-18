@@ -14,133 +14,148 @@
 
 package Triangle.SyntacticAnalyzer;
 
+final class Token {
 
-final class Token extends Object {
+    private final static int firstReservedWord = Token.ARRAY;
+    private final static int lastReservedWord  = Token.WHILE;
 
-    public static final int
+    private static String[] tokenTable =
+            new String[]{
+                    "<int>",
+                    "<char>",
+                    "<identifier>",
+                    "<operator>",
 
-            // literals, identifiers, operators...
-            INTLITERAL = 0,
-            CHARLITERAL = 1,
-            IDENTIFIER = 2,
-            OPERATOR = 3,
+                    "array",
+                    "begin",
+                    "const",
+                    "do",
+                    "else",
+                    "end",
+                    "func",
+                    "if",
+                    "in",
+                    "let",
+                    "of",
+                    "proc",
+                    "record",
+                    "then",
+                    "type",
+                    "var",
+                    "while",
 
-    // reserved words - must be in alphabetical order...
-    ARRAY = 4,
-            BEGIN = 5,
-            CONST = 6,
-            DO = 7,
-            ELSE = 8,
-            END = 9,
-            FUNC = 10,
-            IF = 11,
-            IN = 12,
-            LET = 13,
-            OF = 14,
-            PROC = 15,
-            RECORD = 16,
-            THEN = 17,
-            TYPE = 18,
-            VAR = 19,
-            WHILE = 20,
+                    ".",
+                    ":",
+                    ";",
+                    ",",
+                    ":=",
+                    "~",
+                    "(",
+                    ")",
+                    "[",
+                    "]",
+                    "{",
+                    "}",
+                    "",
 
-    // punctuation...
-    DOT = 21,
-            COLON = 22,
-            SEMICOLON = 23,
-            COMMA = 24,
-            BECOMES = 25,
-            IS = 26,
+                    "<error>"
+            };
 
-    // brackets...
-    LPAREN = 27,
-            RPAREN = 28,
-            LBRACKET = 29,
-            RBRACKET = 30,
-            LCURLY = 31,
-            RCURLY = 32,
-
-    // special tokens...
-    EOT = 33,
-            ERROR = 34;
-    private final static int firstReservedWord = Token.ARRAY,
-            lastReservedWord = Token.WHILE;
-    private static String[] tokenTable = new String[]{
-            "<int>",
-            "<char>",
-            "<identifier>",
-            "<operator>",
-            "array",
-            "begin",
-            "const",
-            "do",
-            "else",
-            "end",
-            "func",
-            "if",
-            "in",
-            "let",
-            "of",
-            "proc",
-            "record",
-            "then",
-            "type",
-            "var",
-            "while",
-            ".",
-            ":",
-            ";",
-            ",",
-            ":=",
-            "~",
-            "(",
-            ")",
-            "[",
-            "]",
-            "{",
-            "}",
-            "",
-            "<error>"
-    };
     protected int kind;
     protected String spelling;
     protected SourcePosition position;
+
+    // literals, identifiers, operators...
+
+    public static final int INTLITERAL  = 0;
+    public static final int CHARLITERAL = 1;
+    public static final int IDENTIFIER  = 2;
+    public static final int OPERATOR    = 3;
+
+    // reserved words - must be in alphabetical order...
+
+    public static final int ARRAY  = 4;
+    public static final int BEGIN  = 5;
+    public static final int CONST  = 6;
+    public static final int DO     = 7;
+    public static final int ELSE   = 8;
+    public static final int END    = 9;
+    public static final int FUNC   = 10;
+    public static final int IF     = 11;
+    public static final int IN     = 12;
+    public static final int LET    = 13;
+    public static final int OF     = 14;
+    public static final int PROC   = 15;
+    public static final int RECORD = 16;
+    public static final int THEN   = 17;
+    public static final int TYPE   = 18;
+    public static final int VAR    = 19;
+    public static final int WHILE  = 20;
+
+    // punctuation...
+
+    public static final int DOT       = 21;
+    public static final int COLON     = 22;
+    public static final int SEMICOLON = 23;
+    public static final int COMMA     = 24;
+    public static final int BECOMES   = 25; // :=
+    public static final int IS        = 26; // ~
+
+    // brackets...
+
+    public static final int LPAREN   = 27;
+    public static final int RPAREN   = 28;
+    public static final int LBRACKET = 29;
+    public static final int RBRACKET = 30;
+    public static final int LCURLY   = 31;
+    public static final int RCURLY   = 32;
+
+    // special tokens...
+
+    public static final int EOT   = 33; // end of file
+    public static final int ERROR = 34;
 
     // Token classes...
 
     public Token(int kind, String spelling, SourcePosition position) {
 
         if (kind == Token.IDENTIFIER) {
+
             int currentKind = firstReservedWord;
             boolean searching = true;
 
             while (searching) {
                 int comparison = tokenTable[currentKind].compareTo(spelling);
+
                 if (comparison == 0) {
                     this.kind = currentKind;
                     searching = false;
+
                 } else if (comparison > 0 || currentKind == lastReservedWord) {
                     this.kind = Token.IDENTIFIER;
                     searching = false;
+
                 } else {
                     currentKind++;
                 }
             }
-        } else
+
+        } else {
             this.kind = kind;
+
+        }
 
         this.spelling = spelling;
         this.position = position;
-
     }
 
     public static String spell(int kind) {
         return tokenTable[kind];
     }
 
+    @Override
     public String toString() {
-        return "Kind=" + kind + ", spelling=" + spelling +
-                ", position=" + position;
+        return "Kind=" + kind + ", spelling=" + spelling + ", position=" + position;
     }
 
 }

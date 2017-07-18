@@ -50,24 +50,21 @@ public class Compiler {
     /**
      * Compile the source program to TAM machine code.
      *
-     * @param    sourceName    the name of the file containing the
-     * source program.
-     * @param    objectName    the name of the file containing the
-     * object program.
-     * @param    showingAST    true iff the AST is to be displayed after
-     * contextual analysis (not currently implemented).
-     * @param    showingTable    true iff the object description details are to
-     * be displayed during code generation (not
-     * currently implemented).
+     * @param sourceName the name of the file containing the
+     *                   source program.
+     * @param objectName the name of the file containing the
+     *                   object program.
+     * @param showingAST true iff the AST is to be displayed after
+     *                   contextual analysis (not currently implemented).
+     * @param showingTable true iff the object description details are to
+     *                     be displayed during code generation (not currently implemented).
+     *
      * @return true iff the source program is free of compile-time errors,
-     * otherwise false.
+     *         otherwise false.
      */
-    static boolean compileProgram(String sourceName, String objectName,
-                                  boolean showingAST, boolean showingTable) {
+    static boolean compileProgram(String sourceName, String objectName, boolean showingAST, boolean showingTable) {
 
-        System.out.println("********** " +
-                "Triangle Compiler (Java Version 2.1)" +
-                " **********");
+        System.out.println("********** Triangle Compiler (Java Version 2.1) **********");
 
         System.out.println("Syntactic Analysis ...");
         SourceFile source = new SourceFile(sourceName);
@@ -82,19 +79,26 @@ public class Compiler {
         parser = new Parser(scanner, reporter);
         checker = new Checker(reporter);
         encoder = new Encoder(reporter);
-        drawer = new Drawer();
 
-        // scanner.enableDebugging();
-        theAST = parser.parseProgram();                // 1st pass
+        drawer = new Drawer();
+//        scanner.enableDebugging();
+
+        theAST = parser.parseProgram();                     // 1st pass
+
         if (reporter.numErrors == 0) {
-            //if (showingAST) {
-            //    drawer.draw(theAST);
-            //}
+
+//            if (showingAST) {
+//                drawer.draw(theAST);
+//            }
+
             System.out.println("Contextual Analysis ...");
-            checker.check(theAST);                // 2nd pass
+
+            checker.check(theAST);                          // 2nd pass
+
             if (showingAST) {
                 drawer.draw(theAST);
             }
+
             if (reporter.numErrors == 0) {
                 System.out.println("Code Generation ...");
                 encoder.encodeRun(theAST, showingTable);    // 3rd pass
@@ -102,20 +106,23 @@ public class Compiler {
         }
 
         boolean successful = (reporter.numErrors == 0);
+
         if (successful) {
             encoder.saveObjectProgram(objectName);
             System.out.println("Compilation was successful.");
+
         } else {
             System.out.println("Compilation was unsuccessful.");
         }
+
         return successful;
     }
 
     /**
      * Triangle compiler main program.
      *
-     * @param    args    the only command-line argument to the program specifies
-     * the source filename.
+     * @param args the only command-line argument to the program specifies
+     *             the source filename.
      */
     public static void main(String[] args) {
         boolean compiledOK;
@@ -127,5 +134,7 @@ public class Compiler {
 
         String sourceName = args[0];
         compiledOK = compileProgram(sourceName, objectName, false, false);
+
+        System.out.println("Is compilation pass? " + compiledOK);
     }
 }

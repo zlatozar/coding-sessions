@@ -25,13 +25,19 @@ public class ErrorReporter {
     }
 
     public void reportError(String message, String tokenName, SourcePosition pos) {
+
         System.out.print("ERROR: ");
 
-        for (int p = 0; p < message.length(); p++)
-            if (message.charAt(p) == '%')
+        for (int p = 0; p < message.length(); p++) {
+
+            if (message.charAt(p) == '%') {
                 System.out.print(tokenName);
-            else
+
+            } else {
                 System.out.print(message.charAt(p));
+            }
+        }
+
         System.out.println(" " + pos.start + ".." + pos.finish);
         numErrors++;
     }
