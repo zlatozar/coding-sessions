@@ -18,6 +18,6 @@ ensure that each competitor plays opponents with a similar running score, but no
 ### Statement of the Theme
 
 Write a program that reads an input value n, runs each of the three tournaments for ```2^n``` contestants,
-and calculates the two statistics R and M for each of the three pairs of orderings. Using the same n, run the
-experiment many times and calculate means for M and R. See if Swiss tournaments or single-elimination tournaments
+and calculates the two statistics ```R``` and ```M```(p. 22) for each of the three pairs of orderings. Using the same ```n```, run the
+experiment many times and calculate means for M and R. See if _Swiss tournaments_ or _single-elimination tournaments_
 are more likely to replicate round robin results.

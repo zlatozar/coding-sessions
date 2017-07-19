@@ -24,8 +24,8 @@ public final class Checker implements Visitor {
     // Commands
 
     // Always returns null. Does not use the given object.
-
     private static SourcePosition dummyPos = new SourcePosition();
+
     private final static Identifier dummyI = new Identifier("", dummyPos);
     private IdentificationTable idTable;
     private ErrorReporter reporter;

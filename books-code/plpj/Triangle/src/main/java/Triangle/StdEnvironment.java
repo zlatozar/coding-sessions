@@ -18,7 +18,8 @@ import Triangle.AbstractSyntaxTrees.*;
 
 public final class StdEnvironment {
 
-    // These are small ASTs representing standard types.
+    //_________________________________________________________________________
+    //                        These are small ASTs representing standard types
 
     public static TypeDenoter booleanType;
     public static TypeDenoter charType;
@@ -30,7 +31,8 @@ public final class StdEnvironment {
     public static TypeDeclaration charDecl;
     public static TypeDeclaration integerDecl;
 
-    // These are small ASTs representing "declarations" of standard entities.
+    //_________________________________________________________________________
+    //   These are small ASTs representing "declarations" of standard entities
 
     public static ConstDeclaration falseDecl;
     public static ConstDeclaration trueDecl;
