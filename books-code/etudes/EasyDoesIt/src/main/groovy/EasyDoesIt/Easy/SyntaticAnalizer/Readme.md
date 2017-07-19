@@ -1,29 +1,30 @@
 - [Specification](#Specification)
-    - [Compilations](#?COMPILATIONS)
-    - [Programs](#PROGRAMS)
-    - [External Procedures](#EXTERNAL_PROCEDURES)
-    - [Segments](#SEGMENTS)
-    - [Types](#TYPES)
-    - [Declarations](#DECLARATIONS)
-    - [Internal Procedures](#INTERNAL_PROCEDURES)
-    - [Executable Statements](#EXECUTABLE_STATEMENTS)
-    - [Assignments](#ASSIGNMENTS)
-    - [Procedure Calls](#PROCEDURE_CALLS)
-    - [Returns](#RETURNS)
-    - [Exits](#EXITS)
-    - [Conditional](#CONDITIONALS)
-    - [Compounds](#COMPOUNDS)
-    - [Iterations](#ITERATIONS)
-    - [Selection](#SELECTION)
-    - [Repeat and Repend](#REPEAT_AND_REPENT)
-    - [Input and Output](#INPUT_AND_OUTPUT)
-    - [Nulls and Labels](#NULLS_AND_LABELS)
-    - [Expressions](#EXPRESSIONS)
-    - [Variables](#VARIABLES)
-    - [Constants](#CONSTANTS)
-    - [Functions Calls](#FUNCTION_CALLS)
-    - [Lexical Items](#LEXICAL_ITEMS)
+    - [COMPILATIONS](#?COMPILATIONS)
+    - [PROGRAMS](#PROGRAMS)
+    - [EXTERNAL PROCEDURES](#EXTERNAL_PROCEDURES)
+    - [SEGMENTS](#SEGMENTS)
+    - [TYPES](#TYPES)
+    - [DECLARATIONS](#DECLARATIONS)
+    - [INTERNAL PROCEDURES](#INTERNAL_PROCEDURES)
+    - [EXECUTABLE STATEMENTS](#EXECUTABLE_STATEMENTS)
+    - [ASSIGNMENTS](#ASSIGNMENTS)
+    - [PROCEDURE CALLS](#PROCEDURE_CALLS)
+    - [RETURNS](#RETURNS)
+    - [EXITS](#EXITS)
+    - [CONDITIONALS](#CONDITIONALS)
+    - [COMPOUNDS](#COMPOUNDS)
+    - [ITERATIONS](#ITERATIONS)
+    - [SELECTION](#SELECTION)
+    - [REPEAT AND REPENT](#REPEAT_AND_REPENT)
+    - [INPUT_AND_OUTPUT](#INPUT_AND_OUTPUT)
+    - [NULLS_AND_LABELS](#NULLS_AND_LABELS)
+    - [EXPRESSIONS](#EXPRESSIONS)
+    - [VARIABLES](#VARIABLES)
+    - [CONSTANTS](#CONSTANTS)
+    - [FUNCTION_CALLS](#FUNCTION_CALLS)
+    - [LEXICAL_ITEMS](#LEXICAL_ITEMS)
     
+
 ## Specification
 
 ```Easy``` is a general-purpose, procedural, algebraic programming language. Its roots lie in ALGOL,
@@ -59,14 +60,15 @@ of the normal features of a program. We might as well note here that reserved wo
 and constants **must not** be broken over record boundaries and must be separated one from another
 by blanks, operators, comments, or record ends.
 
+
 ### EXTERNAL_PROCEDURES
 
 ```
 <external procedure>       ::=  <external subprogram>
                             |   <external function>
-                      
 
-<external subprogram>      ::=  <external subprogram head> : <external subprogram body> <external subprogram end>
+<external subprogram>      ::=  <external subprogram head> : 
+                                <external subprogram body> <external subprogram end>
 
 <external subprogram head> ::=  EXTERNAL PROCEDURE <external procedure name>
 
@@ -75,14 +77,14 @@ by blanks, operators, comments, or record ends.
 <external subprogram end>  ::=  END EXTERNAL PROCEDURE <identifier> ;
                           
 
-<external function>        ::=  <external function head> : <external function body> <external function end>
+<external function>        ::=  <external function head> : 
+                                <external function body> <external function end>
 
 <external function head>   ::=  EXTERNAL FUNCTION <external procedure name> <external type>
 
 <external function body>   ::=  <segment body>
 
 <external function end>    ::=  END EXTERNAL FUNCTION <identifier> ;
-
 
 <external procedure name>  ::=  <identifier>
                             |   <identifier> <external parameter list>
@@ -111,11 +113,12 @@ could deduce the difference, the language forces the programmer to state clearly
 Finally, Easy allows the compiler and loader to check all type matching, following the dictum that the run-time
 system should do as little as possible.
 
+
 ### SEGMENTS
 
 ```
-<segment body>              ::=  <type definition part> <variable declaration part> <procedure definition part>
-                                 <executable statement part>
+<segment body>              ::=  <type definition part> <variable declaration part>
+                                 <procedure definition part> <executable statement part>
 
 <type definition part>      ::= 
                              |   <type definition part> <type definition>
@@ -192,6 +195,7 @@ for items of the field ```<type>```'s. Because of the recursive definition, stru
 A particular ```<identifier>``` can name only one ```<field>``` in a ```<structured type>``` but can be reused as a
 variable name or the name of a field in another ```<even subordinate>``` ```<structured type>```.
 
+
 ### DECLARATIONS
 
 ```
@@ -261,6 +265,7 @@ end, but a function must be exited by an explicit ```<return statement>``` with 
 are normally call by value but are call by name if marked with NAME. The procedures themselves
 are like ALGOL procedures and are fully recursive. A ```<procedure name>``` may not be used before it is
 declared.
+
 
 ### EXECUTABLE_STATEMENTS
 
@@ -352,21 +357,21 @@ the last statement executed - _not written_ in a ```<program>```.
 ### CONDITIONALS
 
 ```
-(conditional statement)        ::=  (simple conditional statement)
-                                |   (label) (simple conditional statement)
+<conditional statement>        ::=  <simple conditional statement>
+                                |   <label> <simple conditional statement>
 
-(simple conditional statement) ::=  (conditional clause) (true branch) FI ;
-                                |   (conditional clause) (true branch) (false branch) FI ;
+<simple conditional statement> ::=  <conditional clause> <true branch> FI ;
+                                |   <conditional clause> <true branch> <false branch> FI ;
 
-(conditional clause)           ::=  IF (expression)
+<conditional clause>           ::=  IF <expression>
 
-(true branch)                  ::=  THEN (conditional body)
+<true branch>                  ::=  THEN <conditional body>
 
-(false branch)                 ::=  (else) (conditional body)
+<false branch>                 ::=  <else> <conditional body>
 
-(else)                         ::=  ELSE
+<else>                         ::=  ELSE
 
-(conditional body)             ::=  (segment body)
+<conditional body>             ::=  <segment body>
 ```
 
 A ```<conditional statement>``` selects and executes its ```<true branch>``` or its ```<false branch>```, depending on
@@ -448,15 +453,15 @@ Example:
 top: IF <while control> exists
         THEN SET stoploop := NOT <while control>;
         ELSE SET stoploop := FALSE; FI;
-    IF stoploop THEN GOTO end; FI;
-    IF <limit> exists & (<iteration target> > <limit>)
-       THEN GOTO end; FI;
-    <iteration body>
-    IF <step> exists
-       THEN SET stepvalue := <step>;
-       ELSE SET stepvalue := 1; FI;
-    SET <iteration target> : = <iteration target> + stepvalue;
-    GOTO top;
+     IF stoploop THEN GOTO end; FI;
+     IF <limit> exists & (<iteration target> > <limit>)
+        THEN GOTO end; FI;
+     <iteration body>
+     IF <step> exists
+        THEN SET stepvalue := <step>;
+        ELSE SET stepvalue := 1; FI;
+     SET <iteration target> : = <iteration target> + stepvalue;
+     GOTO top;
 end: .....
 ```    
 
@@ -497,17 +502,17 @@ end: .....
 
 A ```<selection statement>``` operates as follows:
 
-        The ```<expression>``` in the ```<selection head>``` is evaluated.
-        The ```<case>```'s in the ```<case list>``` are processed from first to last.
-        For each ```<case>```, the ```<expression>```'s in the ```<selector>``` are evaluated one by one from left
-        to right. As each ```<expression>``` is evaluated, its value is compared with the value of the
-        original ```<expression>``` in the ```<selection head>```. If the two are equal, the corresponding
-        ```<case body>``` is executed and control then passes out of the ```<selection statement>``` to the
-        next ```<statement>``` in sequence without any further activity.
-        If no ```<case>``` is selected and if there is an ```<escape case>```, then the ```<case body>``` of the
-        ```<escape case>``` is executed and control passes out of the ```<selection statement>```. Otherwise
-        the ```<selection statement>``` has no effect beyond side effects of the various expression
-        evaluations.
+The ```<expression>``` in the ```<selection head>``` is evaluated.
+The ```<case>```'s in the ```<case list>``` are processed from first to last.
+For each ```<case>```, the ```<expression>```'s in the ```<selector>``` are evaluated one by one from left
+to right. As each ```<expression>``` is evaluated, its value is compared with the value of the
+original ```<expression>``` in the ```<selection head>```. If the two are equal, the corresponding
+```<case body>``` is executed and control then passes out of the ```<selection statement>``` to the
+next ```<statement>``` in sequence without any further activity.
+If no ```<case>``` is selected and if there is an ```<escape case>```, then the ```<case body>``` of the
+```<escape case>``` is executed and control passes out of the ```<selection statement>```. Otherwise
+the ```<selection statement>``` has no effect beyond side effects of the various expression
+evaluations.
         
         
 ### REPEAT_AND_REPENT
@@ -526,6 +531,7 @@ semantically in error. The ```<repent statement>``` has the same semantics with 
 passes to the point immediately following the surrounding labeled statement rather than to the head
 of that statement. Notice that a ```<repeat statement>``` causes reexecution of the statement to whose
 head control was transferred.
+        
         
 ### INPUT_AND_OUTPUT
         
@@ -704,5 +710,3 @@ with no arguments are called with the first form of the ```<function reference>`
 Operators also include ```:, ;, (, ), „ [, ], &, I, ||```, and :=, and do not include XOR, NOT, and MOD
 for separation purposes. Comments begin with ```/*```, continue with any string not including ```*/```, end
 with ```*/```, and may appear wherever a separator blank may appear. Comments act as separators.
-        
-        
