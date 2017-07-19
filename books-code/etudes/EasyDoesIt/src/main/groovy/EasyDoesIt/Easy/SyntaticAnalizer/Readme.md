@@ -1,3 +1,10 @@
+## Specification
+
+```Easy``` is a general-purpose, procedural, algebraic programming language. Its roots lie in ALGOL,
+ALGOL 68, and PASCAL. Like them, it is designed to be compiled, loaded, and executed on a reasonably
+conventional computer.
+
+
 - [Specification](#Specification)
     - [Compilations](#compilations)
     - [Programs](#programs)
@@ -24,13 +31,6 @@
     - [Function Calls](#function_calls)
     - [Lexical Items](#lexical_items)
     
-
-## Specification
-
-```Easy``` is a general-purpose, procedural, algebraic programming language. Its roots lie in ALGOL,
-ALGOL 68, and PASCAL. Like them, it is designed to be compiled, loaded, and executed on a reasonably
-conventional computer.
-
 
 ### COMPILATIONS
 
@@ -92,7 +92,7 @@ by blanks, operators, comments, or record ends.
 <external parameter list>  ::=  <external parameter head> )
 
 <external parameter head>  ::=  ( <external parameter>
-                            |   <external parameter head> , <external parameter>
+                            |     <external parameter head> , <external parameter>
                            
 <external parameter>       ::=  <identifier> <external type>
                             |   <identifier> <external type> NAME
@@ -145,9 +145,9 @@ or redeclared in an inner ```<segment body>```.
 <type definition>   ::=  TYPE <identifier> IS <type> ;
 
 <type>              ::=  <basic type>
-                     |   (arrayed type)
-                     |   (structured type)
-                     |   (type identifier)
+                     |   <arrayed type>
+                     |   <structured type>
+                     |   <type identifier>
                    
 <basic type>        ::=  INTEGER
                      |   REAL
@@ -215,10 +215,10 @@ declaration in a ```<segment body>```.
 ### INTERNAL_PROCEDURES
 
 ```
-<procedure definition>          ::= <subprogram definition>
-                                 |  <function definition>
-                                 |  <external subprogram definition>
-                                 |  <external function definition>
+<procedure definition>           ::=  <subprogram definition>
+                                  |   <function definition>
+                                  |   <external subprogram definition>
+                                  |   <external function definition>
                            
 <subprogram definition>          ::=  <subprogram head> : <subprogram body> <subprogram end>
 
@@ -245,11 +245,11 @@ declaration in a ```<segment body>```.
                                   
 <internal parameter list>        ::=  <internal parameter head> )
 
-<internal parameter head>        ::= ( <internal parameter>
-                                  |  <internal parameter head> , <internal parameter>
+<internal parameter head>        ::=  ( <internal parameter>
+                                  |     <internal parameter head> , <internal parameter>
                                   
-<internal parameter>             ::= <identifier> <type>
-                                  | <identifier> <type> NAME
+<internal parameter>             ::=  <identifier> <type>
+                                  |   <identifier> <type> NAME
 ```
 
 There may be only one procedure of a given name defined immediately in any one ```<segment body>```.
@@ -292,14 +292,14 @@ Statements are all terminated with semicolons.
 ### ASSIGNMENTS
 
 ```
-<assignment statement> ::= SET <target list> <expression> ;
+<assignment statement> ::=  SET <target list> <expression> ;
 
-<target list>          ::= <target>
-                        | <target list> <target>
+<target list>          ::=  <target>
+                        |   <target list> <target>
                         
-<target>               ::= <variable> <replace>
+<target>               ::=  <variable> <replace>
 
-<replace>              ::= :=
+<replace>              ::=  :=
 ```
 
 In an ```<assignment statement>```, the ```<type>``` of all the ```<target>```'s and of the assigned ```<expression>``` must be
@@ -322,7 +322,7 @@ particular redundancy aids correction when other keywords are misspelled ```<a c
 <actual argument list> ::=  <actual argument head> )
 
 <actual argument head> ::=  ( <expression>
-                        |   <actual argument head> , <expression>
+                        |     <actual argument head> , <expression>
 ```
 
 Only defined procedures that include the ```<call statement>``` in the range of their names may be called.
@@ -438,7 +438,7 @@ match the ```<label>```.
 <while control>              ::=  WHILE <expression>          
 ```
 
-The easiest way to explain the effect of the ```<iteration statement>``` is to write a small piece of "meta-
+The easiest way to explain the _effect_ of the ```<iteration statement>``` is to write a small piece of "meta-
 Easy" that will replace the ```<iteration statement>```. This "definition" as given in the example should be
 applied to the ```<iteration statement>``` to find its effect. The "definition" does imply recalculation of
 the ```<target>```, ```<limit>```, and ```<step>``` at each iteration. The predicate _"exists"_ is a meta-Easy way to ask
@@ -491,7 +491,7 @@ end: .....
 <selector>             ::=  <selector head> )
 
 <selector head>        ::=  ( <expression>
-                        |   <selector head> , <expression>
+                        |     <selector head> , <expression>
                         
 <escape case>          ::=  <escape head> <case body>
 
@@ -610,7 +610,7 @@ declared or defined except as a field selector in the same ```<segment body>```.
                     |   ( <expression> )
 ```                    
 
-Expressions operate in a fairly standard way. The operators |, XOR ```<exclusive or>```, &, and NOT all
+Expressions operate in a fairly standard way. The operators |, XOR (exclusive OR), &, and NOT all
 must have Boolean operands. The equality and inequality ```<relation>```'s may hold between any two
 items of the same type. Strings may be compared to strings with any of the ```<relation>```'s. Two strings
 are equal if and only if they are exactly the same, and string A is less than string B if a prefix of A
@@ -648,9 +648,9 @@ SUBSTR, FIX, and CHARACTER may cause run-time errors.
         
 A ```<variable>``` is a simple ```<identifier>```, a ```<variable>``` with a field selector, or a ```<variable>``` with an array
 subscript. Of course, all ```<variable>```'s must be declared. An ```<identifier>``` is a terminal syntactic item. It
-must begin with an upper- or lowercase alphabetic and may continue with an arbitrary number of
+must begin with an upper or lowercase alphabetic and may continue with an arbitrary number of
 alphabetics and decimal digits. Reserved words may not be used as ```<identifier>```'s, and both reserved
-words and ```<identifier's must be separated from other nonoperator lexical items by at least one
+words and ```<identifier>```'s must be separated from other nonoperator lexical items by at least one
 blank, comment, or new line character. No lexical item may be broken across a record boundary.
         
 
@@ -699,10 +699,10 @@ with no arguments are called with the first form of the ```<function reference>`
                         |   >=
                         |   <>
                         
-(adding operator)      ::=  +
+<adding operator>      ::=  +
                         |   -
                         
-(multiplying operator) ::=  *
+<multiplying operator> ::=  *
                         |   /
                         |   MOD
 ```                        
