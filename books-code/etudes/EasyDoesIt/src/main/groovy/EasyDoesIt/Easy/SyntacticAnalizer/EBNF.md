@@ -15,15 +15,15 @@ To the specification are applied:
 ### KEYWORDS
 
 ```
-PROGRAM, END, TYPE, IS, INTEGER, REAL, BOOLEAN, STRING, ARRAY, OF, STRUCTURE, FIELD, DECLARE, PROCEDURE, FUNCTION,
-CALL, RETURN, EXIT, IF, FI, THEN, ELSE, BEGIN, FOR, BY, TO, WHILE, SELECT, CASE, OTHERWISE, REPEAT, REPENT, INPUT,
-OUTPUT, TRUE, FALSE
+ARRAY, BEGIN, BY, CALL, CASE, DECLARE, ELSE, END, EXIT, FI, FIELD, FOR, FUNCTION, IF, IS, OF,
+OTHERWISE, PROCEDURE, PROGRAM, REPEAT, REPENT, RETURN, SELECT, STRUCTURE, THEN, TO, TYPE, WHILE
 ```
 
 ### LIBRARY FUNCTIONS
 
 ```
-XOR, MOD, FLOOR, LENGTH, SUBSTR, CHARACTER, NUMBER, FLOAT, FIX
+XOR, MOD, FLOOR, LENGTH, SUBSTR, CHARACTER, NUMBER, FLOAT, FIX, INPUT, OUTPUT,
+INTEGER, REAL, BOOLEAN, STRING, TRUE, FALSE
 ```
 
 ### PROGRAM
@@ -355,5 +355,35 @@ XOR, MOD, FLOOR, LENGTH, SUBSTR, CHARACTER, NUMBER, FLOAT, FIX
                         |   MOD
 ```          
 
-The syntax category ```<identifier>``` consists of strings that must start with a letter - including underscore (_)
- - followed by any number of letters and digits. Also, <identifier> includes none of the keywords. 
+The syntax category ```<identifier>``` consists of strings that must start with a letter followed by any number
+of letters and digits. Also, <identifier> includes none of the keywords.
+ 
+
+### TOKEN_TABLE
+
+```
+<Program>           ::=  (<Token> | <Comment> | <Blank>)*
+<Token>             ::=  <Integer-Literal> | <Character-Literal> | <Identifier> | <Operator> |
+                         ARRAY | BEGIN | BY | CALL | CASE | DECLARE | ELSE | END | EXIT | FI |
+                         FIELD | FOR | FUNCTION | IF | IS | OF | OTHERWISE | PROCEDURE | PROGRAM |
+                         REPEAT | REPENT | RETURN | SELECT | STRUCTURE | THEN | TO | TYPE | WHILE |
+                         . | : | ; | , | := | ( | ) | [ | ]
+                        
+<Integer-Literal>   ::=  <Digit>(<Digit>)*
+<Character-Literal> ::=  " <Graphic> "
+<Identifier>        ::=  <Letter> (<Letter> | <Digit>)*
+<Operator>          ::=  <Op-character>(<Op-character>)*
+<Comment>           ::=  /* <Graphic> */
+<Blank>             ::=  space | tab | end-of-line
+
+<Graphic>           ::=  <Letter> | <Digit> | <Op-character> | space | tab | . | : | ; | , |
+                         ~ | ( | ) | [ | ] | { | } | _ | ! | ' | ` | " | # | $ | % | ? | ^
+                         
+<Letter>            ::=  A | B | C | D | E | F | G | H | I | J | K | L | M |
+                         N | O | P | Q | R | S | T | U | V | W | X | Y | Z |
+                         a | b | c | d | e | f | g | h | i | j | k | l | m |
+                         n | o | p | q | r | s | t | u | v | w | x | y | z
+                          
+<Digit>             ::=  0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+<Op-character>      ::=  + | - | * | / | < | = | > | & | \ | | |
+```
