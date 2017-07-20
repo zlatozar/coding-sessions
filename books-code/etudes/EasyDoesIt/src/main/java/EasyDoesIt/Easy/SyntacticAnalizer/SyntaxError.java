@@ -1,14 +1,14 @@
-package EasyDoesIt.Easy.SyntacticAnalizer
+package EasyDoesIt.Easy.SyntacticAnalizer;
 
 
 class SyntaxError extends Exception {
 
     SyntaxError() {
-        super()
+        super();
     }
 
     SyntaxError(String s) {
-        super(s)
+        super(s);
     }
 
 }

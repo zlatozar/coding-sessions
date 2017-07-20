@@ -1,4 +1,4 @@
-package EasyDoesIt.Easy.SyntacticAnalizer
+package EasyDoesIt.Easy.SyntacticAnalizer;
 
 /**
  * Since the source  program text actually consists of individual characters, and a token
@@ -101,17 +101,18 @@ public final class Scanner {
         switch (currentChar) {
 
             case '/':
+            {
                 takeIt();
 
                 if (currentChar == '*') {
-                    takeIt()
+                    takeIt();
 
                     while ((currentChar != '*') && (currentChar != SourceFile.EOT)) {
                         takeIt();
 
                         if (currentChar == '/') {
-                            takeIt()
-                            break
+                            takeIt();
+                            break;
                         }
                     }
                 }
@@ -119,8 +120,8 @@ public final class Scanner {
                 if (currentChar == SourceFile.EOL) {
                     takeIt();
                 }
-
-                break;
+            }
+            break;
 
             case ' ':
             case '\n':

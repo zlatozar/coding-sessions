@@ -1,17 +1,16 @@
-package EasyDoesIt.Easy.SyntacticAnalizer
+package EasyDoesIt.Easy.SyntacticAnalizer;
 
-import java.nio.charset.StandardCharsets
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class SourceFile {
 
-    private boolean debug = false;
-
     public static final char EOL = '\n';      // end of line
     public static final char EOT = '\u0000';  // end of transition
-
     File sourceFile;
     InputStream source;
     int currentLine;
+    private boolean debug = false;
 
     public SourceFile(String filename) {
 
@@ -35,9 +34,9 @@ public class SourceFile {
             this.source = new ByteArrayInputStream(snippet.getBytes(StandardCharsets.UTF_8));
             this.currentLine = 1;
 
-            this.debug = debug
+            this.debug = debug;
 
-        } catch (IOException s) {
+        } catch (Exception _) {
             this.sourceFile = null;
             this.source = null;
 
@@ -64,7 +63,7 @@ public class SourceFile {
             }
 
             if (debug) {
-                println("symbol: ${(char) c}" )
+                System.out.println("symbol: " + (char) c);
             }
 
             return (char) c;

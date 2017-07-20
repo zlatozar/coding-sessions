@@ -1,4 +1,4 @@
-package EasyDoesIt.Easy.SyntacticAnalizer
+package EasyDoesIt.Easy.SyntacticAnalizer;
 
 public class SourcePosition {
 
