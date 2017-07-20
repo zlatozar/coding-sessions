@@ -261,12 +261,14 @@ public final class Scanner {
 
             case ':':
                 takeIt();
+
                 if (currentChar == '=') {
                     takeIt();
                     return Token.BECOMES;
 
-                } else
+                } else {
                     return Token.COLON;
+                }
 
             case ';':
                 takeIt();

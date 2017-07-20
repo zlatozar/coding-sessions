@@ -61,8 +61,8 @@ final class Token {
                     "]",
                     "{",
                     "}",
-                    "",
 
+                    "",    // EOT
                     "<error>"
             };
 

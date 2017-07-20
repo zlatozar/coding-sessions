@@ -14,17 +14,18 @@
 
 package Triangle.SyntacticAnalyzer;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class SourceFile {
+
+    private boolean debug = false;
 
     public static final char EOL = '\n';      // end of line
     public static final char EOT = '\u0000';  // end of transition
 
     File sourceFile;
-    FileInputStream source;
+    InputStream source;
     int currentLine;
 
     public SourceFile(String filename) {
@@ -36,6 +37,22 @@ public class SourceFile {
             this.currentLine = 1;
 
         } catch (IOException s) {
+            this.sourceFile = null;
+            this.source = null;
+
+            this.currentLine = 0;
+        }
+    }
+
+    public SourceFile(String snippet, boolean debug) {
+
+        try {
+            this.source = new ByteArrayInputStream(snippet.getBytes(StandardCharsets.UTF_8));
+            this.currentLine = 1;
+
+            this.debug = debug;
+
+        } catch (Exception s) {
             this.sourceFile = null;
             this.source = null;
 
@@ -59,6 +76,10 @@ public class SourceFile {
 
             } else if (c == EOL) {
                 currentLine++;
+            }
+
+            if (debug) {
+                System.out.println("source: " + (char) c);
             }
 
             return (char) c;
