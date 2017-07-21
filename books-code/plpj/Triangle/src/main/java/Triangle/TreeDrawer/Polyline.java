@@ -15,6 +15,7 @@
 package Triangle.TreeDrawer;
 
 class Polyline {
+
     int dx, dy;
     Polyline link;
 
@@ -23,5 +24,5 @@ class Polyline {
         this.dy = dy;
         this.link = link;
     }
-};
+}
 

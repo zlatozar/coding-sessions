@@ -20,15 +20,20 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 class DrawerFrame extends JFrame {
+
     public DrawerFrame(JPanel panel) {
+
         setSize(300, 200);
+
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension d = tk.getScreenSize();
         int screenHeight = d.height;
         int screenWidth = d.width;
+
         setTitle("Triangle Compiler Abstract Syntax Tree");
         setSize(screenWidth / 2, screenHeight / 2);
         setLocation(screenWidth / 4, screenHeight / 4);
+
         // Image img = tk.getImage("icon.gif");
         // setIconImage(img);
 
@@ -39,6 +44,7 @@ class DrawerFrame extends JFrame {
                     }
                 }
         );
+
         Container contentPane = getContentPane();
         contentPane.add(new JScrollPane(panel));
     }

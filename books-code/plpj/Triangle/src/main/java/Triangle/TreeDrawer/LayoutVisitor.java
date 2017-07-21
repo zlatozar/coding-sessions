@@ -310,18 +310,22 @@ public class LayoutVisitor implements Visitor {
 
     private DrawingTree layoutNullary(String name) {
         DrawingTree dt = layoutCaption(name);
+
         dt.contour.upper_tail = new Polyline(0, dt.height + 2 * BORDER, null);
         dt.contour.upper_head = dt.contour.upper_tail;
         dt.contour.lower_tail = new Polyline(-dt.width - 2 * BORDER, 0, null);
         dt.contour.lower_head = new Polyline(0, dt.height + 2 * BORDER, dt.contour.lower_tail);
+
         return dt;
     }
 
     private DrawingTree layoutUnary(String name, AST child1) {
         DrawingTree dt = layoutCaption(name);
         DrawingTree d1 = (DrawingTree) child1.visit(this, null);
+
         dt.setChildren(new DrawingTree[]{d1});
         attachParent(dt, join(dt));
+
         return dt;
     }
 
@@ -329,31 +333,35 @@ public class LayoutVisitor implements Visitor {
         DrawingTree dt = layoutCaption(name);
         DrawingTree d1 = (DrawingTree) child1.visit(this, null);
         DrawingTree d2 = (DrawingTree) child2.visit(this, null);
+
         dt.setChildren(new DrawingTree[]{d1, d2});
         attachParent(dt, join(dt));
+
         return dt;
     }
 
-    private DrawingTree layoutTernary(String name, AST child1, AST child2,
-                                      AST child3) {
+    private DrawingTree layoutTernary(String name, AST child1, AST child2, AST child3) {
         DrawingTree dt = layoutCaption(name);
         DrawingTree d1 = (DrawingTree) child1.visit(this, null);
         DrawingTree d2 = (DrawingTree) child2.visit(this, null);
         DrawingTree d3 = (DrawingTree) child3.visit(this, null);
+
         dt.setChildren(new DrawingTree[]{d1, d2, d3});
         attachParent(dt, join(dt));
+
         return dt;
     }
 
-    private DrawingTree layoutQuaternary(String name, AST child1, AST child2,
-                                         AST child3, AST child4) {
+    private DrawingTree layoutQuaternary(String name, AST child1, AST child2, AST child3, AST child4) {
         DrawingTree dt = layoutCaption(name);
         DrawingTree d1 = (DrawingTree) child1.visit(this, null);
         DrawingTree d2 = (DrawingTree) child2.visit(this, null);
         DrawingTree d3 = (DrawingTree) child3.visit(this, null);
         DrawingTree d4 = (DrawingTree) child4.visit(this, null);
+
         dt.setChildren(new DrawingTree[]{d1, d2, d3, d4});
         attachParent(dt, join(dt));
+
         return dt;
     }
 
@@ -364,10 +372,8 @@ public class LayoutVisitor implements Visitor {
 
         dt.children[0].offset.y = y + dt.height;
         dt.children[0].offset.x = x1;
-        dt.contour.upper_head = new Polyline(0, dt.height,
-                new Polyline(x1, y, dt.contour.upper_head));
-        dt.contour.lower_head = new Polyline(0, dt.height,
-                new Polyline(x2, y, dt.contour.lower_head));
+        dt.contour.upper_head = new Polyline(0, dt.height, new Polyline(x1, y, dt.contour.upper_head));
+        dt.contour.lower_head = new Polyline(0, dt.height, new Polyline(x2, y, dt.contour.lower_head));
     }
 
     private int join(DrawingTree dt) {
@@ -378,11 +384,13 @@ public class LayoutVisitor implements Visitor {
 
         for (int i = 1; i < dt.children.length; i++) {
             int d = merge(dt.contour, dt.children[i].contour);
+
             dt.children[i].offset.x = d + w;
             dt.children[i].offset.y = 0;
             w = dt.children[i].width + 2 * BORDER;
             sum += d + w;
         }
+
         return sum;
     }
 
@@ -395,7 +403,9 @@ public class LayoutVisitor implements Visitor {
         lower = c2.upper_head;
 
         while (lower != null && upper != null) {
+
             d = offset(x, y, lower.dx, lower.dy, upper.dx, upper.dy);
+
             x += d;
             total += d;
 
@@ -403,6 +413,7 @@ public class LayoutVisitor implements Visitor {
                 x += lower.dx;
                 y += lower.dy;
                 lower = lower.link;
+
             } else {
                 x -= upper.dx;
                 y -= upper.dy;
@@ -414,6 +425,7 @@ public class LayoutVisitor implements Visitor {
             b = bridge(c1.upper_tail, 0, 0, lower, x, y);
             c1.upper_tail = (b.link != null) ? c2.upper_tail : b;
             c1.lower_tail = c2.lower_tail;
+
         } else {
             b = bridge(c2.lower_tail, x, y, upper, 0, 0);
             if (b.link == null) {
@@ -435,6 +447,7 @@ public class LayoutVisitor implements Visitor {
 
         t = b2 * a1 - a2 * b1;
         if (t > 0) {
+
             if (p2 < 0) {
                 s = p2 * a1;
                 d = s / a2 - p1;
@@ -447,28 +460,31 @@ public class LayoutVisitor implements Visitor {
         } else if (b2 < p2 + a2) {
             s = (b2 - p2) * a1;
             d = b1 - (p1 + s / a2);
+
         } else if (b2 > p2 + a2) {
             s = (a2 + p2) * b1;
             d = s / b2 - (p1 + a1);
+
         } else {
             d = b1 - (p1 + a1);
         }
 
         if (d > 0) {
             return d;
+
         } else {
             return 0;
         }
     }
 
-    private Polyline bridge(Polyline line1, int x1, int y1,
-                            Polyline line2, int x2, int y2) {
+    private Polyline bridge(Polyline line1, int x1, int y1, Polyline line2, int x2, int y2) {
         int dy, dx, s;
         Polyline r;
 
         dy = y2 + line2.dy - y1;
         if (line2.dy == 0) {
             dx = line2.dx;
+
         } else {
             s = dy * line2.dx;
             dx = s / line2.dy;

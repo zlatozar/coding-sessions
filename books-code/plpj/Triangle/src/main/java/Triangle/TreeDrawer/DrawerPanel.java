@@ -18,6 +18,7 @@ import javax.swing.*;
 import java.awt.*;
 
 class DrawerPanel extends JPanel {
+
     private Drawer drawer;
 
     public DrawerPanel(Drawer drawer) {

@@ -21,12 +21,14 @@ public class DrawingTree {
     private final int FIXED_FONT_HEIGHT = 10;
     private final int FIXED_FONT_ASCENT = 3;
     private final Color nodeColor = new Color(250, 220, 100);
+
     String caption;
     int width, height;
     Point pos, offset;
     Polygon contour;
     DrawingTree parent;
     DrawingTree[] children;
+
     public DrawingTree(String caption, int width, int height) {
         this.caption = caption;
         this.width = width;
@@ -40,17 +42,19 @@ public class DrawingTree {
 
     public void setChildren(DrawingTree[] children) {
         this.children = children;
-        for (int i = 0; i < children.length; i++)
+
+        for (int i = 0; i < children.length; i++) {
             children[i].parent = this;
+        }
     }
 
     public void paint(Graphics graphics) {
+
         graphics.setColor(nodeColor);
         graphics.fillRect(pos.x, pos.y, width, height);
         graphics.setColor(Color.black);
         graphics.drawRect(pos.x, pos.y, width - 1, height - 1);
-        graphics.drawString(caption, pos.x + 2,
-                pos.y + (height + FIXED_FONT_HEIGHT) / 2);
+        graphics.drawString(caption, pos.x + 2, pos.y + (height + FIXED_FONT_HEIGHT) / 2);
 
         if (children != null) {
             for (int i = 0; i < children.length; i++) {
@@ -73,6 +77,7 @@ public class DrawingTree {
         Point temp = new Point(this.pos.x, this.pos.y);
 
         if (children != null) {
+
             for (int i = 0; i < children.length; i++) {
                 children[i].position(temp);
                 temp.x += children[i].offset.x;

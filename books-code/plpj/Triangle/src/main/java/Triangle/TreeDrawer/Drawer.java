@@ -29,6 +29,7 @@ public class Drawer {
     // Draw the AST representing a complete program.
 
     public void draw(Program ast) {
+
         theAST = ast;
         panel = new DrawerPanel(this);
         frame = new DrawerFrame(panel);
@@ -46,7 +47,9 @@ public class Drawer {
     }
 
     public void paintAST(Graphics g) {
+
         g.setColor(panel.getBackground());
+
         Dimension d = panel.getSize();
         g.fillRect(0, 0, d.width, d.height);
 
