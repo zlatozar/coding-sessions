@@ -7,65 +7,12 @@ package EasyDoesIt.Easy.SyntacticAnalizer;
  */
 final class Token {
 
-    public static final int INTLITERAL = 0;
-    public static final int CHARLITERAL = 1;
-    public static final int IDENTIFIER = 2;
-    public static final int OPERATOR = 3;
-    public static final int ARRAY = 4;   // first reserved word
-    public static final int BEGIN = 5;
-    public static final int BY = 6;
-    public static final int CALL = 7;
-
-//_____________________________________________________________________________
-//                               Constants denoting different kinds of <Token>
-
-    // literals, identifiers, operators...
-    public static final int CASE = 8;
-    public static final int DECLARE = 9;
-    public static final int ELSE = 10;
-    public static final int END = 11;
-
-    // reserved words - must be in alphabetical order...
-    public static final int EXIT = 12;
-    public static final int FI = 13;
-    public static final int FIELD = 14;
-    public static final int FOR = 15;
-    public static final int FUNCTION = 16;
-    public static final int IF = 17;
-    public static final int IS = 18;
-    public static final int OF = 19;
-    public static final int OTHERWISE = 20;
-    public static final int PROCEDURE = 21;
-    public static final int PROGRAM = 22;
-    public static final int REPEAT = 23;
-    public static final int REPENT = 24;
-    public static final int RETURN = 25;
-    public static final int SELECT = 26;
-    public static final int STRUCTURE = 27;
-    public static final int THEN = 28;
-    public static final int TO = 29;
-    public static final int TYPE = 30;
-    public static final int WHILE = 31;  // last reserved word
-    public static final int DOT = 32;
-    public static final int COLON = 33;
-    public static final int SEMICOLON = 34;
-    public static final int COMMA = 35;
-    public static final int BECOMES = 36;  // :=
-    public static final int LPAREN = 37;
-    public static final int RPAREN = 38;
-    public static final int LBRACKET = 39;
-
-    // punctuation...
-    public static final int RBRACKET = 40;
-    // Note that EOT represents the end of the source text
-    public static final int EOT = 41;
-    public static final int ERROR = 42;
     private final static int firstReservedWord = Token.ARRAY;
     private final static int lastReservedWord = Token.WHILE;
 
-    // brackets...
     private static String[] tokenTable =
             new String[]{
+
                     "<int>",
                     "<char>",
                     "<identifier>",
@@ -94,6 +41,7 @@ final class Token {
                     "REPENT",
                     "RETURN",
                     "SELECT",
+                    "SET",
                     "STRUCTURE",
                     "THEN",
                     "TO",
@@ -114,11 +62,10 @@ final class Token {
                     "",       // EOT
                     "<error>"
             };
+
+    protected int kind;
     protected final String spelling;
     protected final SourcePosition position;
-    protected int kind;
-
-    // special tokens...
 
     // Each token is completely described by its kind and spelling
     public Token(int kind, String spelling, SourcePosition position) {
@@ -157,6 +104,69 @@ final class Token {
     public static String spell(int kind) {
         return tokenTable[kind];
     }
+
+//_____________________________________________________________________________
+//                               Constants denoting different kinds of <Token>
+
+    // literals, identifiers, operators...
+
+    public static final int INTLITERAL    = 0;
+    public static final int STRINGLITERAL = 1;
+    public static final int IDENTIFIER    = 2;
+    public static final int OPERATOR      = 3;
+
+    // reserved words - must be in alphabetical order...
+
+    public static final int ARRAY =      4;   // first reserved word
+    public static final int BEGIN =      5;
+    public static final int BY =         6;
+    public static final int CALL =       7;
+    public static final int CASE =       8;
+    public static final int DECLARE =    9;
+    public static final int ELSE =      10;
+    public static final int END =       11;
+    public static final int EXIT =      12;
+    public static final int FI =        13;
+    public static final int FIELD =     14;
+    public static final int FOR =       15;
+    public static final int FUNCTION =  16;
+    public static final int IF =        17;
+    public static final int IS =        18;
+    public static final int OF =        19;
+    public static final int OTHERWISE = 20;
+    public static final int PROCEDURE = 21;
+    public static final int PROGRAM =   22;
+    public static final int REPEAT =    23;
+    public static final int REPENT =    24;
+    public static final int RETURN =    25;
+    public static final int SELECT =    26;
+    public static final int SET =       27;
+    public static final int STRUCTURE = 28;
+    public static final int THEN =      29;
+    public static final int TO =        30;
+    public static final int TYPE =      31;
+    public static final int WHILE =     32;  // last reserved word
+
+    // punctuation...
+
+    public static final int DOT       = 33;
+    public static final int COLON     = 34;
+    public static final int SEMICOLON = 35;
+    public static final int COMMA     = 36;
+    public static final int BECOMES   = 37;  // :=
+
+    // brackets...
+
+    public static final int LPAREN   = 38;
+    public static final int RPAREN   = 39;
+    public static final int LBRACKET = 40;
+    public static final int RBRACKET = 41;
+
+    // special tokens...
+
+    // Note that EOT represents the end of the source text
+    public static final int EOT   = 42;
+    public static final int ERROR = 43;
 
     @Override
     public String toString() {

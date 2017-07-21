@@ -35,7 +35,7 @@ public final class Scanner {
         }
 
         currentlyScanningToken = true;
-        currentSpelling = new StringBuilder("");
+        currentSpelling = new StringBuilder();
 
         pos = new SourcePosition();
         pos.start = sourceFile.getCurrentLineNumber();
@@ -52,8 +52,9 @@ public final class Scanner {
         return token;
     }
 
-    public void enableDebugging() {
+    public Scanner withDebugging() {
         debug = true;
+        return this;
     }
 
 //_____________________________________________________________________________
@@ -73,11 +74,9 @@ public final class Scanner {
     private boolean isOperator(char c) {
 
         return (c == '+' || c == '-' || c == '*' || c == '/' ||
-                c == '=' || c == '<' || c == '>' || c == '\\' ||
-                c == '&' || c == '@' || c == '%' || c == '^' ||
-                c == '?');
+                c == '<' || c == '=' || c == '>' || c == '&' ||
+                c == '|');
     }
-
 
     /**
      * Appends the current character to the current token, and gets
@@ -109,16 +108,15 @@ public final class Scanner {
 
                     while ((currentChar != '*') && (currentChar != SourceFile.EOT)) {
                         takeIt();
+                    }
+
+                    if (currentChar == '*') {
+                        takeIt();
 
                         if (currentChar == '/') {
                             takeIt();
-                            break;
                         }
                     }
-                }
-
-                if (currentChar == SourceFile.EOL) {
-                    takeIt();
                 }
             }
             break;
@@ -220,15 +218,11 @@ public final class Scanner {
             case '-':
             case '*':
             case '/':
-            case '=':
             case '<':
+            case '=':
             case '>':
-            case '\\':
             case '&':
-            case '@':
-            case '%':
-            case '^':
-            case '?':
+            case '|':
 
                 takeIt();
 
@@ -238,14 +232,22 @@ public final class Scanner {
 
                 return Token.OPERATOR;
 
-            case '\'':
+            case '\"':
 
                 takeIt();
-                takeIt(); // the quoted character
 
-                if (currentChar == '\'') {
+                // empty string
+                if (currentChar == '\"') {
+                    return Token.STRINGLITERAL;
+                }
+
+                while (currentChar != '\"' && (currentChar != SourceFile.EOT)) {
                     takeIt();
-                    return Token.CHARLITERAL;
+                }
+
+                if (currentChar == '\"') {
+                    takeIt();
+                    return Token.STRINGLITERAL;
 
                 } else {
                     return Token.ERROR;
@@ -273,10 +275,6 @@ public final class Scanner {
             case ',':
                 takeIt();
                 return Token.COMMA;
-
-            case '~':
-                takeIt();
-                return Token.IS;
 
             case '(':
                 takeIt();

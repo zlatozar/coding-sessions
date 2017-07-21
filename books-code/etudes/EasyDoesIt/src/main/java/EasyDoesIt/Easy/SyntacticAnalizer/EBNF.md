@@ -16,7 +16,8 @@ To the specification are applied:
 
 ```
 ARRAY, BEGIN, BY, CALL, CASE, DECLARE, ELSE, END, EXIT, FI, FIELD, FOR, FUNCTION, IF, IS, OF,
-OTHERWISE, PROCEDURE, PROGRAM, REPEAT, REPENT, RETURN, SELECT, STRUCTURE, THEN, TO, TYPE, WHILE
+OTHERWISE, PROCEDURE, PROGRAM, REPEAT, REPENT, RETURN, SELECT, SET, STRUCTURE, THEN, TO, TYPE,
+WHILE
 ```
 
 ### LIBRARY FUNCTIONS
@@ -131,6 +132,8 @@ INTEGER, REAL, BOOLEAN, STRING, TRUE, FALSE
 <target list>          ::=  <target> | {<target>}*
 <target>               ::=  <variable> :=
 ```
+
+Example: ```SET a := b := 42;
 
 ### PROCEDURE_CALLS
 
@@ -363,21 +366,21 @@ of letters and digits. Also, <identifier> includes none of the keywords.
 
 ```
 <Program>           ::=  (<Token> | <Comment> | <Blank>)*
-<Token>             ::=  <Integer-Literal> | <Character-Literal> | <Identifier> | <Operator> |
+<Token>             ::=  <Integer-Literal> | <String-Literal> | <Identifier> | <Operator> |
                          ARRAY | BEGIN | BY | CALL | CASE | DECLARE | ELSE | END | EXIT | FI |
                          FIELD | FOR | FUNCTION | IF | IS | OF | OTHERWISE | PROCEDURE | PROGRAM |
                          REPEAT | REPENT | RETURN | SELECT | STRUCTURE | THEN | TO | TYPE | WHILE |
                          . | : | ; | , | := | ( | ) | [ | ]
                         
 <Integer-Literal>   ::=  <Digit>(<Digit>)*
-<Character-Literal> ::=  " <Graphic> "
+<String-Literal>    ::=  " <Graphic>* "
 <Identifier>        ::=  <Letter> (<Letter> | <Digit>)*
 <Operator>          ::=  <Op-character>(<Op-character>)*
 <Comment>           ::=  /* <Graphic> */
 <Blank>             ::=  space | tab | end-of-line
 
 <Graphic>           ::=  <Letter> | <Digit> | <Op-character> | space | tab | . | : | ; | , |
-                         ~ | ( | ) | [ | ] | { | } | _ | ! | ' | ` | " | # | $ | % | ? | ^
+                         ~ | ( | ) | [ | ] | { | } | _ | ! | ' | ` | " | # | $ | % | ? | ^ | \
                          
 <Letter>            ::=  A | B | C | D | E | F | G | H | I | J | K | L | M |
                          N | O | P | Q | R | S | T | U | V | W | X | Y | Z |
@@ -385,5 +388,9 @@ of letters and digits. Also, <identifier> includes none of the keywords.
                          n | o | p | q | r | s | t | u | v | w | x | y | z
                           
 <Digit>             ::=  0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
-<Op-character>      ::=  + | - | * | / | < | = | > | & | \ | | |
+<Op-character>      ::=  + | - | * | / | < | = | > | & | | |
 ```
+
+### Comments
+
+Comments can't be nested
