@@ -14,7 +14,6 @@ class ParserSpec extends Specification {
         given: 'Triangle source file reader, scanner and parser'
         SourceFile sf = new SourceFile(SIMPLE_TRIANGLE_FILE)
         Scanner scanner = new Scanner(sf)
-        scanner.enableDebugging()
 
         Parser parser = new Parser(scanner, new ErrorReporter())
 

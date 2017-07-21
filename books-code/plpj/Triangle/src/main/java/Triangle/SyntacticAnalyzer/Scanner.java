@@ -66,8 +66,9 @@ public final class Scanner {
         return token;
     }
 
-    public void enableDebugging() {
+    public Scanner withDebugging() {
         debug = true;
+        return this;
     }
 
 //_____________________________________________________________________________
@@ -113,8 +114,8 @@ public final class Scanner {
 
         switch (currentChar) {
 
-            case '!': {
-
+            case '!':
+            {
                 takeIt();
 
                 while ((currentChar != SourceFile.EOL) && (currentChar != SourceFile.EOT)) {
@@ -245,7 +246,7 @@ public final class Scanner {
             case '\'':
 
                 takeIt();
-                takeIt(); // the quoted character
+                takeIt(); // the quoted character (note that is only ONE)
 
                 if (currentChar == '\'') {
                     takeIt();

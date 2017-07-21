@@ -81,7 +81,7 @@ public class Compiler {
         encoder = new Encoder(reporter);
 
         drawer = new Drawer();
-//        scanner.enableDebugging();
+//        scanner.withDebugging();
 
         theAST = parser.parseProgram();                     // 1st pass
 
