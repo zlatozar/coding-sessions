@@ -27,6 +27,38 @@ XOR, MOD, FLOOR, LENGTH, SUBSTR, CHARACTER, NUMBER, FLOAT, FIX, INPUT, OUTPUT,
 INTEGER, REAL, BOOLEAN, STRING, TRUE, FALSE
 ```
 
+### TOKEN_TABLE
+
+Build scanner based on this _lexical grammar_:
+
+```
+<Program>           ::=  (<Token> | <Comment> | <Blank>)*
+<Token>             ::=  <Integer-Literal> | <String-Literal> | <Identifier> | <Operator> |
+                         ARRAY | BEGIN | BY | CALL | CASE | DECLARE | ELSE | END | EXIT | FI |
+                         FIELD | FOR | FUNCTION | IF | IS | OF | OTHERWISE | PROCEDURE | PROGRAM |
+                         REPEAT | REPENT | RETURN | SELECT | STRUCTURE | THEN | TO | TYPE | WHILE |
+                         . | : | ; | , | :(empty|=) | ( | ) | [ | ]
+                        
+<Integer-Literal>   ::=  <Digit>(<Digit>)*
+<String-Literal>    ::=  " <Graphic>* "
+<Identifier>        ::=  <Letter> (<Letter> | <Digit>)*
+<Operator>          ::=  <Op-character>(<Op-character>)*
+<Comment>           ::=  /* <Graphic> */
+<Blank>             ::=  space | tab | end-of-line
+
+<Graphic>           ::=  <Letter> | <Digit> | <Op-character> | space | tab | . | : | ; | , |
+                         ~ | ( | ) | [ | ] | { | } | _ | ! | ' | ` | " | # | $ | % | ? | ^ | \
+                         
+<Letter>            ::=  A | B | C | D | E | F | G | H | I | J | K | L | M |
+                         N | O | P | Q | R | S | T | U | V | W | X | Y | Z |
+                         a | b | c | d | e | f | g | h | i | j | k | l | m |
+                         n | o | p | q | r | s | t | u | v | w | x | y | z
+                          
+<Digit>             ::=  0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+<Op-character>      ::=  + | - | * | / | < | = | > | & | | |
+```
+
+
 ### PROGRAM
 
 ```                    
@@ -57,7 +89,7 @@ INTEGER, REAL, BOOLEAN, STRING, TRUE, FALSE
 <type>              ::=  <basic type>
                      |   <arrayed type>
                      |   <structured type>
-                     |   <identifier>
+                     |   <type identifier>
                    
 <basic type>        ::=  INTEGER
                      |   REAL
@@ -72,6 +104,7 @@ INTEGER, REAL, BOOLEAN, STRING, TRUE, FALSE
 <structured type>   ::=  STRUCTURE <field list> END STRUCTURE
 <field list>        ::=  <field> | {, <field>}*
 <field>             ::=  FIELD <identifier> IS <type>
+<type identifier>   ::=  <identifier>
 
 ```
 
@@ -139,8 +172,7 @@ Example: ```SET a := b := 42;
 
 ```
 <call statement>       ::=  CALL <procedure reference> ;
-<procedure reference>  ::=  <identifier>
-                        |   <identifier> <actual argument list>
+<procedure reference>  ::=  <identifier> | {<actual argument list>}*
 <actual argument list> ::=  ( <expression>  | {, <expression>}* )
 
 ```
@@ -361,35 +393,6 @@ Example: ```SET a := b := 42;
 The syntax category ```<identifier>``` consists of strings that must start with a letter followed by any number
 of letters and digits. Also, <identifier> includes none of the keywords.
  
-
-### TOKEN_TABLE
-
-```
-<Program>           ::=  (<Token> | <Comment> | <Blank>)*
-<Token>             ::=  <Integer-Literal> | <String-Literal> | <Identifier> | <Operator> |
-                         ARRAY | BEGIN | BY | CALL | CASE | DECLARE | ELSE | END | EXIT | FI |
-                         FIELD | FOR | FUNCTION | IF | IS | OF | OTHERWISE | PROCEDURE | PROGRAM |
-                         REPEAT | REPENT | RETURN | SELECT | STRUCTURE | THEN | TO | TYPE | WHILE |
-                         . | : | ; | , | := | ( | ) | [ | ]
-                        
-<Integer-Literal>   ::=  <Digit>(<Digit>)*
-<String-Literal>    ::=  " <Graphic>* "
-<Identifier>        ::=  <Letter> (<Letter> | <Digit>)*
-<Operator>          ::=  <Op-character>(<Op-character>)*
-<Comment>           ::=  /* <Graphic> */
-<Blank>             ::=  space | tab | end-of-line
-
-<Graphic>           ::=  <Letter> | <Digit> | <Op-character> | space | tab | . | : | ; | , |
-                         ~ | ( | ) | [ | ] | { | } | _ | ! | ' | ` | " | # | $ | % | ? | ^ | \
-                         
-<Letter>            ::=  A | B | C | D | E | F | G | H | I | J | K | L | M |
-                         N | O | P | Q | R | S | T | U | V | W | X | Y | Z |
-                         a | b | c | d | e | f | g | h | i | j | k | l | m |
-                         n | o | p | q | r | s | t | u | v | w | x | y | z
-                          
-<Digit>             ::=  0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
-<Op-character>      ::=  + | - | * | / | < | = | > | & | | |
-```
 
 ### Comments
 
