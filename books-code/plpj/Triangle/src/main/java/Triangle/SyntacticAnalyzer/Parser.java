@@ -101,6 +101,7 @@ public class Parser {
 
         Program programAST;
 
+        // initialize, because everything starts from here
         previousTokenPosition.start = 0;
         previousTokenPosition.finish = 0;
 

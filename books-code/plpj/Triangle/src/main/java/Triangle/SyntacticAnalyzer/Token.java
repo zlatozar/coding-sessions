@@ -24,8 +24,10 @@ final class Token {
     private final static int firstReservedWord = Token.ARRAY;
     private final static int lastReservedWord  = Token.WHILE;
 
-    private static String[] tokenTable =
-            new String[]{
+    // Spellings of different kinds of token
+    // (must correspond to the token kinds):
+    private static String[] spellingTable =
+            {
                     "<int>",
                     "<char>",
                     "<identifier>",
@@ -73,14 +75,15 @@ final class Token {
     // Each token is completely described by its kind and spelling
     public Token(int kind, String spelling, SourcePosition position) {
 
-        // this.kind = ...
+        // The lexical grammar did not distinguish between identifiers and keywords.
+        // Nevertheless, the scanner must properly classify these tokens.
         if (kind == Token.IDENTIFIER) {
 
             int currentKind = firstReservedWord;
             boolean searching = true;
 
             while (searching) {
-                int comparison = tokenTable[currentKind].compareTo(spelling);
+                int comparison = spellingTable[currentKind].compareTo(spelling);
 
                 if (comparison == 0) {
                     this.kind = currentKind;
@@ -105,7 +108,7 @@ final class Token {
     }
 
     public static String spell(int kind) {
-        return tokenTable[kind];
+        return spellingTable[kind];
     }
 
 //_____________________________________________________________________________

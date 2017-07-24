@@ -74,6 +74,11 @@ public final class Scanner {
 //_____________________________________________________________________________
 //
 
+//  Punctuation and brackets also have no counterparts in the AST, because they serve only
+//  to separate and enclose also have no counterparts in the AST, because they serve only
+//  to separate and enclose phrases of the source program; once the source program has been
+//  parsed, they are no longer needed.
+
     private boolean isLetter(char c) {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
@@ -246,7 +251,7 @@ public final class Scanner {
             case '\'':
 
                 takeIt();
-                takeIt(); // the quoted character (note that is only ONE)
+                takeIt(); // the quoted character (only ONE char is allowed)
 
                 if (currentChar == '\'') {
                     takeIt();
