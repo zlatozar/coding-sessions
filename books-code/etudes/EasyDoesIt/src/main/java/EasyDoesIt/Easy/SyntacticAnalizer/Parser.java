@@ -6,7 +6,7 @@ import EasyDoesIt.Easy.ErrorReporter;
 /**
  * In parsing it is convenient to view the source program as a stream of tokens: symbols
  * such as identifiers, literals, operators, keywords, and punctuation.
- *
+ * <p/>
  * The parser treats each token as a terminal symbol. Note that the parser examines only
  * the kind of the current token, ignoring its spelling.
  */
@@ -144,14 +144,6 @@ public class Parser {
 
         switch (currentToken.kind) {
 
-            case Token.SEMICOLON:
-                NullStatement nullStatement = parseNullStatement();
-
-                finish(sbPos);
-
-                sbAST = new NullSegmentBody(nullStatement, sbPos);
-                break;
-
             case Token.TYPE:
                 TypeDefinition typeDefinition = parseTypeDefinition();
 
@@ -166,6 +158,13 @@ public class Parser {
                 }
                 break;
 
+            case Token.SEMICOLON:
+                NullStatement nullStatement = parseNullStatement();
+
+                finish(sbPos);
+
+                sbAST = new NullSegmentBody(nullStatement, sbPos);
+                break;
 
             default:
                 syntacticError("\"%\" cannot start segment", currentToken.spelling);
@@ -207,7 +206,7 @@ public class Parser {
     /**
      * Parses an identifier, and constructs a leaf AST to
      * represent it.
-     *
+     * <p/>
      * Note: The nonterminal symbol identifier corresponds to a single token,
      * so the method is similar to {@link Parser#accept}
      */
@@ -308,18 +307,16 @@ public class Parser {
 
             case Token.ARRAY:
                 acceptIt();
-                // parse array type
-                finish(tPos);
 
-                // type = ...
+                type = parseArrayedTypeDefinition();
+                finish(tPos);
                 break;
 
             case Token.STRUCTURE:
                 acceptIt();
-                // parse structure type
-                finish(tPos);
 
-                // type = ...
+                type = parseStructureType();
+                finish(tPos);
                 break;
 
             default:
@@ -330,5 +327,118 @@ public class Parser {
         return type;
     }
 
+    public ArrayedTypeDefinition parseArrayedTypeDefinition() throws SyntaxError {
+
+        SourcePosition atPos = new SourcePosition();
+        start(atPos);
+
+        Bounds bounds = parseBounds();
+        accept(Token.OF);
+
+        Type type = parseType();
+        finish(atPos);
+
+        return new ArrayedTypeDefinition(bounds, type, atPos);
+    }
+
+    public Bounds parseBounds() throws SyntaxError {
+
+        Bounds bounds;
+
+        SourcePosition atPos = new SourcePosition();
+        start(atPos);
+
+        if (currentToken.kind == Token.LBRACKET) {
+            acceptIt();
+
+        } else {
+            syntacticError("\"%\" cannot start an array bounds", currentToken.spelling);
+        }
+
+        Expression expression = parseExpression();
+
+        if (currentToken.kind == Token.COLON) {
+            acceptIt();
+
+            Expression expression2 = parseExpression();
+            finish(atPos);
+
+            bounds = new BoundSection(expression, expression2, atPos);
+            accept(Token.RBRACKET);
+
+        } else {
+            accept(Token.RBRACKET);
+            bounds = new BoundPosition(expression, atPos);
+        }
+
+        return bounds;
+    }
+
+    public StructureType parseStructureType() throws SyntaxError {
+
+        SourcePosition stPos = new SourcePosition();
+        start(stPos);
+
+        FieldList fieldList = parseFieldList();
+
+        accept(Token.END);
+        accept(Token.STRUCTURE);
+
+        finish(stPos);
+
+        return new StructureType(fieldList, stPos);
+    }
+
+    public FieldList parseFieldList() throws SyntaxError {
+
+        FieldList fieldList;
+
+        SourcePosition flPos = new SourcePosition();
+        start(flPos);
+
+        Field field = parseField();
+        fieldList = new FieldListSingle(field, flPos);
+
+        while (currentToken.kind == Token.COMMA) {
+            acceptIt();
+
+            Field field2 = parseField();
+            finish(flPos);
+
+            fieldList = new FieldListSequence(field, field2, flPos);
+        }
+
+        return fieldList;
+    }
+
+    public Field parseField() throws SyntaxError {
+
+        Field field = null;
+
+        SourcePosition fPos = new SourcePosition();
+        start(fPos);
+
+        if (currentToken.kind == Token.FIELD) {
+            acceptIt();
+
+            Identifier identifier = parseIdentifier();
+            accept(Token.IS);
+
+            Type type = parseType();
+            finish(fPos);
+
+            field = new Field(identifier, type, fPos);
+
+        } else {
+            syntacticError("\"%\" cannot start a field", currentToken.spelling);
+        }
+
+        return field;
+    }
+
+    public Expression parseExpression() throws SyntaxError {
+        acceptIt();
+        return null;
+    }
 
 }

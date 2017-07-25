@@ -18,6 +18,9 @@ public interface Visitor {
     //_____________________________________________________________________________
     //                                                            Array Aggregates
 
+    Object visitBoundPosition(BoundPosition ast, Object o);
+
+    Object visitBoundSection(BoundSection ast, Object o);
 
     //_____________________________________________________________________________
     //                                                           Record Aggregates
@@ -36,6 +39,16 @@ public interface Visitor {
     Object visitTypeDefinition(TypeDefinition ast, Object o);
 
     Object visitTypeIdentifier(TypeIdentifier ast, Object o);
+
+    Object visitArrayedTypeDefinition(ArrayedTypeDefinition ast, Object o);
+
+    Object visitStrictureType(StructureType ast, Object o);
+
+    Object visitFieldListSingle(FieldListSingle ast, Object o);
+
+    Object visitFieldListSequence(FieldListSequence ast, Object o);
+
+    Object visitField(Field ast, Object o);
 
     //_____________________________________________________________________________
     //                                         Literals, Identifiers and Operators
