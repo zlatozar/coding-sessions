@@ -239,7 +239,7 @@ public class Parser {
         start(commandPos);
         commandAST = parseSingleCommand();
 
-        // Command ::= single-Command(; single-Command)*
+        // Command ::= single-Command (; single-Command)*
         // That's why use while loop
         while (currentToken.kind == Token.SEMICOLON) {
             acceptIt();
