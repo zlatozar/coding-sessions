@@ -82,10 +82,6 @@ public class Parser {
 //_____________________________________________________________________________
 //                                                                    PROGRAMS
 
-//    <program>      ::=  <program head> <segment body> <program end>
-//    <program head> ::=  PROGRAM <identifier> :
-//    <program end>  ::=  END PROGRAM <indentifier> ;
-
     public Program parseProgram() {
 
         Program programAST;
@@ -138,7 +134,6 @@ public class Parser {
         return phAST;
     }
 
-
     private SegmentBody parseSegmentBody() throws SyntaxError {
 
         // in case there's a syntactic error
@@ -150,13 +145,27 @@ public class Parser {
         switch (currentToken.kind) {
 
             case Token.SEMICOLON:
-                acceptIt();
                 NullStatement nullStatement = parseNullStatement();
 
-                sbAST = new SegmentBody(nullStatement, sbPos);
                 finish(sbPos);
 
+                sbAST = new NullSegmentBody(nullStatement, sbPos);
                 break;
+
+            case Token.TYPE:
+                TypeDefinition typeDefinition = parseTypeDefinition();
+
+                sbAST = new TypeDefinitionSegmentBody(typeDefinition, sbPos);
+
+                while (currentToken.kind == Token.TYPE) {
+                    TypeDefinition typeDefinition2 = parseTypeDefinition();
+
+                    finish(sbPos);
+
+                    sbAST = new TypeDefinitionSequenceSegmentBody(typeDefinition, typeDefinition2, sbPos);
+                }
+                break;
+
 
             default:
                 syntacticError("\"%\" cannot start segment", currentToken.spelling);
@@ -230,10 +239,10 @@ public class Parser {
         SourcePosition nsPos = new SourcePosition();
         start(nsPos);
 
-        NullStatement nsAST = new NullStatement(currentToken.spelling, nsPos);
+        acceptIt();
         finish(nsPos);
 
-        return nsAST;
+        return new NullStatement(currentToken.spelling, nsPos);
     }
 
 //_____________________________________________________________________________
@@ -253,5 +262,73 @@ public class Parser {
 
 //_____________________________________________________________________________
 //                                                               TYPE-DENOTERS
+
+    public TypeDefinition parseTypeDefinition() throws SyntaxError {
+
+        TypeDefinition typeDefinition = null;
+
+        SourcePosition tdPos = new SourcePosition();
+        start(tdPos);
+
+        if (currentToken.kind == Token.TYPE) {
+            acceptIt();
+            Identifier identifier = parseIdentifier();
+
+            accept(Token.IS);
+
+            Type type = parseType();
+            accept(Token.SEMICOLON);
+
+            finish(tdPos);
+
+            typeDefinition = new TypeDefinition(identifier, type, tdPos);
+
+        } else {
+            syntacticError("\"%\" cannot start a declaration", currentToken.spelling);
+        }
+
+        return typeDefinition;
+    }
+
+    public Type parseType() throws SyntaxError {
+
+        Type type = null;
+
+        SourcePosition tPos = new SourcePosition();
+        start(tPos);
+
+        switch (currentToken.kind) {
+
+            case Token.IDENTIFIER:
+                Identifier identifier = parseIdentifier();
+                finish(tPos);
+
+                type = new TypeIdentifier(identifier, tPos);
+                break;
+
+            case Token.ARRAY:
+                acceptIt();
+                // parse array type
+                finish(tPos);
+
+                // type = ...
+                break;
+
+            case Token.STRUCTURE:
+                acceptIt();
+                // parse structure type
+                finish(tPos);
+
+                // type = ...
+                break;
+
+            default:
+                syntacticError("\"%\" cannot start a type", currentToken.spelling);
+
+        }
+
+        return type;
+    }
+
 
 }

@@ -2,17 +2,17 @@ package EasyDoesIt.Easy.AbstractSyntaxTrees;
 
 import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
-public class ProgramHead extends AST {
+public class TypeIdentifier extends Type {
 
     public Identifier identifier;
 
-    public ProgramHead(Identifier iAST, SourcePosition thePosition) {
+    public TypeIdentifier(Identifier identifier, SourcePosition thePosition) {
         super(thePosition);
-        this.identifier = iAST;
+        this.identifier = identifier;
     }
 
     @Override
     public Object visit(Visitor v, Object o) {
-        return v.visitProgramHead(this, o);
+        return v.visitTypeIdentifier(this, o);
     }
 }

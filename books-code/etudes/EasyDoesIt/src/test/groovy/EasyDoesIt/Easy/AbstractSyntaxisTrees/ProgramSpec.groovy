@@ -25,7 +25,7 @@ class ProgramSpec extends Specification {
         ErrorReporter reporter = new ErrorReporter();
         Parser parser = new Parser(scanner, reporter);
 
-        when: 'Parser pass'
+        when: 'Parser finish'
 
         then: 'AST should be constructed'
         AST theAST = parser.parseProgram();

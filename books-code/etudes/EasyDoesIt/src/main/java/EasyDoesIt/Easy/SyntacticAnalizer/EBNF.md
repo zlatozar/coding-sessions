@@ -86,16 +86,12 @@ Build scanner based on this _lexical grammar_:
 ```
 <type definition>   ::=  TYPE <identifier> IS <type> ;
 
-<type>              ::=  <basic type>
+<type>              ::=  <type identifier>
                      |   <arrayed type>
                      |   <structured type>
-                     |   <type identifier>
+
+<type identifier>   ::=  <identifier>
                    
-<basic type>        ::=  INTEGER
-                     |   REAL
-                     |   BOOLEAN
-                     |   STRING
-                    
 <arrayed type>      ::=  ARRAY <bounds> OF <type>
 
 <bounds>            ::=  [ <expression> ]
@@ -104,7 +100,6 @@ Build scanner based on this _lexical grammar_:
 <structured type>   ::=  STRUCTURE <field list> END STRUCTURE
 <field list>        ::=  <field> | {, <field>}*
 <field>             ::=  FIELD <identifier> IS <type>
-<type identifier>   ::=  <identifier>
 
 ```
 
@@ -357,9 +352,8 @@ Example: ```SET a := b := 42;
 ### VARIABLES
 
 ```
-<variable> ::=  <identifier>
-            |   <variable> . <identifier>
-            |   <variable> [ <expression> ]
+<variable>          ::=  <identifier> <rest of variable>
+<rest of variable>  ::= {. <identifier> | [ expression ] }*
 ```    
 
 ### CONSTANTS
