@@ -14,6 +14,11 @@ public interface Visitor {
     //_____________________________________________________________________________
     //                                                                Declarations
 
+    Object visitVariableDeclaration(VariableDeclaration ast, Object o);
+
+    Object visitDeclaredNames(DeclaredNames ast, Object o);
+
+    Object visitDeclaredNamesSequence(DeclaredNamesSequence ast, Object o);
 
     //_____________________________________________________________________________
     //                                                            Array Aggregates
@@ -71,6 +76,10 @@ public interface Visitor {
     Object visitTypeDefinitionSegmentBody(TypeDefinitionSegmentBody ast, Object o);
 
     Object visitTypeDefinitionSequenceSegmentBody(TypeDefinitionSequenceSegmentBody ast, Object o);
+
+    Object visitVariableDeclarationSegmentBody(VariableDeclarationSegmentBody ast, Object o);
+
+    Object visitVariableDeclarationSequenceSegmentBody(VariableDeclarationSequenceSegmentBody ast, Object o);
 
     Object visitProgramEnd(ProgramEnd ast, Object o);
 }

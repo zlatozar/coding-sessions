@@ -158,6 +158,21 @@ public class Parser {
                 }
                 break;
 
+            case Token.DECLARE:
+                VariableDeclaration variableDeclaration = parseVariableDeclaration();
+
+                sbAST = new VariableDeclarationSegmentBody(variableDeclaration, sbPos);
+
+                while (currentToken.kind == Token.COMMA) {
+                    VariableDeclaration variableDeclaration2 = parseVariableDeclaration();
+
+                    finish(sbPos);
+
+                    sbAST = new VariableDeclarationSequenceSegmentBody(variableDeclaration, variableDeclaration2, sbPos);
+                }
+                break;
+
+            // TODO
             case Token.SEMICOLON:
                 NullStatement nullStatement = parseNullStatement();
 
@@ -249,11 +264,6 @@ public class Parser {
 
 //_____________________________________________________________________________
 //                                                     VALUE-OR-VARIABLE NAMES
-
-
-//_____________________________________________________________________________
-//                                                                DECLARATIONS
-
 
 //_____________________________________________________________________________
 //                                                                  PARAMETERS
@@ -439,6 +449,73 @@ public class Parser {
     public Expression parseExpression() throws SyntaxError {
         acceptIt();
         return null;
+    }
+
+//_____________________________________________________________________________
+//                                                                DECLARATIONS
+
+    public VariableDeclaration parseVariableDeclaration() throws SyntaxError {
+
+        VariableDeclaration variableDeclaration = null;
+
+        SourcePosition vnPos = new SourcePosition();
+        start(vnPos);
+
+        if (currentToken.kind == Token.DECLARE) {
+            acceptIt();
+
+            Declarations declaredNames = parseDeclaredNames();
+            Type type = parseType();
+
+            finish(vnPos);
+
+            variableDeclaration = new VariableDeclaration(declaredNames, type, vnPos);
+
+        } else {
+            syntacticError("\"%\" cannot start a declaration", currentToken.spelling);
+        }
+
+        accept(Token.SEMICOLON);
+
+        return variableDeclaration;
+    }
+
+    public Declarations parseDeclaredNames() throws SyntaxError {
+
+        Declarations declaredNames = null;
+
+        SourcePosition dnPos = new SourcePosition();
+        start(dnPos);
+
+        if (currentToken.kind == Token.IDENTIFIER) {
+            Identifier identifier = parseIdentifier();
+            finish(dnPos);
+
+            declaredNames = new DeclaredNames(identifier, dnPos);
+
+        } else if (currentToken.kind == Token.LPAREN) {
+            acceptIt();
+
+            Identifier identifier = parseIdentifier();
+            finish(dnPos);
+
+            while (currentToken.kind == Token.COMMA) {
+                acceptIt();
+
+                Identifier identifier2 = parseIdentifier();
+                finish(dnPos);
+
+                declaredNames = new DeclaredNamesSequence(identifier, identifier2, dnPos);
+            }
+
+            accept(Token.RPAREN);
+
+        } else {
+            syntacticError("\"%\" cannot start a names declaration", currentToken.spelling);
+
+        }
+
+        return declaredNames;
     }
 
 }
