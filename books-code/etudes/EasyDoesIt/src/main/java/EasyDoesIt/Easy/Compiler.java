@@ -10,9 +10,6 @@ import EasyDoesIt.Easy.SyntacticAnalizer.SourceFile;
  */
 public class Compiler {
 
-    /**
-     * The filename for the object program, normally obj.esy
-     */
     static String objectName = "obj.esy";
 
     private static Scanner scanner;
@@ -24,21 +21,6 @@ public class Compiler {
      */
     private static Program theAST;
 
-    /**
-     * Compile the source program to TAM machine code.
-     *
-     * @param sourceName the name of the file containing the
-     *                   source program.
-     * @param objectName the name of the file containing the
-     *                   object program.
-     * @param showingAST true iff the AST is to be displayed after
-     *                   contextual analysis (not currently implemented).
-     * @param showingTable true iff the object description details are to
-     *                     be displayed during code generation (not currently implemented).
-     *
-     * @return true iff the source program is free of compile-time errors,
-     *         otherwise false.
-     */
     static boolean compileProgram(String sourceName, String objectName, boolean showingAST, boolean showingTable) {
 
         System.out.println("********** Easy Compiler (Java Version 0.1) **********");
@@ -60,12 +42,6 @@ public class Compiler {
         return reporter.numErrors == 0;
     }
 
-    /**
-     * Triangle compiler main program.
-     *
-     * @param args the only command-line argument to the program specifies
-     *             the source filename.
-     */
     public static void main(String[] args) {
         boolean compiledOK;
 

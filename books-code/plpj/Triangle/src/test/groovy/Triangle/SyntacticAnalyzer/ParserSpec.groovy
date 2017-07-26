@@ -20,6 +20,45 @@ class ParserSpec extends Specification {
         when: 'Start reading file, like compiler do'
 
         then: 'First token should be displayed'
-        parser.parseProgram()
+        def programAST = parser.parseProgram()
+        assert programAST
+//
+//        Here is how AST looks like:
+//
+//        programAST = {Program}
+//           C = {LetCommand}
+//              D = {SequentialDeclaration}
+//                 D1 = {SequentialDeclaration}
+//                    D1 = {SequentialDeclaration}
+//                       D1 = {TypeDeclaration}
+//                          I = {Identifier}
+//                          T = {RecordTypeDenoter}
+//                          duplicated = false
+//                          position = {SourcePosition} "(2, 6)"
+//                          entity = null
+//                       D2 = {ProcDeclaration}
+//                          I = {Identifier}
+//                          FPS = {SingleFormalParameterSequence}
+//                          C = {SequentialCommand}
+//                          duplicated = false
+//                          position = {SourcePosition} "(8, 17)"
+//                          entity = null
+//                          duplicated = false
+//                       position = {SourcePosition} "(2, 33)"
+//                       entity = null
+//                    D2 = {ProcDeclaration}
+//                       I = {Identifier}
+//                       FPS = {SingleFormalParameterSequence}
+//                       C = {LetCommand}
+//                       duplicated = false
+//                       position = {SourcePosition} "(19, 30)"
+//                       entity = null
+//                       duplicated = false
+//                       position = {SourcePosition} "(2, 33)"
+//            C = {WhileCommand}
+//            E = {UnaryExpression}
+//            C = {SequentialCommand}
+//            position = {SourcePosition} "(35, 39)"
+//            entity = null
     }
 }

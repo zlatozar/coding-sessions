@@ -15,8 +15,8 @@ To the specification are applied:
 ### KEYWORDS
 
 ```
-ARRAY, BEGIN, BY, CALL, CASE, DECLARE, ELSE, END, EXIT, FI, FIELD, FOR, FUNCTION, IF, IS, NAME, OF,
-OTHERWISE, PROCEDURE, PROGRAM, REPEAT, REPENT, RETURN, SELECT, SET, STRUCTURE, THEN, TO, TYPE,
+ARRAY, BEGIN, BY, CALL, CASE, DECLARE, ELSE, END, EXIT, FI, FIELD, FOR, FUNCTION, IF, INPUT, IS, NAME, OF,
+OTHERWISE, OUTPUT, PROCEDURE, PROGRAM, REPEAT, REPENT, RETURN, SELECT, SET, STRUCTURE, THEN, TO, TYPE,
 WHILE
 ```
 
@@ -35,9 +35,9 @@ Build scanner based on this _lexical grammar_:
 <Program>           ::=  (<Token> | <Comment> | <Blank>)*
 <Token>             ::=  <Integer-Literal> | <String-Literal> | <Identifier> | <Operator> |
                          ARRAY | BEGIN | BY | CALL | CASE | DECLARE | ELSE | END | EXIT | FI |
-                         FIELD | FOR | FUNCTION | IF | IS | NAME | OF | OTHERWISE | PROCEDURE | PROGRAM |
-                         REPEAT | REPENT | RETURN | SELECT | STRUCTURE | THEN | TO | TYPE | WHILE |
-                         . | : | ; | , | :(empty|=) | ( | ) | [ | ]
+                         FIELD | FOR | FUNCTION | IF | INPUT | IS | NAME | OF | OTHERWISE | OUTPUT |
+                         PROCEDURE | PROGRAM | REPEAT | REPENT | RETURN | SELECT | STRUCTURE |
+                         THEN | TO | TYPE | WHILE | . | : | ; | , | :(empty|=) | ( | ) | [ | ]
                         
 <Integer-Literal>   ::=  <Digit>(<Digit>)*
 <String-Literal>    ::=  " <Graphic>* "
@@ -166,18 +166,18 @@ A function returns a value and a procedure just executes commands.
 ### ASSIGNMENTS
 
 ```
-<assignment statement> ::=  SET <target list> <expression> ;
-<target list>          ::=  <target> | {<target>}*
-<target>               ::=  <variable> :=
+<assignment statement> ::=  SET <target list> := <expression> ;
+<target list>          ::= variable | {, variable}*
 ```
 
-Example: ```SET a := b := 42;
+Example: ```SET a, b := 42;```
 
 ### PROCEDURE_CALLS
 
 ```
 <call statement>       ::=  CALL <procedure reference> ;
-<procedure reference>  ::=  <identifier> | {<actual argument list>}*
+<procedure reference>  ::=  <identifier> 
+                        |   <actual argument list>
 <actual argument list> ::=  ( <expression>  | {, <expression>}* )
 
 ```
@@ -200,10 +200,7 @@ Example: ```SET a := b := 42;
 ### CONDITIONALS
 
 ```
-<conditional statement>        ::=  <simple conditional statement>
-                                |   <label> <simple conditional statement>
-
-<simple conditional statement> ::=  <conditional clause> <true branch> FI ;
+<conditional statement>        ::=  <conditional clause> <true branch> FI ;
                                 |   <conditional clause> <true branch> <false branch> FI ;
 
 <conditional clause>           ::=  IF <expression>
@@ -216,11 +213,8 @@ Example: ```SET a := b := 42;
 ### COMPOUNDS
 
 ```
-<compound statement> ::=  <simple compound>
-                      |   <label> <simple compound>
+<compound statement> ::=  BEGIN <compound body> <compound end>
                       
-<simple compound>    ::=  BEGIN <compound body> <compound end>
-
 <compound body>      ::=  <segment body>
 
 <compound end>       ::=  END ;
@@ -231,11 +225,8 @@ Example: ```SET a := b := 42;
 ### ITERATIONS
           
 ```
-<iteration statement>        ::=  <simple iteration statement>
-                              |   <label> <simple iteration statement>
+<iteration statement>        ::=  <iteration head> <segment body> <iteration end>
                               
-<simple iteration statement> ::=  <iteration head> <segment body> <iteration end> 
-
 <iteration head>             ::=  FOR <iteration target> <control> DO
 
 <iteration end>              ::=  END FOR ;
@@ -259,11 +250,8 @@ Example: ```SET a := b := 42;
 ### SELECTION
 
 ```
-<selection statement>  ::=  <simple selection>
-                        |   <label> <simple selection>
+<selection statement>  ::= <selection head> <selection body> <selection end>
                        
-<simple selection>     ::=  <selection head> <selection body> <selection end>
-
 <selection head>       ::=  SELECT <expression> OF
 <selection body>       ::=  <case list>
                         |   <case list> <escape case>
@@ -301,11 +289,10 @@ Example: ```SET a := b := 42;
 ```   
 
 
-### NULLS_AND_LABELS
+### NULL
 
 ```
 <null statement> ::=  ;
-<label>          ::=  <identifier> :
 ```         
 
 

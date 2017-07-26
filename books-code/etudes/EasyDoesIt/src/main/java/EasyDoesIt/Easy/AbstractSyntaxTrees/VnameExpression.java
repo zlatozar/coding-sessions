@@ -2,18 +2,18 @@ package EasyDoesIt.Easy.AbstractSyntaxTrees;
 
 import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
-public class Program extends AST {
+public class VnameExpression extends Expression {
 
-    public Segment S;
+    public Vname V;
 
-    public Program(SourcePosition srcPos, Segment sAST) {
+    public VnameExpression(SourcePosition srcPos, Vname vAST) {
         super(srcPos);
 
-        this.S = sAST;
+        this.V = vAST;
     }
 
     @Override
     public Object visit(Visitor v, Object o) {
-        return v.visitProgram(this, o);
+        return v.visitVnameExpression(this, o);
     }
 }

@@ -65,4 +65,22 @@ class ProcedureSpec extends ASTSpec {
         assert theAST
     }
 
+    def 'Function and procedure'() {
+
+        given: 'Parser both'
+        Parser parser = getParserFor(
+                ' FUNCTION abs(x REAL NAME) REAL:\n' +
+                        '    ;\n' +
+                        ' END FUNCTION abs;' +
+                ' PROCEDURE abs(x REAL, y INTEGER):\n' +
+                        '    ;\n' +
+                        ' END PROCEDURE abs;')
+
+        when: 'Parser finish'
+
+        then: 'AST should be constructed'
+        AST theAST = parser.parseProgram();
+        assert theAST
+    }
+
 }

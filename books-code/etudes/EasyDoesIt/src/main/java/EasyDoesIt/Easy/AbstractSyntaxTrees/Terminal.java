@@ -7,9 +7,9 @@ abstract public class Terminal extends AST {
     // token spelling from scanner
     public String spelling;
 
-    public Terminal(String theSpelling, SourcePosition thePosition) {
-        super(thePosition);
+    public Terminal(SourcePosition srcPos, String spelling) {
+        super(srcPos);
 
-        this.spelling = theSpelling;
+        this.spelling = spelling;
     }
 }

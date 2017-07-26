@@ -2,18 +2,18 @@ package EasyDoesIt.Easy.AbstractSyntaxTrees;
 
 import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
-public class Program extends AST {
+public class SimpleVname extends Vname {
 
-    public Segment S;
+    public Identifier I;
 
-    public Program(SourcePosition srcPos, Segment sAST) {
+    public SimpleVname(SourcePosition srcPos, Identifier iAST) {
         super(srcPos);
 
-        this.S = sAST;
+        this.I = iAST;
     }
 
     @Override
     public Object visit(Visitor v, Object o) {
-        return v.visitProgram(this, o);
+        return v.visitSimpleVname(this, o);
     }
 }

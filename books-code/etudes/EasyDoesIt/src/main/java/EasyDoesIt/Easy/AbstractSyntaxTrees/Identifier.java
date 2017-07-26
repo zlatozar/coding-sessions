@@ -4,8 +4,16 @@ import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
 public class Identifier extends Terminal {
 
-    public Identifier(String theSpelling, SourcePosition thePosition) {
-        super(theSpelling, thePosition);
+    public TypeDenoter type;
+
+    // Either a Declaration or a FieldTypeDenoter
+    public AST decl;
+
+    public Identifier(SourcePosition srcPos, String theSpelling) {
+        super(srcPos, theSpelling);
+
+        this.type = null;
+        this.decl = null;
     }
 
     @Override
