@@ -15,7 +15,7 @@ To the specification are applied:
 ### KEYWORDS
 
 ```
-ARRAY, BEGIN, BY, CALL, CASE, DECLARE, ELSE, END, EXIT, FI, FIELD, FOR, FUNCTION, IF, IS, OF,
+ARRAY, BEGIN, BY, CALL, CASE, DECLARE, ELSE, END, EXIT, FI, FIELD, FOR, FUNCTION, IF, IS, NAME, OF,
 OTHERWISE, PROCEDURE, PROGRAM, REPEAT, REPENT, RETURN, SELECT, SET, STRUCTURE, THEN, TO, TYPE,
 WHILE
 ```
@@ -35,7 +35,7 @@ Build scanner based on this _lexical grammar_:
 <Program>           ::=  (<Token> | <Comment> | <Blank>)*
 <Token>             ::=  <Integer-Literal> | <String-Literal> | <Identifier> | <Operator> |
                          ARRAY | BEGIN | BY | CALL | CASE | DECLARE | ELSE | END | EXIT | FI |
-                         FIELD | FOR | FUNCTION | IF | IS | OF | OTHERWISE | PROCEDURE | PROGRAM |
+                         FIELD | FOR | FUNCTION | IF | IS | NAME | OF | OTHERWISE | PROCEDURE | PROGRAM |
                          REPEAT | REPENT | RETURN | SELECT | STRUCTURE | THEN | TO | TYPE | WHILE |
                          . | : | ; | , | :(empty|=) | ( | ) | [ | ]
                         
@@ -115,6 +115,8 @@ Build scanner based on this _lexical grammar_:
 
 ### INTERNAL_PROCEDURES
 
+A function returns a value and a procedure just executes commands.
+
 ```
 <procedure definition>           ::=  <subprogram definition>
                                   |   <function definition>
@@ -127,9 +129,17 @@ Build scanner based on this _lexical grammar_:
 <function head>                  ::=  FUNCTION <procedure name> <type>
 <function end>                   ::=  END FUNCTION <identifier> ;
 
-<procedure name>                 ::=  <identifier> {<internal parameter list>}*
+<procedure name>                 ::=  <identifier>
+                                  |   <identifier> <internal parameter list>
+
 <internal parameter list>        ::=  ( <internal parameter> | {, <internal parameter>}* )
-<internal parameter>             ::=  <identifier> <type>
+
+<internal parameter>             ::=  <pass value>
+                                  |   <pass name>
+
+<pass by value>                   ::= <identifier> <type>
+<pass by name>                    ::= <identifier> <type> NAME            
+
 ```
 
 
@@ -171,15 +181,6 @@ Example: ```SET a := b := 42;
 <actual argument list> ::=  ( <expression>  | {, <expression>}* )
 
 ```
-
-
-### FUNCTION_CALLS
-        
-```
-<function reference>  ::=  <identifier> ( )
-                       |   <identifier> <actual argument list>
-```
-
 
 ### RETURN
 
@@ -355,6 +356,15 @@ Example: ```SET a := b := 42;
 <variable>          ::=  <identifier> <rest of variable>
 <rest of variable>  ::= {. <identifier> | [ expression ] }*
 ```    
+
+
+### FUNCTION_CALLS
+        
+```
+<function reference>  ::=  <identifier> ( )
+                       |   <identifier> <actual argument list>
+```
+
 
 ### CONSTANTS
         

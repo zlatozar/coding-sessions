@@ -31,12 +31,33 @@ public interface Visitor {
     //                                                           Record Aggregates
 
     //_____________________________________________________________________________
-    //                                                           Formal Parameters
+    //                                                                  Procedures
 
+    Object visitFunctionDefinition(FunctionDefinition ast, Object o);
 
-    //_____________________________________________________________________________
-    //                                                           Actual Parameters
+    Object visitFunctionHead(FunctionHead ast, Object o);
 
+    Object visitFunctionEnd(FunctionEnd ast, Object o);
+
+    Object visitProcedureDefinition(ProcedureDefinition ast, Object o);
+
+    Object visitSubProgramDefinition(SubProgramDefinition ast, Object o);
+
+    Object visitSubProgramHead(SubProgramHead ast, Object o);
+
+    Object visitSubProgramEnd(SubProgramEnd ast, Object o);
+
+    Object visitProcedureName(ProcedureName ast, Object o);
+
+    Object visitEmptyInternalParametersList(EmptyInternalParameterList ast, Object o);
+
+    Object visitInternalParameterList(InternalParameterList ast, Object o);
+
+    Object visitInternalParameterListSequence(InternalParameterListSequence ast, Object o);
+
+    Object visitPassByValue(PassByValue ast, Object o);
+
+    Object visitPassByName(PassByName ast, Object o);
 
     //_____________________________________________________________________________
     //                                                               Type Denoters
@@ -80,6 +101,10 @@ public interface Visitor {
     Object visitVariableDeclarationSegmentBody(VariableDeclarationSegmentBody ast, Object o);
 
     Object visitVariableDeclarationSequenceSegmentBody(VariableDeclarationSequenceSegmentBody ast, Object o);
+
+    Object visitProcedureDefinitionSegmentBody(ProcedureDefinitionSegmentBody ast, Object o);
+
+    Object visitProcedureDefinitionSequenceSegmentBody(ProcedureDefinitionSequenceSegmentBody ast, Object o);
 
     Object visitProgramEnd(ProgramEnd ast, Object o);
 }

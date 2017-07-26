@@ -172,7 +172,23 @@ public class Parser {
                 }
                 break;
 
-            // TODO
+            case Token.PROCEDURE:
+            case Token.FUNCTION:
+
+                ProcedureDefinition procedureDefinition = parseProcedureDefinition();
+
+                sbAST = new ProcedureDefinitionSegmentBody(procedureDefinition, sbPos);
+
+                while (currentToken.kind == Token.PROCEDURE || currentToken.kind == Token.FUNCTION) {
+                    ProcedureDefinition procedureDefinition2 = parseProcedureDefinition();
+
+                    finish(sbPos);
+
+                    sbAST = new ProcedureDefinitionSequenceSegmentBody(procedureDefinition, procedureDefinition2, sbPos);
+                }
+                break;
+
+                // TODO
             case Token.SEMICOLON:
                 NullStatement nullStatement = parseNullStatement();
 
@@ -266,7 +282,203 @@ public class Parser {
 //                                                     VALUE-OR-VARIABLE NAMES
 
 //_____________________________________________________________________________
+//                                                                  PROCEDURES
+
+    public ProcedureDefinition parseProcedureDefinition() throws SyntaxError {
+
+        ProcedureDefinition pdAST = null;
+
+        SourcePosition pdPos = new SourcePosition();
+        start(pdPos);
+
+        if (currentToken.kind == Token.PROCEDURE) {
+            SubProgramDefinition sbDefinition = parseSubprogramDefinition();
+            finish(pdPos);
+
+            pdAST = new ProcedureDefinition(sbDefinition, pdPos);
+
+        } else if (currentToken.kind == Token.FUNCTION) {
+            FunctionDefinition funcDefinition = parseFunctionDefinition();
+            finish(pdPos);
+
+            pdAST = new ProcedureDefinition(funcDefinition, pdPos);
+
+        } else {
+            syntacticError("\"%\" cannot start a sub-program definition", currentToken.spelling);
+        }
+
+        return pdAST;
+    }
+
+    public SubProgramDefinition parseSubprogramDefinition() throws SyntaxError {
+
+        SourcePosition spPos = new SourcePosition();
+        start(spPos);
+
+        SubProgramHead spHead = parseSubProgramHead();
+        accept(Token.COLON);
+
+        SegmentBody segmentBody = parseSegmentBody();
+        SubProgramEnd sbEnd = parseSubProgramEnd();
+        finish(spPos);
+
+        return new SubProgramDefinition(spHead, segmentBody, sbEnd, spPos);
+    }
+
+    public SubProgramHead parseSubProgramHead() throws SyntaxError {
+
+        SourcePosition spPos = new SourcePosition();
+        start(spPos);
+
+        accept(Token.PROCEDURE);
+        finish(spPos);
+
+        ProcedureName procedureName = parseProcedureName();
+
+        return new SubProgramHead(procedureName, spPos);
+    }
+
+    public SubProgramEnd parseSubProgramEnd() throws SyntaxError {
+
+        SourcePosition spPos = new SourcePosition();
+        start(spPos);
+
+        accept(Token.END);
+        accept(Token.PROCEDURE);
+
+        Identifier identifier = parseIdentifier();
+        accept(Token.SEMICOLON);
+
+        finish(spPos);
+
+        return new SubProgramEnd(identifier, spPos);
+    }
+
+    public FunctionDefinition parseFunctionDefinition() throws SyntaxError {
+
+        SourcePosition spPos = new SourcePosition();
+        start(spPos);
+
+        FunctionHead functionHead = parseFunctionHead();
+        accept(Token.COLON);
+
+        SegmentBody segmentBody = parseSegmentBody();
+
+        FunctionEnd functionEnd = parseFunctionEnd();
+        finish(spPos);
+
+        return new FunctionDefinition(functionHead, segmentBody, functionEnd, spPos);
+    }
+
+    public FunctionHead parseFunctionHead() throws SyntaxError {
+
+        SourcePosition spPos = new SourcePosition();
+        start(spPos);
+
+        accept(Token.FUNCTION);
+
+        ProcedureName procedureName = parseProcedureName();
+
+        Type type = parseType();
+        finish(spPos);
+
+        return new FunctionHead(procedureName, type, spPos);
+    }
+
+    public FunctionEnd parseFunctionEnd() throws SyntaxError {
+
+        SourcePosition spPos = new SourcePosition();
+        start(spPos);
+
+        accept(Token.END);
+        accept(Token.FUNCTION);
+
+        Identifier identifier = parseIdentifier();
+        accept(Token.SEMICOLON);
+
+        finish(spPos);
+
+        return new FunctionEnd(identifier, spPos);
+    }
+
+    public ProcedureName parseProcedureName() throws SyntaxError {
+
+        ProcedureName procedureName;
+
+        SourcePosition spPos = new SourcePosition();
+        start(spPos);
+
+        Identifier identifier = parseIdentifier();
+
+        Parameters parameters;
+        if (currentToken.kind == Token.LPAREN) {
+            acceptIt();
+
+            parameters = parseInternalParameterList();
+            finish(spPos);
+
+        } else {
+            parameters = new EmptyInternalParameterList(spPos);
+        }
+
+        procedureName = new ProcedureName(identifier, parameters, spPos);
+        accept(Token.RPAREN);
+
+        return procedureName;
+    }
+
+    public Parameters parseInternalParameterList() throws SyntaxError {
+
+        Parameters params;
+
+        SourcePosition spPos = new SourcePosition();
+        start(spPos);
+
+        InternalParameter internalParam = parseInternalParameter();
+        finish(spPos);
+
+        params = new InternalParameterList(internalParam, spPos);
+
+        while (currentToken.kind == Token.COMMA) {
+            acceptIt();
+
+            InternalParameter internalParam2 = parseInternalParameter();
+            finish(spPos);
+
+            params = new InternalParameterListSequence(internalParam, internalParam2, spPos);
+        }
+
+        return params;
+    }
+
+
+    public InternalParameter parseInternalParameter() throws SyntaxError {
+
+        InternalParameter internalParameter;
+
+        SourcePosition spPos = new SourcePosition();
+        start(spPos);
+
+        Identifier identifier = parseIdentifier();
+        Type type = parseType();
+        finish(spPos);
+
+        if (currentToken.kind == Token.NAME) {
+            acceptIt();
+            internalParameter = new PassByName(identifier, type, spPos);
+
+        } else {
+            internalParameter = new PassByValue(identifier, type, spPos);
+        }
+
+        return internalParameter;
+    }
+
+
+//_____________________________________________________________________________
 //                                                                  PARAMETERS
+
+
 
 
 //_____________________________________________________________________________

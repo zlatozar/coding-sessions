@@ -32,6 +32,7 @@ final class Token {
                     "FUNCTION",
                     "IF",
                     "IS",
+                    "NAME",
                     "OF",
                     "OTHERWISE",
                     "PROCEDURE",
@@ -132,41 +133,42 @@ final class Token {
     public static final int FUNCTION =  16;
     public static final int IF =        17;
     public static final int IS =        18;
-    public static final int OF =        19;
-    public static final int OTHERWISE = 20;
-    public static final int PROCEDURE = 21;
-    public static final int PROGRAM =   22;
-    public static final int REPEAT =    23;
-    public static final int REPENT =    24;
-    public static final int RETURN =    25;
-    public static final int SELECT =    26;
-    public static final int SET =       27;
-    public static final int STRUCTURE = 28;
-    public static final int THEN =      29;
-    public static final int TO =        30;
-    public static final int TYPE =      31;
-    public static final int WHILE =     32;  // last reserved word
+    public static final int NAME =      19;
+    public static final int OF =        20;
+    public static final int OTHERWISE = 21;
+    public static final int PROCEDURE = 22;
+    public static final int PROGRAM =   23;
+    public static final int REPEAT =    24;
+    public static final int REPENT =    25;
+    public static final int RETURN =    26;
+    public static final int SELECT =    27;
+    public static final int SET =       28;
+    public static final int STRUCTURE = 29;
+    public static final int THEN =      30;
+    public static final int TO =        31;
+    public static final int TYPE =      32;
+    public static final int WHILE =     33;  // last reserved word
 
     // punctuation...
 
-    public static final int DOT       = 33;
-    public static final int COLON     = 34;
-    public static final int SEMICOLON = 35;
-    public static final int COMMA     = 36;
-    public static final int BECOMES   = 37;  // :=
+    public static final int DOT       = 34;
+    public static final int COLON     = 35;
+    public static final int SEMICOLON = 36;
+    public static final int COMMA     = 37;
+    public static final int BECOMES   = 38;  // :=
 
     // brackets...
 
-    public static final int LPAREN   = 38;
-    public static final int RPAREN   = 39;
-    public static final int LBRACKET = 40;
-    public static final int RBRACKET = 41;
+    public static final int LPAREN   = 39;
+    public static final int RPAREN   = 40;
+    public static final int LBRACKET = 41;
+    public static final int RBRACKET = 42;
 
     // special tokens...
 
     // Note that EOT represents the end of the source text
-    public static final int EOT   = 42;
-    public static final int ERROR = 43;
+    public static final int EOT   = 43;
+    public static final int ERROR = 44;
 
     @Override
     public String toString() {
