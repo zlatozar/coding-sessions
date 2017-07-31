@@ -11,7 +11,7 @@ import spock.lang.Title
 class DeclarationsSpec extends ASTSpec {
 
     private final String DECLARATION_IDENTIFIER = 'DECLARE epsilon REAL;'
-    private final String GROUP_DECLARATION_IDENTIFIER = 'DECLARE (epsilon, pi) REAL;'
+    private final String GROUP_DECLARATION_IDENTIFIER = 'DECLARE (epsilon, pi, fi) REAL;'
 
     private final String MULTIPLE_DECLARATIONS = DECLARATION_IDENTIFIER + '\n' + GROUP_DECLARATION_IDENTIFIER
 

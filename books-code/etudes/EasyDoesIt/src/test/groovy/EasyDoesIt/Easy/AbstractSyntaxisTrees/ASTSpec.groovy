@@ -20,8 +20,9 @@ class ASTSpec extends Specification {
 
     protected static String createProgram(String statement) {
         return "PROGRAM simpleProgram:\n" +
-               "$statement\n" +
-               "END PROGRAM simple;"
+                "$statement\n" +
+                ";" +
+                "END PROGRAM simple;"
     }
 
     def 'dummy'() {

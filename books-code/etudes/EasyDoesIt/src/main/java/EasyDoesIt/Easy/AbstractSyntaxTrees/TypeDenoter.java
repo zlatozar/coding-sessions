@@ -8,7 +8,7 @@ public abstract class TypeDenoter extends AST {
         super(srcPos);
     }
 
-    @Override
-    public abstract boolean equals(Object obj);
+//    @Override
+//    public abstract boolean equals(Object obj);
 
 }

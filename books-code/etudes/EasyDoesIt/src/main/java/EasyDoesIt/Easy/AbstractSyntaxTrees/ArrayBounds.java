@@ -2,9 +2,9 @@ package EasyDoesIt.Easy.AbstractSyntaxTrees;
 
 import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
-public abstract class Segment extends AST {
+public abstract class ArrayBounds extends AST {
 
-    public Segment(SourcePosition srcPos) {
+    public ArrayBounds(SourcePosition srcPos) {
         super(srcPos);
     }
 }

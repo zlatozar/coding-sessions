@@ -240,13 +240,13 @@ public class Parser {
         commandAST = parseSingleCommand();
 
         // Command ::= single-Command (; single-Command)*
-        // That's why use while loop
         while (currentToken.kind == Token.SEMICOLON) {
             acceptIt();
 
             Command c2AST = parseSingleCommand();
             finish(commandPos);
 
+            // note that we re-write 'commandAST' but pass previous value as first argument
             commandAST = new SequentialCommand(commandAST, c2AST, commandPos);
         }
 

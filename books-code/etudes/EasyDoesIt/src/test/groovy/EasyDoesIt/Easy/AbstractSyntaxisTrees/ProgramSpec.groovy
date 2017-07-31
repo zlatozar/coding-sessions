@@ -14,6 +14,9 @@ class ProgramSpec extends Specification {
     private static final String PROGRAM_STRUCTURE =
             'PROGRAM simple:\n' +
             ';\n' +
+            ';\n' +
+            ';\n' +
+            ';\n' +
             'END PROGRAM simple;'
 
 

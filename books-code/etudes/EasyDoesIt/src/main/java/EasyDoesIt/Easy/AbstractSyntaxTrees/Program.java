@@ -4,12 +4,12 @@ import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
 public class Program extends AST {
 
-    public Segment S;
+    public ProgramBody programBody;
 
-    public Program(SourcePosition srcPos, Segment sAST) {
+    public Program(SourcePosition srcPos, ProgramBody pbAST) {
         super(srcPos);
 
-        this.S = sAST;
+        this.programBody = pbAST;
     }
 
     @Override
