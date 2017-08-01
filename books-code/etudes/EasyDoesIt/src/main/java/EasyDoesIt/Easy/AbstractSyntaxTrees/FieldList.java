@@ -4,13 +4,13 @@ import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
 public class FieldList extends Field {
 
-    Field field;
     Field fieldSeq;
+    Field field;
 
-    public FieldList(SourcePosition srcPos, Field field, Field fieldSeq) {
+    public FieldList(SourcePosition srcPos, Field fieldSeq, Field field) {
         super(srcPos);
-        this.field = field;
         this.fieldSeq = fieldSeq;
+        this.field = field;
     }
 
     @Override

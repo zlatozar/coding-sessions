@@ -2,18 +2,17 @@ package EasyDoesIt.Easy.AbstractSyntaxTrees;
 
 import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
-public class Program extends AST {
+public class ProcedureName extends BlockCodeName {
 
-    public ProgramBody program;
+    public Identifier I;
 
-    public Program(SourcePosition srcPos, ProgramBody pbAST) {
+    public ProcedureName(SourcePosition srcPos, Identifier i) {
         super(srcPos);
-
-        this.program = pbAST;
+        I = i;
     }
 
     @Override
     public Object visit(Visitor v, Object o) {
-        return v.visitProgram(this, o);
+        return v.visitProcedureName(this, o);
     }
 }

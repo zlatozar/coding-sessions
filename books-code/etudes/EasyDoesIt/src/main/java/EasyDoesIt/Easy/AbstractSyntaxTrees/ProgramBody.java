@@ -5,10 +5,10 @@ import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 public class ProgramBody extends AST {
 
     public Identifier prgName;
-    public Command prgBody;
+    public Segment prgBody;
     public Identifier prgNameEnd;
 
-    public ProgramBody(SourcePosition srcPos, Identifier prgName, Command prgBody, Identifier prgNameEnd) {
+    public ProgramBody(SourcePosition srcPos, Identifier prgName, Segment prgBody, Identifier prgNameEnd) {
 
         super(srcPos);
 

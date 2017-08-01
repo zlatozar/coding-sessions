@@ -20,7 +20,7 @@ public interface Visitor {
 
     Object visitProgram(Program ast, Object o);
     Object visitProgramBody(ProgramBody ast, Object o);
-    Object visitCommand(Command ast, Object o);
+    Object visitCommand(Segment ast, Object o);
 
 
 //_____________________________________________________________________________
@@ -52,6 +52,16 @@ public interface Visitor {
     Object visitMultipleDeclaredNames(MultipleDeclaredNames ast, Object o);
     Object visitEmptyDeclaredName(EmptyDeclaredName ast, Object o);
 
-
-
+    Object visitInternalProcedure(InternalProcedure ast, Object o);
+    Object visitProcedureDefinition(ProcedureDefinition ast, Object o);
+    Object visitFunctionDefinition(FunctionDefinition ast, Object o);
+    Object visitProcedureHead(ProcedureHead ast, Object o);
+    Object visitProcedureEnd(ProcedureEnd ast, Object o);
+    Object visitProcedureName(ProcedureName ast, Object o);
+    Object visitParameterList(ParameterList ast, Object o);
+    Object visitProgramWithParams(ProgramNameWithParams ast, Object o);
+    Object visitParameterByValue(ParameterByValue ast, Object o);
+    Object visitParameterByName(ParameterByName ast, Object o);
+    Object visitFunctionHead(FunctionHead ast, Object o);
+    Object visitFunctionEnd(FunctionEnd ast, Object o);
 }

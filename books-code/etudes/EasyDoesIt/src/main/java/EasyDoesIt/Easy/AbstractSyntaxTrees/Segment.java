@@ -2,12 +2,12 @@ package EasyDoesIt.Easy.AbstractSyntaxTrees;
 
 import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
-public class Command extends AST {
+public class Segment extends AST {
 
     public Definition definition;
     public Statement statement;
 
-    public Command(SourcePosition srcPos, Definition definition, Statement statement) {
+    public Segment(SourcePosition srcPos, Definition definition, Statement statement) {
         super(srcPos);
         this.definition = definition;
         this.statement = statement;

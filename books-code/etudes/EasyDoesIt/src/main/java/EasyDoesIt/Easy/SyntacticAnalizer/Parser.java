@@ -90,18 +90,27 @@ public class Parser {
         Identifier prgName = parseIdentifier();
         accept(Token.COLON);
 
-        Definition prgDefinition = parseDefinitionsSeq();
-        Statement prgStatement = parseExecutableStatementSeq();
-
-        Command command = new Command(srcPos, prgDefinition, prgStatement);
+        Segment segment = parseSegment();
 
         accept(Token.END);
         accept(Token.PROGRAM);
 
         Identifier prgNameEnd = parseIdentifier();
         accept(Token.SEMICOLON);
+        finish(srcPos);
 
-        return new ProgramBody(srcPos, prgName, command, prgNameEnd);
+        return new ProgramBody(srcPos, prgName, segment, prgNameEnd);
+    }
+
+    Segment parseSegment() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        Definition prgDefinition = parseDefinitionsSeq();
+        Statement prgStatement = parseExecutableStatementSeq();
+        finish(srcPos);
+
+        return new Segment(srcPos, prgDefinition, prgStatement);
     }
 
 //_____________________________________________________________________________
@@ -250,7 +259,6 @@ public class Parser {
         finish(srcPos);
         return new ArrayType(srcPos, arrayBounds, arrayType);
     }
-
 
     ArrayBounds parseArrayBounds() throws SyntaxError {
 
@@ -417,10 +425,205 @@ public class Parser {
     }
 
 //_____________________________________________________________________________
-//                                                             Not implemented
+//                                                         Internal procedures
 
-    private Definition parseInternalProcedure() {
-        return null;
+    Definition parseInternalProcedure() throws SyntaxError {
+
+        BlockCode blockBlockCode;
+
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        blockBlockCode = parseBlockCode();
+        finish(srcPos);
+
+        return new InternalProcedure(srcPos, blockBlockCode);
+    }
+
+    BlockCode parseBlockCode() throws SyntaxError {
+
+        BlockCode blockBlockCode = null;
+
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        switch (currentToken.kind) {
+
+            case Token.PROCEDURE:
+                blockBlockCode = parseProcedureDefinition();
+
+                finish(srcPos);
+                break;
+
+            case Token.FUNCTION:
+                blockBlockCode = parseFunctionDefinition();
+
+                finish(srcPos);
+                break;
+
+            default:
+                syntacticError("\"%\" cannot start a subprogram definition", currentToken.spelling);
+        }
+
+        return blockBlockCode;
+    }
+
+    BlockCode parseProcedureDefinition() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        ProcedureHead procHead = parseProcedureHead();
+        accept(Token.COLON);
+
+        Segment segment = parseSegment();
+
+        ProcedureEnd procEnd = parseProcedureEnd();
+        finish(srcPos);
+
+        return new ProcedureDefinition(srcPos, procHead, segment, procEnd);
+    }
+
+    BlockCode parseFunctionDefinition() throws SyntaxError {
+
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        FunctionHead funcHead = parseFunctionHead();
+        accept(Token.COLON);
+
+        Segment segment = parseSegment();
+
+        FunctionEnd funcEnd = parseFunctionEnd();
+        finish(srcPos);
+
+        return new FunctionDefinition(srcPos, funcHead, segment, funcEnd);
+    }
+
+    FunctionHead parseFunctionHead() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.FUNCTION);
+        BlockCodeName blockCodeName = parseBlockCodeName();
+        TypeDenoter typeDenoter = parseTypeDenoter();
+
+        finish(srcPos);
+
+        return new FunctionHead(srcPos, blockCodeName, typeDenoter);
+    }
+
+    FunctionEnd parseFunctionEnd() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.END);
+        accept(Token.FUNCTION);
+
+        Identifier identifier = parseIdentifier();
+        accept(Token.SEMICOLON);
+
+        finish(srcPos);
+
+        return new FunctionEnd(srcPos, identifier);
+    }
+
+    ProcedureHead parseProcedureHead() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.PROCEDURE);
+        BlockCodeName prgName = parseBlockCodeName();
+
+        finish(srcPos);
+
+        return new ProcedureHead(srcPos, prgName);
+    }
+
+    BlockCodeName parseBlockCodeName() throws SyntaxError {
+
+        BlockCodeName blockCodeName;
+
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        Identifier identifier = parseIdentifier();
+
+        if (currentToken.kind == Token.LPAREN) {
+
+            Parameter params = parseParameters();
+            finish(srcPos);
+
+            blockCodeName = new ProgramNameWithParams(srcPos, identifier, params);
+
+        } else {
+            blockCodeName = new ProcedureName(srcPos, identifier);
+            finish(srcPos);
+        }
+
+        return blockCodeName;
+    }
+
+    Parameter parseParameters() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.LPAREN);
+
+        Parameter param = parseSingleParameter();
+
+        while (currentToken.kind == Token.COMMA) {
+            acceptIt();
+
+            Parameter param2 = parseSingleParameter();
+            finish(srcPos);
+
+            param = new ParameterList(srcPos, param, param2);
+        }
+
+        accept(Token.RPAREN);
+        finish(srcPos);
+
+        return param;
+    }
+
+    Parameter parseSingleParameter() throws SyntaxError {
+
+        Parameter parameter;
+
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        Identifier identifier = parseIdentifier();
+        TypeDenoter typeDenoter = parseTypeDenoter();
+
+        if (currentToken.kind == Token.NAME) {
+            acceptIt();
+            finish(srcPos);
+
+            parameter = new ParameterByName(srcPos, identifier, typeDenoter);
+
+        } else {
+            finish(srcPos);
+
+            parameter = new ParameterByValue(srcPos, identifier, typeDenoter);
+        }
+
+        return parameter;
+    }
+
+    ProcedureEnd parseProcedureEnd() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.END);
+        accept(Token.PROCEDURE);
+
+        Identifier prgName = parseIdentifier();
+        accept(Token.SEMICOLON);
+
+        finish(srcPos);
+
+        return new ProcedureEnd(srcPos, prgName);
     }
 
 
