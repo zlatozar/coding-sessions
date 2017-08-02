@@ -82,4 +82,20 @@ public interface Visitor {
     Object visitReturnWithExpression(ReturnWithExpression ast, Object o);
 
     Object visitExitStmt(ExitStmt ast, Object o);
+
+    Object visitIfStmt(IfStmt ast, Object o);
+
+    Object visitIfElseStmt(IfElseStmt ast, Object o);
+
+    Object visitConditionalClause(ConditionalClause ast, Object o);
+
+    Object visitTrueBranch(TrueBranch ast, Object o);
+
+    Object visitFalseBranch(FalseBranch ast, Object o);
+
+    Object visitSimpleCompoundEnd(SimpleCompoundEnd ast, Object o);
+
+    Object visitCompoundNameWithName(CompoundEndWithName ast, Object o);
+
+    Object visitCompoundStmt(CompoundStmt ast, Object o);
 }

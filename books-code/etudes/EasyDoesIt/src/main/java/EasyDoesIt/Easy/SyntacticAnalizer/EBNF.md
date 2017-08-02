@@ -118,27 +118,27 @@ Build scanner based on this _lexical grammar_:
 A function returns a value and a procedure just executes commands.
 
 ```
-<procedure definition>           ::=  <subprogram definition>
+<procedure definition>    ::=  <subprogram definition>
                                   |   <function definition>
                                   
-<subprogram definition>          ::=  <subprogram head> : <segment body> <subprogram end>
-<subprogram head>                ::=  PROCEDURE <procedure name>
-<subprogram end>                 ::=  END PROCEDURE <identifier> ;
+<subprogram definition>   ::=  <subprogram head> : <segment body> <subprogram end>
+<subprogram head>         ::=  PROCEDURE <procedure name>
+<subprogram end>          ::=  END PROCEDURE <identifier> ;
 
-<function definition>            ::=  <function head> : <segment body> <function end>
-<function head>                  ::=  FUNCTION <procedure name> <type>
-<function end>                   ::=  END FUNCTION <identifier> ;
+<function definition>     ::=  <function head> : <segment body> <function end>
+<function head>           ::=  FUNCTION <procedure name> <type>
+<function end>            ::=  END FUNCTION <identifier> ;
 
-<procedure name>                 ::=  <identifier>
-                                  |   <identifier> <internal parameter list>
+<procedure name>          ::=  <identifier>
+                           |   <identifier> <internal parameter list>
 
-<internal parameter list>        ::=  ( <internal parameter> | {, <internal parameter>}* )
+<internal parameter list>  ::=  ( <internal parameter> | {, <internal parameter>}* )
 
-<internal parameter>             ::=  <pass value>
-                                  |   <pass name>
+<internal parameter>       ::=  <pass value>
+                            |   <pass name>
 
-<pass by value>                   ::= <identifier> <type>
-<pass by name>                    ::= <identifier> <type> NAME            
+<pass by value>             ::= <identifier> <type>
+<pass by name>              ::= <identifier> <type> NAME            
 
 ```
 
@@ -200,12 +200,12 @@ Example: ```SET a, b := 42;```
 ### CONDITIONALS
 
 ```
-<conditional statement>        ::=  <conditional clause> <true branch> FI ;
-                                |   <conditional clause> <true branch> <false branch> FI ;
+<conditional statement> ::=  <conditional clause> <true branch> FI ;
+                         |   <conditional clause> <true branch> <false branch> FI ;
 
-<conditional clause>           ::=  IF <expression>
-<true branch>                  ::=  THEN <segment body>
-<false branch>                 ::=  ELSE <segment body>
+<conditional clause>    ::=  IF <expression>
+<true branch>           ::=  THEN <segment body>
+<false branch>          ::=  ELSE <segment body>
 
 ```
 
@@ -213,9 +213,7 @@ Example: ```SET a, b := 42;```
 ### COMPOUNDS
 
 ```
-<compound statement> ::=  BEGIN <compound body> <compound end>
-                      
-<compound body>      ::=  <segment body>
+<compound statement> ::=  BEGIN <segment body> <compound end>
 
 <compound end>       ::=  END ;
                       |   END <identifier> ;

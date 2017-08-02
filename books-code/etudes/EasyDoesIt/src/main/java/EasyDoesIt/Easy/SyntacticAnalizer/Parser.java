@@ -701,7 +701,15 @@ public class Parser {
                 break;
 
             case Token.IF:
+                statement = parseConditionals();
+                finish(srcPos);
+                break;
+
             case Token.BEGIN:
+                statement = parseCompounds();
+                finish(srcPos);
+                break;
+
             case Token.FOR:
             case Token.SELECT:
             case Token.REPEAT:
@@ -712,7 +720,6 @@ public class Parser {
 
             case Token.SEMICOLON:
                 acceptIt();
-
                 statement = new NullStmt(srcPos);
 
                 finish(srcPos);
@@ -869,6 +876,107 @@ public class Parser {
         finish(srcPos);
 
         return new ExitStmt(srcPos);
+    }
+
+    Statement parseConditionals() throws SyntaxError {
+
+        Statement conditionalStmt;
+
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        ConditionalClause conditionalClause = parseConditionalClause();
+        TrueBranch trueBranch = parseTrueBranch();
+        finish(srcPos);
+
+        if (currentToken.kind == Token.FI) {
+            conditionalStmt = new IfStmt(srcPos, conditionalClause, trueBranch);
+
+        } else {
+            FalseBranch falseBranch = parseFalseBranch();
+            finish(srcPos);
+
+            conditionalStmt = new IfElseStmt(srcPos, conditionalClause, trueBranch, falseBranch);
+        }
+
+        accept(Token.FI);
+        accept(Token.SEMICOLON);
+
+        finish(srcPos);
+
+        return conditionalStmt;
+    }
+
+    ConditionalClause parseConditionalClause() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.IF);
+
+        Expression expression = parseExpression();
+        finish(srcPos);
+
+        return new ConditionalClause(srcPos, expression);
+    }
+
+    TrueBranch parseTrueBranch() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.THEN);
+        Segment segment = parseSegment();
+
+        finish(srcPos);
+
+        return new TrueBranch(srcPos, segment);
+    }
+
+    FalseBranch parseFalseBranch() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.ELSE);
+        Segment segment = parseSegment();
+
+        finish(srcPos);
+
+        return new FalseBranch(srcPos, segment);
+    }
+
+    Statement parseCompounds() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.BEGIN);
+        Segment segment = parseSegment();
+
+        CompoundEnd compoundEnd = parseCompoundEnd();
+        finish(srcPos);
+
+        return new CompoundStmt(srcPos, segment, compoundEnd);
+    }
+
+    CompoundEnd parseCompoundEnd() throws SyntaxError {
+
+        CompoundEnd compoundEnd;
+
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.END);
+        finish(srcPos);
+
+        if (currentToken.kind == Token.SEMICOLON) {
+            compoundEnd = new SimpleCompoundEnd(srcPos);
+
+        } else {
+            Identifier name = parseIdentifier();
+            finish(srcPos);
+
+            compoundEnd = new CompoundEndWithName(srcPos, name);
+        }
+
+        return compoundEnd;
     }
 
 //_____________________________________________________________________________
