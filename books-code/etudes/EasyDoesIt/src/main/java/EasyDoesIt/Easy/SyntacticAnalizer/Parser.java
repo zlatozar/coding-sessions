@@ -691,7 +691,15 @@ public class Parser {
                 break;
 
             case Token.RETURN:
+                statement = parseReturns();
+                finish(srcPos);
+                break;
+
             case Token.EXIT:
+                statement = parseExit();
+                finish(srcPos);
+                break;
+
             case Token.IF:
             case Token.BEGIN:
             case Token.FOR:
@@ -705,7 +713,7 @@ public class Parser {
             case Token.SEMICOLON:
                 acceptIt();
 
-                statement = new NullStatement(srcPos);
+                statement = new NullStmt(srcPos);
 
                 finish(srcPos);
                 break;
@@ -776,7 +784,7 @@ public class Parser {
         accept(Token.SEMICOLON);
         finish(srcPos);
 
-        return new ProcedureCall(srcPos, procRef);
+        return new ProcedureCallStmt(srcPos, procRef);
     }
 
     ProcedureRef parseProcedureRef() throws SyntaxError {
@@ -825,6 +833,42 @@ public class Parser {
         finish(srcPos);
 
         return param;
+    }
+
+    Statement parseReturns() throws SyntaxError {
+        Statement returnStmt;
+
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.RETURN);
+
+        if (currentToken.kind == Token.SEMICOLON) {
+            returnStmt = new Return(srcPos);
+
+        } else {
+            Expression expression = parseExpression();
+            finish(srcPos);
+
+            returnStmt = new ReturnWithExpression(srcPos, expression);
+        }
+
+        accept(Token.SEMICOLON);
+        finish(srcPos);
+
+        return returnStmt;
+    }
+
+    Statement parseExit() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.EXIT);
+        accept(Token.SEMICOLON);
+
+        finish(srcPos);
+
+        return new ExitStmt(srcPos);
     }
 
 //_____________________________________________________________________________

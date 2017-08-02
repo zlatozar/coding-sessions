@@ -27,7 +27,7 @@ public interface Visitor {
 //                                                                  Statements
 
     Object visitEmptyStatement(EmptyStatement ast, Object o);
-    Object visitNullStatement(NullStatement ast, Object o);
+    Object visitNullStmt(NullStmt ast, Object o);
     Object visitStatementSeq(StatementSeq ast, Object o);
 
 
@@ -70,14 +70,16 @@ public interface Visitor {
 
     Object visitVariableList(VariableList ast, Object o);
     Object visitAssignmentStmt(AssignmentStmt ast, Object o);
-
     Object visitSingleVariable(SingleVariable ast, Object o);
 
-    Object visitProcedureRef(ProcedureCall ast, Object o);
-
+    Object visitProcedureCallStmt(ProcedureCallStmt ast, Object o);
     Object visitCall(Call ast, Object o);
-
     Object visitExpressionList(ExpressionList ast, Object o);
-
     Object visitCallWithParams(CallWithParams ast, Object o);
+
+    Object visitReturn(Return ast, Object o);
+
+    Object visitReturnWithExpression(ReturnWithExpression ast, Object o);
+
+    Object visitExitStmt(ExitStmt ast, Object o);
 }
