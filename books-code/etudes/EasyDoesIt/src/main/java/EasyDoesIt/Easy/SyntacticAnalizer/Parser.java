@@ -711,6 +711,10 @@ public class Parser {
                 break;
 
             case Token.FOR:
+                statement = parseForLoop();
+                finish(srcPos);
+                break;
+
             case Token.SELECT:
             case Token.REPEAT:
             case Token.REPENT:
@@ -977,6 +981,153 @@ public class Parser {
         }
 
         return compoundEnd;
+    }
+
+    Statement parseForLoop() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        ForHead forHead = parseForHead();
+        Segment segment = parseSegment();
+        ForEnd forEnd = parseForEnd();
+
+        finish(srcPos);
+
+        return new ForLoop(srcPos, forHead, segment, forEnd);
+    }
+
+    ForHead parseForHead() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.FOR);
+        Vname var = parseVariable();
+
+        accept(Token.BECOMES);
+        LoopControl loopControl = parseControl();
+
+        accept(Token.DO);
+        finish(srcPos);
+
+        return new ForHead(srcPos, var, loopControl);
+    }
+
+    LoopControl parseControl() throws SyntaxError {
+
+        LoopControl loopControl;
+
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        StepExpression stepExpression = parseStepExpression();
+
+        if (currentToken.kind == Token.WHILE) {
+            While whileExpression = parseWhileExpression();
+            finish(srcPos);
+
+            loopControl = new StepperWhile(srcPos, stepExpression, whileExpression);
+
+        } else {
+            loopControl = new Stepper(srcPos, stepExpression);
+        }
+
+        return loopControl;
+    }
+
+    While parseWhileExpression() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.WHILE);
+        Expression expression = parseExpression();
+        finish(srcPos);
+
+        return new While(srcPos, expression);
+    }
+
+    StepExpression parseStepExpression() throws SyntaxError {
+
+        StepExpression stepExpression = null;
+
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        Expression expression = parseExpression();
+
+        switch (currentToken.kind) {
+
+            case Token.BY: {
+                Step step = parseStep();
+                finish(srcPos);
+
+                if (currentToken.kind == Token.TO) {
+                    Limit limit = parseLimit();
+                    finish(srcPos);
+
+                    stepExpression = new ExpressionStepLimit(srcPos, expression, step, limit);
+
+                } else {
+                    stepExpression = new ExpressionStep(srcPos, expression, step);
+                }
+            }
+            break;
+
+            case Token.TO:
+                Limit limit = parseLimit();
+                stepExpression = new ExpressionLimit(srcPos, expression, limit);
+                break;
+
+            default:
+                syntacticError("\"%\" cannot start a loop control", currentToken.spelling);
+        }
+
+        return stepExpression;
+    }
+
+    Step parseStep() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.BY);
+        Expression expression = parseExpression();
+        finish(srcPos);
+
+        return new Step(srcPos, expression);
+    }
+
+    Limit parseLimit() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.TO);
+        Expression expression = parseExpression();
+        finish(srcPos);
+
+        return new Limit(srcPos, expression);
+    }
+
+    ForEnd parseForEnd() throws SyntaxError {
+
+        ForEnd forEnd;
+
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.END);
+        accept(Token.FOR);
+
+        if (currentToken.kind == Token.SEMICOLON) {
+            forEnd = new SimpleForEnd(srcPos);
+            finish(srcPos);
+
+        } else {
+            Identifier identifier = parseIdentifier();
+            finish(srcPos);
+
+            forEnd = new ForEndWithName(srcPos, identifier);
+        }
+
+        return forEnd;
     }
 
 //_____________________________________________________________________________

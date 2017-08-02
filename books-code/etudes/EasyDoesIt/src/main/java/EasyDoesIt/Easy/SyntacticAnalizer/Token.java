@@ -23,6 +23,7 @@ final class Token {
                     "CALL",
                     "CASE",
                     "DECLARE",
+                    "DO",
                     "ELSE",
                     "END",
                     "EXIT",
@@ -126,53 +127,54 @@ final class Token {
     public static final int CALL =       7;
     public static final int CASE =       8;
     public static final int DECLARE =    9;
-    public static final int ELSE =      10;
-    public static final int END =       11;
-    public static final int EXIT =      12;
-    public static final int FI =        13;
-    public static final int FIELD =     14;
-    public static final int FOR =       15;
-    public static final int FUNCTION =  16;
-    public static final int IF =        17;
-    public static final int INPUT =     18;
-    public static final int IS =        19;
-    public static final int NAME =      20;
-    public static final int OF =        21;
-    public static final int OTHERWISE = 22;
-    public static final int OUTPUT    = 23;
-    public static final int PROCEDURE = 24;
-    public static final int PROGRAM =   25;
-    public static final int REPEAT =    26;
-    public static final int REPENT =    27;
-    public static final int RETURN =    28;
-    public static final int SELECT =    29;
-    public static final int SET =       30;
-    public static final int STRUCTURE = 31;
-    public static final int THEN =      32;
-    public static final int TO =        33;
-    public static final int TYPE =      34;
-    public static final int WHILE =     35;  // last reserved word
+    public static final int DO =        10;
+    public static final int ELSE =      11;
+    public static final int END =       12;
+    public static final int EXIT =      13;
+    public static final int FI =        14;
+    public static final int FIELD =     15;
+    public static final int FOR =       16;
+    public static final int FUNCTION =  17;
+    public static final int IF =        18;
+    public static final int INPUT =     19;
+    public static final int IS =        20;
+    public static final int NAME =      21;
+    public static final int OF =        22;
+    public static final int OTHERWISE = 23;
+    public static final int OUTPUT    = 24;
+    public static final int PROCEDURE = 25;
+    public static final int PROGRAM =   26;
+    public static final int REPEAT =    27;
+    public static final int REPENT =    28;
+    public static final int RETURN =    29;
+    public static final int SELECT =    30;
+    public static final int SET =       31;
+    public static final int STRUCTURE = 32;
+    public static final int THEN =      33;
+    public static final int TO =        34;
+    public static final int TYPE =      35;
+    public static final int WHILE =     36;  // last reserved word
 
     // punctuation...
 
-    public static final int DOT       = 36;
-    public static final int COLON     = 37;
-    public static final int SEMICOLON = 38;
-    public static final int COMMA     = 39;
-    public static final int BECOMES   = 40;  // :=
+    public static final int DOT       = 37;
+    public static final int COLON     = 38;
+    public static final int SEMICOLON = 39;
+    public static final int COMMA     = 40;
+    public static final int BECOMES   = 41;  // :=
 
     // brackets...
 
-    public static final int LPAREN   = 41;
-    public static final int RPAREN   = 42;
-    public static final int LBRACKET = 43;
-    public static final int RBRACKET = 44;
+    public static final int LPAREN   = 42;
+    public static final int RPAREN   = 43;
+    public static final int LBRACKET = 44;
+    public static final int RBRACKET = 45;
 
     // special tokens...
 
     // Note that EOT represents the end of the source text
-    public static final int EOT   = 45;
-    public static final int ERROR = 46;
+    public static final int EOT   = 46;
+    public static final int ERROR = 47;
 
     @Override
     public String toString() {

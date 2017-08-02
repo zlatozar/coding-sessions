@@ -31,7 +31,6 @@ public interface Visitor {
     Object visitStatementSeq(StatementSeq ast, Object o);
 
 
-
 //_____________________________________________________________________________
 //                                                                 Definitions
 
@@ -78,24 +77,32 @@ public interface Visitor {
     Object visitCallWithParams(CallWithParams ast, Object o);
 
     Object visitReturn(Return ast, Object o);
-
     Object visitReturnWithExpression(ReturnWithExpression ast, Object o);
 
     Object visitExitStmt(ExitStmt ast, Object o);
 
     Object visitIfStmt(IfStmt ast, Object o);
-
     Object visitIfElseStmt(IfElseStmt ast, Object o);
 
     Object visitConditionalClause(ConditionalClause ast, Object o);
-
     Object visitTrueBranch(TrueBranch ast, Object o);
-
     Object visitFalseBranch(FalseBranch ast, Object o);
 
     Object visitSimpleCompoundEnd(SimpleCompoundEnd ast, Object o);
-
     Object visitCompoundNameWithName(CompoundEndWithName ast, Object o);
-
     Object visitCompoundStmt(CompoundStmt ast, Object o);
+
+    Object visitForHead(ForHead ast, Object o);
+    Object visitForLoop(ForLoop ast, Object o);
+    Object visitWhile(While ast, Object o);
+    Object visitStepperWhile(StepperWhile ast, Object o);
+    Object visitStepper(Stepper ast, Object o);
+    Object visitStep(Step ast, Object o);
+    Object visitExpressionStep(ExpressionStep ast, Object o);
+    Object visitLimit(Limit ast, Object o);
+    Object visitExpressionStepLimit(ExpressionStepLimit ast, Object o);
+    Object visitExpressionLimit(ExpressionLimit ast, Object o);
+    Object visitSimpleForEnd(SimpleForEnd ast, Object o);
+    Object visitForEndWithName(ForEndWithName ast, Object o);
+
 }

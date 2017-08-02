@@ -15,7 +15,7 @@ To the specification are applied:
 ### KEYWORDS
 
 ```
-ARRAY, BEGIN, BY, CALL, CASE, DECLARE, ELSE, END, EXIT, FI, FIELD, FOR, FUNCTION, IF, INPUT, IS, NAME, OF,
+ARRAY, BEGIN, BY, CALL, CASE, DECLARE, DO, ELSE, END, EXIT, FI, FIELD, FOR, FUNCTION, IF, INPUT, IS, NAME, OF,
 OTHERWISE, OUTPUT, PROCEDURE, PROGRAM, REPEAT, REPENT, RETURN, SELECT, SET, STRUCTURE, THEN, TO, TYPE,
 WHILE
 ```
@@ -34,7 +34,7 @@ Build scanner based on this _lexical grammar_:
 ```
 <Program>           ::=  (<Token> | <Comment> | <Blank>)*
 <Token>             ::=  <Integer-Literal> | <String-Literal> | <Identifier> | <Operator> |
-                         ARRAY | BEGIN | BY | CALL | CASE | DECLARE | ELSE | END | EXIT | FI |
+                         ARRAY | BEGIN | BY | CALL | CASE | DECLARE | DO | ELSE | END | EXIT | FI |
                          FIELD | FOR | FUNCTION | IF | INPUT | IS | NAME | OF | OTHERWISE | OUTPUT |
                          PROCEDURE | PROGRAM | REPEAT | REPENT | RETURN | SELECT | STRUCTURE |
                          THEN | TO | TYPE | WHILE | . | : | ; | , | :(empty|=) | ( | ) | [ | ]
@@ -223,25 +223,24 @@ Example: ```SET a, b := 42;```
 ### ITERATIONS
           
 ```
-<iteration statement>        ::=  <iteration head> <segment body> <iteration end>
-                              
-<iteration head>             ::=  FOR <iteration target> <control> DO
+<iteration statement> ::=  <iteration head> <segment body> <iteration end>
+                             
+<iteration head>      ::=  FOR <variable> := <control> DO
 
-<iteration end>              ::=  END FOR ;
-                              |   END FOR <identifier> ;
+<iteration end>       ::=  END FOR ;
+                       |   END FOR <identifier> ;
 
-<iteration target>           ::=  <variable> :=
+<control>             ::=  <step expression>
+                       |   <step expression> <while>
 
-<control>                    ::=  <step control>
-                              |   <step control> <while control>
+<step expression>     ::=  <expression> <step>
+                       |   <expression> <limit>
+                       |   <expression> <step> <limit>
+
+<while>               ::=  WHILE <expression>          
                               
-<step control>               ::=  <expression> <step>
-                              |   <expression> <limit>
-                              |   <expression> <step> <limit>
-                              
-<step>                       ::=  BY <expression>
-<limit>                      ::=  TO <expression>
-<while control>              ::=  WHILE <expression>          
+<step>                ::=  BY <expression>
+<limit>               ::=  TO <expression>
 ```
 
 
