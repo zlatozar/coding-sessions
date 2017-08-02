@@ -72,7 +72,7 @@ class InternalProceduresSpec extends ASTSpec {
                 ' FUNCTION abs(x REAL NAME) REAL:\n' +
                         '    ;\n' +
                         ' END FUNCTION abs;' +
-                ' PROCEDURE abs(x REAL, y INTEGER):\n' +
+                ' PROCEDURE abs(x REAL, y INTEGER, z STRING):\n' +
                         '    ;\n' +
                         ' END PROCEDURE abs;')
 

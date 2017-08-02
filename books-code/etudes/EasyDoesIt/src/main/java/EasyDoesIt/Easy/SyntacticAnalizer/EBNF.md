@@ -167,7 +167,7 @@ A function returns a value and a procedure just executes commands.
 
 ```
 <assignment statement> ::=  SET <target list> := <expression> ;
-<target list>          ::= variable | {, variable}*
+<target list>          ::=  variable | {, variable}*
 ```
 
 Example: ```SET a, b := 42;```
@@ -193,7 +193,7 @@ Example: ```SET a, b := 42;```
 ### EXITS
 
 ```
-<exit statement>  ::=  EXIT ;
+<exit statement> ::=  EXIT ;
 ```
 
 

@@ -64,4 +64,20 @@ public interface Visitor {
     Object visitParameterByName(ParameterByName ast, Object o);
     Object visitFunctionHead(FunctionHead ast, Object o);
     Object visitFunctionEnd(FunctionEnd ast, Object o);
+
+//_____________________________________________________________________________
+//                                                                  Statements
+
+    Object visitVariableList(VariableList ast, Object o);
+    Object visitAssignmentStmt(AssignmentStmt ast, Object o);
+
+    Object visitSingleVariable(SingleVariable ast, Object o);
+
+    Object visitProcedureRef(ProcedureCall ast, Object o);
+
+    Object visitCall(Call ast, Object o);
+
+    Object visitExpressionList(ExpressionList ast, Object o);
+
+    Object visitCallWithParams(CallWithParams ast, Object o);
 }

@@ -681,7 +681,15 @@ public class Parser {
         switch (currentToken.kind) {
 
             case Token.SET:
+                statement = parseAssignments();
+                finish(srcPos);
+                break;
+
             case Token.CALL:
+                statement = parseInternalProcedureCall();
+                finish(srcPos);
+                break;
+
             case Token.RETURN:
             case Token.EXIT:
             case Token.IF:
@@ -716,6 +724,107 @@ public class Parser {
                 token == Token.IF || token == Token.BEGIN || token == Token.FOR || token == Token.SELECT ||
                 token == Token.REPEAT || token == Token.REPENT || token == Token.INPUT || token == Token.OUTPUT ||
                 token == Token.SEMICOLON;
+    }
+
+    Statement parseAssignments() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.SET);
+
+        Vname targetList = parseVariableList();
+        accept(Token.BECOMES);
+        Expression expression = parseExpression();
+        accept(Token.SEMICOLON);
+
+        finish(srcPos);
+
+        return new AssignmentStmt(srcPos, targetList, expression);
+    }
+
+    Vname parseVariableList() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        Vname var = parseVariable();
+
+        if (currentToken.kind == Token.COMMA) {
+
+            while (currentToken.kind == Token.COMMA) {
+                acceptIt();
+
+                Vname var2 = parseVariable();
+                finish(srcPos);
+
+                var = new VariableList(srcPos, var, var2);
+            }
+
+        } else {
+            var = new SingleVariable(srcPos, var);
+        }
+
+        return var;
+    }
+
+    Statement parseInternalProcedureCall() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.CALL);
+        ProcedureRef procRef = parseProcedureRef();
+
+        accept(Token.SEMICOLON);
+        finish(srcPos);
+
+        return new ProcedureCall(srcPos, procRef);
+    }
+
+    ProcedureRef parseProcedureRef() throws SyntaxError {
+
+        ProcedureRef procedureRef;
+
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        Identifier identifier = parseIdentifier();
+        finish(srcPos);
+
+        if (currentToken.kind == Token.LPAREN) {
+            Expression params = parseProcedureRefParams();
+            finish(srcPos);
+
+            procedureRef = new CallWithParams(srcPos, identifier, params);
+
+        } else {
+            procedureRef = new Call(srcPos, identifier);
+        }
+
+        return procedureRef;
+    }
+
+    Expression parseProcedureRefParams() throws SyntaxError {
+
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.LPAREN);
+
+        Expression param = parseExpression();
+        finish(srcPos);
+
+        while (currentToken.kind == Token.COMMA) {
+            acceptIt();
+
+            Expression nextParam = parseExpression();
+            finish(srcPos);
+
+            param = new ExpressionList(srcPos, param, nextParam);
+        }
+
+        accept(Token.RPAREN);
+        finish(srcPos);
+
+        return param;
     }
 
 //_____________________________________________________________________________

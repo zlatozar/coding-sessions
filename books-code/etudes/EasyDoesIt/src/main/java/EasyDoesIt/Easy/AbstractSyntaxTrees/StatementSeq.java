@@ -4,12 +4,12 @@ import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
 public class StatementSeq extends Statement {
 
-    public Statement stmtNext;
+    public Statement stmtSeq;
     public Statement stmt;
 
-    public StatementSeq(SourcePosition srcPos, Statement stmtNext, Statement stmt) {
+    public StatementSeq(SourcePosition srcPos, Statement stmtSeq, Statement stmt) {
         super(srcPos);
-        this.stmtNext = stmtNext;
+        this.stmtSeq = stmtSeq;
         this.stmt = stmt;
     }
 
