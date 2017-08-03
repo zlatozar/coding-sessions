@@ -701,21 +701,25 @@ public class Parser {
                 break;
 
             case Token.IF:
-                statement = parseConditionals();
+                statement = parseConditionalStmt();
                 finish(srcPos);
                 break;
 
             case Token.BEGIN:
-                statement = parseCompounds();
+                statement = parseCompoundStmt();
                 finish(srcPos);
                 break;
 
             case Token.FOR:
-                statement = parseForLoop();
+                statement = parseForLoopStmt();
                 finish(srcPos);
                 break;
 
             case Token.SELECT:
+                statement = parseSelectionStmt();
+                finish(srcPos);
+                break;
+
             case Token.REPEAT:
             case Token.REPENT:
             case Token.INPUT:
@@ -882,7 +886,7 @@ public class Parser {
         return new ExitStmt(srcPos);
     }
 
-    Statement parseConditionals() throws SyntaxError {
+    Statement parseConditionalStmt() throws SyntaxError {
 
         Statement conditionalStmt;
 
@@ -947,7 +951,7 @@ public class Parser {
         return new FalseBranch(srcPos, segment);
     }
 
-    Statement parseCompounds() throws SyntaxError {
+    Statement parseCompoundStmt() throws SyntaxError {
         SourcePosition srcPos = new SourcePosition();
         start(srcPos);
 
@@ -983,7 +987,7 @@ public class Parser {
         return compoundEnd;
     }
 
-    Statement parseForLoop() throws SyntaxError {
+    Statement parseForLoopStmt() throws SyntaxError {
         SourcePosition srcPos = new SourcePosition();
         start(srcPos);
 
@@ -993,7 +997,7 @@ public class Parser {
 
         finish(srcPos);
 
-        return new ForLoop(srcPos, forHead, segment, forEnd);
+        return new ForLoopStmt(srcPos, forHead, segment, forEnd);
     }
 
     ForHead parseForHead() throws SyntaxError {
@@ -1128,6 +1132,163 @@ public class Parser {
         }
 
         return forEnd;
+    }
+
+    Statement parseSelectionStmt() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        SelectionHead selectionHead = parseSelectionHead();
+        SelectionBody selectionBody = parseSelectionBody();
+        SelectionEnd selectionEnd = parseSelectionEnd();
+
+        finish(srcPos);
+
+        return new SelectionStmt(srcPos, selectionHead, selectionBody, selectionEnd);
+    }
+
+    SelectionHead parseSelectionHead() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.SELECT);
+        Expression expression = parseExpression();
+
+        accept(Token.OF);
+        finish(srcPos);
+
+        return new SelectionHead(srcPos, expression);
+    }
+
+    SelectionBody parseSelectionBody() throws SyntaxError {
+
+        SelectionBody selectionBody;
+
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        Case caseList = parseCaseList();
+
+        if (currentToken.kind == Token.OTHERWISE) {
+            EscapeCase escapeCase = parseEscapeCase();
+            finish(srcPos);
+
+            selectionBody = new SelectBodyWithEscape(srcPos, caseList, escapeCase);
+
+        } else {
+            selectionBody = new SelectBody(srcPos, caseList);
+            finish(srcPos);
+        }
+
+        return selectionBody;
+    }
+
+    Case parseCaseList() throws SyntaxError {
+
+        Case aCase;
+
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        aCase = parseDenoterCase();
+        finish(srcPos);
+
+        while (currentToken.kind == Token.CASE) {
+            Case nextCase = parseDenoterCase();
+            finish(srcPos);
+
+            aCase = new CaseSeq(srcPos, aCase, nextCase);
+        }
+
+        return aCase;
+    }
+
+    CaseList parseDenoterCase() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        CaseHead caseHead = parseCaseHead();
+        Segment segment = parseSegment();
+        finish(srcPos);
+
+        return new CaseList(srcPos, caseHead, segment);
+    }
+
+    CaseHead parseCaseHead() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.CASE);
+        Selector selector = parseSelector();
+
+        accept(Token.COLON);
+
+        finish(srcPos);
+
+        return new CaseHead(srcPos, selector);
+    }
+
+    Selector parseSelector() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.LPAREN);
+
+        Expression expression = parseExpression();
+
+        while (currentToken.kind == Token.COMMA) {
+            acceptIt();
+
+            Expression nextParam = parseExpression();
+            finish(srcPos);
+
+            expression = new ExpressionList(srcPos, expression, nextParam);
+        }
+
+        accept(Token.RPAREN);
+
+        return new Selector(srcPos, expression);
+    }
+
+    EscapeCase parseEscapeCase() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.OTHERWISE);
+        accept(Token.COLON);
+
+        Segment segment = parseSegment();
+
+        finish(srcPos);
+
+        return new EscapeCase(srcPos, segment);
+    }
+
+    SelectionEnd parseSelectionEnd() throws SyntaxError {
+
+        SelectionEnd selectionEnd;
+
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.END);
+        accept(Token.SELECT);
+
+        if (currentToken.kind == Token.SEMICOLON) {
+            selectionEnd = new SelectEnd(srcPos);
+            finish(srcPos);
+
+        } else {
+            Identifier identifier = parseIdentifier();
+            finish(srcPos);
+
+            selectionEnd = new SelectEndWithName(srcPos, identifier);
+        }
+
+        accept(Token.SEMICOLON);
+        finish(srcPos);
+
+        return selectionEnd;
     }
 
 //_____________________________________________________________________________

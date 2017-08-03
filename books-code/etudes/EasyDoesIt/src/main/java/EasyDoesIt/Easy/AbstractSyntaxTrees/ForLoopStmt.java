@@ -2,13 +2,13 @@ package EasyDoesIt.Easy.AbstractSyntaxTrees;
 
 import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
-public class ForLoop extends Statement {
+public class ForLoopStmt extends Statement {
 
     public ForHead forHead;
     public Segment segment;
     public ForEnd forEnd;
 
-    public ForLoop(SourcePosition srcPos, ForHead forHead, Segment segment, ForEnd forEnd) {
+    public ForLoopStmt(SourcePosition srcPos, ForHead forHead, Segment segment, ForEnd forEnd) {
         super(srcPos);
         this.forHead = forHead;
         this.segment = segment;
@@ -17,6 +17,6 @@ public class ForLoop extends Statement {
 
     @Override
     public Object visit(Visitor v, Object o) {
-        return v.visitForLoop(this, o);
+        return v.visitForLoopStmt(this, o);
     }
 }

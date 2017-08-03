@@ -246,24 +246,26 @@ Example: ```SET a, b := 42;```
 
 ### SELECTION
 
+NOTE: with this naming convention it is easy to name classes in AST
+
 ```
-<selection statement>  ::= <selection head> <selection body> <selection end>
+SelectionStmt  ::=  SelectionHead SelectionBody SelectionEnd
                        
-<selection head>       ::=  SELECT <expression> OF
-<selection body>       ::=  <case list>
-                        |   <case list> <escape case>
-<selection end>        ::=  END SELECT ;
-                        |   END SELECT <identifier> ;
+SelectionHead  ::=  SELECT <expression> OF
 
-<case list>            ::=  <case> | {<case>}*
-<case>                 ::=  <case head> <segment body>
-<case head>            ::=  CASE <selector> :
-
-<selector>             ::=  ( <expression> | {, <expression>}* )
+SelectionBody  ::=  CaseList
+                |   CaseList EscapeCase
                         
-<escape case>          ::=  <escape head> <segment body>
+SelectionEnd   ::=  END SELECT ;
+                |   END SELECT <identifier> ;
 
-<escape head>          ::=  OTHERWISE :
+CaseList       ::=  Case | {Case}*
+Case           ::=  CaseHead <segment body>
+CaseHead       ::=  CASE Selector :
+
+Selector       ::=  ( <expression> | {, <expression>}* )
+                        
+EscapeCase     ::=  OTHERWISE : <segment body>
 ```
 
 

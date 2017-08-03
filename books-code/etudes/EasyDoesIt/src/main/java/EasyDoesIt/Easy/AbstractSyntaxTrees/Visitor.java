@@ -92,8 +92,8 @@ public interface Visitor {
     Object visitCompoundNameWithName(CompoundEndWithName ast, Object o);
     Object visitCompoundStmt(CompoundStmt ast, Object o);
 
+    Object visitForLoopStmt(ForLoopStmt ast, Object o);
     Object visitForHead(ForHead ast, Object o);
-    Object visitForLoop(ForLoop ast, Object o);
     Object visitWhile(While ast, Object o);
     Object visitStepperWhile(StepperWhile ast, Object o);
     Object visitStepper(Stepper ast, Object o);
@@ -104,5 +104,17 @@ public interface Visitor {
     Object visitExpressionLimit(ExpressionLimit ast, Object o);
     Object visitSimpleForEnd(SimpleForEnd ast, Object o);
     Object visitForEndWithName(ForEndWithName ast, Object o);
+
+    Object visitSelectionStmt(SelectionStmt ast, Object o);
+    Object visitSelectionHead(SelectionHead ast, Object o);
+    Object visitSelectBody(SelectBody ast, Object o);
+    Object visitSelectBodyWithEscape(SelectBodyWithEscape ast, Object o);
+    Object visitSelectionEnd(SelectEnd ast, Object o);
+    Object visitSelectEndWithName(SelectEndWithName ast, Object o);
+    Object visitCaseSeq(CaseSeq ast, Object o);
+    Object visitCaseHead(CaseHead ast, Object o);
+    Object visitCaseList(CaseList ast, Object o);
+    Object visitSelector(Selector ast, Object o);
+    Object visitEscapeCase(EscapeCase ast, Object o);
 
 }
