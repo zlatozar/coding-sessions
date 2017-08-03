@@ -721,10 +721,24 @@ public class Parser {
                 break;
 
             case Token.REPEAT:
+                statement = parseRepeatStmt();
+                finish(srcPos);
+                break;
+
             case Token.REPENT:
+                statement = parseRepentStmt();
+                finish(srcPos);
+                break;
+
             case Token.INPUT:
+                statement = parseInputStmt();
+                finish(srcPos);
+                break;
+
             case Token.OUTPUT:
-                syntacticError("Not implemented. Use only semicolon!", "");
+                statement = parseOutputStmt();
+                finish(srcPos);
+                break;
 
             case Token.SEMICOLON:
                 acceptIt();
@@ -771,19 +785,13 @@ public class Parser {
 
         Vname var = parseVariable();
 
-        if (currentToken.kind == Token.COMMA) {
+        while (currentToken.kind == Token.COMMA) {
+            acceptIt();
 
-            while (currentToken.kind == Token.COMMA) {
-                acceptIt();
+            Vname var2 = parseVariable();
+            finish(srcPos);
 
-                Vname var2 = parseVariable();
-                finish(srcPos);
-
-                var = new VariableList(srcPos, var, var2);
-            }
-
-        } else {
-            var = new SingleVariable(srcPos, var);
+            var = new VariableList(srcPos, var, var2);
         }
 
         return var;
@@ -1289,6 +1297,91 @@ public class Parser {
         finish(srcPos);
 
         return selectionEnd;
+    }
+
+    Repeat parseRepeatStmt() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.REPEAT);
+        Identifier identifier = parseIdentifier();
+
+        accept(Token.SEMICOLON);
+        finish(srcPos);
+
+        return new Repeat(srcPos, identifier);
+    }
+
+    Repent parseRepentStmt() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.REPENT);
+        Identifier identifier = parseIdentifier();
+
+        accept(Token.SEMICOLON);
+        finish(srcPos);
+
+        return new Repent(srcPos, identifier);
+    }
+
+    Input parseInputStmt() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.INPUT);
+
+        InputList inputList = parseInputList();
+
+        accept(Token.SEMICOLON);
+        finish(srcPos);
+
+        return new Input(srcPos, inputList);
+    }
+
+    InputList parseInputList() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        Vname varList = parseVariableList();
+
+        finish(srcPos);
+
+        return new InputList(srcPos, varList);
+    }
+
+    Output parseOutputStmt() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        accept(Token.OUTPUT);
+
+        OutputList outputList = parseOutputList();
+
+        accept(Token.SEMICOLON);
+        finish(srcPos);
+
+        return new Output(srcPos, outputList);
+    }
+
+    OutputList parseOutputList() throws SyntaxError {
+        SourcePosition srcPos = new SourcePosition();
+        start(srcPos);
+
+        Expression expr = parseExpression();
+
+        while (currentToken.kind == Token.COMMA) {
+            acceptIt();
+
+            Expression nextExpr = parseExpression();
+            finish(srcPos);
+
+            expr = new ExpressionList(srcPos, expr, nextExpr);
+        }
+
+        finish(srcPos);
+
+        return new OutputList(srcPos, expr);
     }
 
 //_____________________________________________________________________________

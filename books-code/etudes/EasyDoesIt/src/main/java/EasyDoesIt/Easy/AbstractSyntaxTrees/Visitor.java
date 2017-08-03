@@ -69,7 +69,6 @@ public interface Visitor {
 
     Object visitVariableList(VariableList ast, Object o);
     Object visitAssignmentStmt(AssignmentStmt ast, Object o);
-    Object visitSingleVariable(SingleVariable ast, Object o);
 
     Object visitProcedureCallStmt(ProcedureCallStmt ast, Object o);
     Object visitCall(Call ast, Object o);
@@ -117,4 +116,14 @@ public interface Visitor {
     Object visitSelector(Selector ast, Object o);
     Object visitEscapeCase(EscapeCase ast, Object o);
 
+    Object visitRepeat(Repeat ast, Object o);
+
+    Object visitRepent(Repent ast, Object o);
+
+    Object visitInput(Input ast, Object o);
+    Object visitInputList(InputList ast, Object o);
+
+    Object visitOutput(Output ast, Object o);
+    Object visitOutputList(OutputList ast, Object o);
+    Object visitSingleOutputExpression(SingleOutputExpression ast, Object o);
 }

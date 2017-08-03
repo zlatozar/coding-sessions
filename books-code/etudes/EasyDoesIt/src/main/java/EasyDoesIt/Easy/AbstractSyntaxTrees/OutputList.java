@@ -2,17 +2,17 @@ package EasyDoesIt.Easy.AbstractSyntaxTrees;
 
 import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
-public class SingleVariable extends Vname {
+public class OutputList extends AST {
 
-    public Vname var;
+    public Expression expr;
 
-    public SingleVariable(SourcePosition srcPos, Vname var) {
+    public OutputList(SourcePosition srcPos, Expression expr) {
         super(srcPos);
-        this.var = var;
+        this.expr = expr;
     }
 
     @Override
     public Object visit(Visitor v, Object o) {
-        return v.visitSingleVariable(this, o);
+        return v.visitOutputList(this, o);
     }
 }
