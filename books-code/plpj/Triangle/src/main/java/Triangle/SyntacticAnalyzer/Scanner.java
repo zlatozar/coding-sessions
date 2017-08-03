@@ -246,6 +246,7 @@ public final class Scanner {
                     takeIt();
                 }
 
+                // Op-char Op-char* e.g. <=, /\
                 return Token.OPERATOR;
 
             case '\'':
