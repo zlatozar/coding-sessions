@@ -12,24 +12,19 @@ To the specification are applied:
 
 - a little bit simplification
 
-### KEYWORDS
 
-```
-ARRAY, BEGIN, BY, CALL, CASE, DECLARE, DO, ELSE, END, EXIT, FI, FIELD, FOR, FUNCTION, IF, INPUT, IS, NAME, OF,
-OTHERWISE, OUTPUT, PROCEDURE, PROGRAM, REPEAT, REPENT, RETURN, SELECT, SET, STRUCTURE, THEN, TO, TYPE,
-WHILE
-```
+## SCANNER
 
-### LIBRARY FUNCTIONS
+At the lexical level, the program text consists of tokens, comments, and blank space.
+The tokens are literals, identifiers, operators, various reserved words, and various
+punctuation marks. No reserved word may be chosen as an identifier. Comments and blank
+space have no significance, but may be used freely to improve the readability of the
+program text. However, two consecutive tokens that would otherwise be confused must be
+separated by comments and/or blank space.
 
-```
-XOR, MOD, FLOOR, LENGTH, SUBSTR, CHARACTER, NUMBER, FLOAT, FIX, INPUT, OUTPUT,
-INTEGER, REAL, BOOLEAN, STRING, TRUE, FALSE
-```
+### Tokens table
 
-### TOKEN_TABLE
-
-Build scanner based on this _lexical grammar_:
+Build **scanner** based on this _lexical grammar_:
 
 ```
 <Program>           ::=  (<Token> | <Comment> | <Blank>)*
@@ -58,8 +53,77 @@ Build scanner based on this _lexical grammar_:
 <Op-character>      ::=  + | - | * | / | < | = | > | & | | |
 ```
 
+### Micro syntax
 
-### PROGRAM
+```
+<Integer-Literal>, <String-Literal>, <Identifier>, <Operator>
+```
+
+The syntax category ```<identifier>``` consists of strings that must start with a letter followed by any number
+of letters and digits. Also, ```<identifier>``` includes none of the keywords.
+
+### Comments
+
+Comments can't be nested.
+
+
+## PARSER
+
+Here is some definitions that are important:
+
+- A **command** is executed in order to update variables. (This includes input-output.)
+
+- An **expression** is evaluated to yield a value. A record-aggregate is evaluated to construct
+  a record value from its component values. An array-aggregate is evaluated to construct
+  an array value from its component values.
+
+- A **declaration** is elaborated to produce bindings. Elaborating a declaration may alsqhave
+  the side effect of creating and updating variables.
+  
+- **Formal-parameters** are used to parameterize a procedure or function with respect to
+  (some of) the free identifiers in its body.
+    
+- A **type-denoter** denotes a data type. Every value, constant, variable, and function has a
+  specified type.    
+
+### EXPRESSIONS
+
+**Tip**: First rule suggests a recursion.
+
+```
+Expression         ::=  PrimaryExpression 
+                    |   Expression Operator PrimaryExpression 
+
+PrimaryExpression  ::=  Integer-Literal
+                    |   Char-Literal
+                    |   Variable
+                    |   Function Reference
+                    |   ( Expression )
+
+```
+
+
+### Variables
+
+A value-or-variable-name identifies a value or variable.
+
+```
+<variable>          ::=  <identifier> <rest of variable>
+<rest of variable>  ::= {. <identifier> | [ expression ] }*
+```    
+
+
+### Function reference
+        
+```
+<function reference>  ::=  <identifier> ( )
+                       |   <identifier> <actual argument list>
+                       
+<actual argument list> ::=  ( <expression>  | {, <expression>}* )                       
+```
+
+
+### Program
 
 ```                    
 <program>      ::=  <program head> <segment body> <program end>
@@ -68,10 +132,10 @@ Build scanner based on this _lexical grammar_:
 ```
 
 
-### EXTERNAL_PROCEDURES (not implemented)
+### External procedures (not implemented)
 
 
-### SEGMENTS
+### Segments
 
 ```
 <segment body>  ::=  {<type definition>}*
@@ -81,7 +145,7 @@ Build scanner based on this _lexical grammar_:
 ```
 
 
-### TYPES
+### Types
 
 ```
 <type definition>   ::=  TYPE <identifier> IS <type> ;
@@ -104,7 +168,7 @@ Build scanner based on this _lexical grammar_:
 ```
 
 
-### DECLARATIONS
+### Declarations
 
 ```
 <variable declaration> ::=  DECLARE <declared names> <type> ;
@@ -113,13 +177,13 @@ Build scanner based on this _lexical grammar_:
 ```                        
 
 
-### INTERNAL_PROCEDURES
+### Internal procedures
 
 A function returns a value and a procedure just executes commands.
 
 ```
 <procedure definition>    ::=  <subprogram definition>
-                                  |   <function definition>
+                           |   <function definition>
                                   
 <subprogram definition>   ::=  <subprogram head> : <segment body> <subprogram end>
 <subprogram head>         ::=  PROCEDURE <procedure name>
@@ -132,18 +196,18 @@ A function returns a value and a procedure just executes commands.
 <procedure name>          ::=  <identifier>
                            |   <identifier> <internal parameter list>
 
-<internal parameter list>  ::=  ( <internal parameter> | {, <internal parameter>}* )
+<internal parameter list> ::=  ( <internal parameter> | {, <internal parameter>}* )
 
-<internal parameter>       ::=  <pass value>
-                            |   <pass name>
+<internal parameter>      ::=  <pass value>
+                           |   <pass name>
 
-<pass by value>             ::= <identifier> <type>
-<pass by name>              ::= <identifier> <type> NAME            
+<pass by value>           ::= <identifier> <type>
+<pass by name>            ::= <identifier> <type> NAME            
 
 ```
 
 
-### EXECUTABLE_STATEMENTS
+### Executable statements
 
 ```
 <executable statement> ::=  <assignment statement>
@@ -163,7 +227,7 @@ A function returns a value and a procedure just executes commands.
 ```
 
 
-### ASSIGNMENTS
+### Assignments
 
 ```
 <assignment statement> ::=  SET <target list> := <expression> ;
@@ -172,32 +236,34 @@ A function returns a value and a procedure just executes commands.
 
 Example: ```SET a, b := 42;```
 
-### PROCEDURE_CALLS
+### Procedure calls
 
 ```
 <call statement>       ::=  CALL <procedure reference> ;
+
 <procedure reference>  ::=  <identifier> 
                         |   <actual argument list>
+                        
 <actual argument list> ::=  ( <expression>  | {, <expression>}* )
 
 ```
 
-### RETURN
+### Returns
 
 ```
 <return statement> ::=  RETURN ;
                     |   RETURN <expression> ;
-
 ```
 
-### EXITS
+
+### Exits
 
 ```
 <exit statement> ::=  EXIT ;
 ```
 
 
-### CONDITIONALS
+### Conditionals
 
 ```
 <conditional statement> ::=  <conditional clause> <true branch> FI ;
@@ -210,7 +276,7 @@ Example: ```SET a, b := 42;```
 ```
 
 
-### COMPOUNDS
+### Compounds
 
 ```
 <compound statement> ::=  BEGIN <segment body> <compound end>
@@ -220,7 +286,7 @@ Example: ```SET a, b := 42;```
 ```
 
 
-### ITERATIONS
+### Loops
           
 ```
 <iteration statement> ::=  <iteration head> <segment body> <iteration end>
@@ -244,9 +310,9 @@ Example: ```SET a, b := 42;```
 ```
 
 
-### SELECTION
+### Selection (switch statements)
 
-NOTE: with this naming convention it is easy to name classes in AST
+NOTE: with this **naming convention** it is easy to name classes in AST
 
 ```
 SelectionStmt  ::=  SelectionHead SelectionBody SelectionEnd
@@ -269,121 +335,45 @@ EscapeCase     ::=  OTHERWISE : <segment body>
 ```
 
 
-### REPEAT_AND_REPENT
+### Repeat
         
 ```
 <repeat statement> ::= REPEAT <identifier> ;
+```
+
+
+### Repent
+
+```
 <repent statement> ::= REPENT <identifier> ;
 ```
 
 
-### INPUT_AND_OUTPUT
+### Input
         
 ```
 <input statement>  ::=  INPUT <input list> ;
 <input list>       ::=  <variable> | {, <variable>}*
-                  
-<output statement> ::=  OUTPUT <output list> ;
-<output list>      ::=  <expression> | {, <expression>}*
 ```   
 
 
-### NULL
+### Output
+
+```
+<output statement> ::=  OUTPUT <output list> ;
+<output list>      ::=  <expression> | {, <expression>}*
+```
+
+
+### Null
 
 ```
 <null statement> ::=  ;
 ```         
 
 
-### EXPRESSIONS
+## Standard environment
 
 ```
-<expression>       ::=  <expression one>
-                    |   <expression> | <expression one>
-                    |   <expression> XOR <expression one>
-                    
-<expression one>   ::=  <expression two>
-                    |   <expression one> & <expression two>
-                    
-<expression two>   ::=  <expression three>
-                    |   NOT <expression three>
-
-<expression three> ::=  <expression four>
-                    |   <expression three> <relation> <expression four>
-
-<expression four>  ::=  <expression five>
-                    |   <expression four> || <expression five>
-                    
-<expression five>  ::=  <expression six>
-                    |   <expression five> <adding operator> <expression six>
-                    |   <adding operator> <expression six>
-                    
-<expression six>   ::=  <expression seven>
-                    |   <expression six> <multiplying operator> <expression seven>
-                    
-<expression seven> ::=  FLOOR  ( <expression> )
-                    |   LENGTH ( <expression> )
-                    |   SUBSTR ( <expression> , <expression> , <expression> )
-                    |   CHARACTER ( <expression> )
-                    |   NUMBER ( <expression> )
-                    |   FLOAT  ( <expression> )
-                    |   FIX    ( <expression> )
-                    |   <expression eight> 
-
-<expression eight> ::=  <variable>
-                    |   <constant>
-                    |   <function reference>
-                    |   ( <expression> )
-```                    
-
-### VARIABLES
-
+TRUE, FALSE, XOR, NOT, FLOOR, LENGTH, SUBSTR, CHARACTER, NUMBER, FLOAT, FIX, MOD, <>
 ```
-<variable>          ::=  <identifier> <rest of variable>
-<rest of variable>  ::= {. <identifier> | [ expression ] }*
-```    
-
-
-### FUNCTION_CALLS
-        
-```
-<function reference>  ::=  <identifier> ( )
-                       |   <identifier> <actual argument list>
-```
-
-
-### CONSTANTS
-        
-```
-<constant>         ::=  <integer constant>
-                    |   <real constant>
-                    |   TRUE
-                    |   FALSE
-                    |   <string constant>
-```
-
-
-### LEXICAL_ITEMS
-        
-```
-<relation>             ::=  <
-                        |   >
-                        |   <=
-                        |   >=
-                        |   <>
-                        
-<adding operator>      ::=  +
-                        |   -
-                        
-<multiplying operator> ::=  *
-                        |   /
-                        |   MOD
-```          
-
-The syntax category ```<identifier>``` consists of strings that must start with a letter followed by any number
-of letters and digits. Also, <identifier> includes none of the keywords.
- 
-
-### Comments
-
-Comments can't be nested

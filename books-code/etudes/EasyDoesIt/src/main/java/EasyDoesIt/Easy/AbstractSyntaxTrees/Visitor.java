@@ -126,4 +126,6 @@ public interface Visitor {
     Object visitOutput(Output ast, Object o);
     Object visitOutputList(OutputList ast, Object o);
     Object visitSingleOutputExpression(SingleOutputExpression ast, Object o);
+
+    Object visitOperator(Operator ast, Object o);
 }

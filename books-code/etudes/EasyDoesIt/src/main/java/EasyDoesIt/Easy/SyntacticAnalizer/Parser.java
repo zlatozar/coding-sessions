@@ -81,7 +81,7 @@ public class Parser {
 //         PROGRAM contains definitions and executable statements
 //_____________________________________________________________________________
 
-    private ProgramBody parseProgramBody() throws SyntaxError {
+    ProgramBody parseProgramBody() throws SyntaxError {
 
         SourcePosition srcPos = new SourcePosition();
         start(srcPos);
@@ -1398,6 +1398,28 @@ public class Parser {
         finish(srcPos);
 
         return new ConstantExpression(srcPos, new Identifier(srcPos, expr));
+    }
+
+//_____________________________________________________________________________
+//                                                                    Operator
+
+    Operator parseOperator() throws SyntaxError {
+        Operator O;
+
+        if (currentToken.kind == Token.OPERATOR) {
+            previousTokenPosition = currentToken.position;
+            String spelling = currentToken.spelling;
+
+            O = new Operator(previousTokenPosition, spelling);
+
+            currentToken = lexicalAnalyser.scan();
+
+        } else {
+            O = null;
+            syntacticError("operator expected here", "");
+        }
+
+        return O;
     }
 
 //_____________________________________________________________________________
