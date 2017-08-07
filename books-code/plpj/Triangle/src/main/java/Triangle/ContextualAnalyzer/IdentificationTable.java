@@ -47,6 +47,7 @@ public final class IdentificationTable {
             local = entry;
             entry = local.previous;
         }
+
         this.level--;
         this.latest = entry;
     }
@@ -63,16 +64,21 @@ public final class IdentificationTable {
 
         // Check for duplicate entry ...
         while (searching) {
-            if (entry == null || entry.level < this.level)
+
+            if (entry == null || entry.level < this.level) {
                 searching = false;
-            else if (entry.id.equals(id)) {
+
+            } else if (entry.id.equals(id)) {
                 present = true;
                 searching = false;
-            } else
+
+            } else {
                 entry = entry.previous;
+            }
         }
 
         attr.duplicated = present;
+
         // Add new entry ...
         entry = new IdEntry(id, attr, this.level, this.latest);
         this.latest = entry;
@@ -91,18 +97,22 @@ public final class IdentificationTable {
         boolean present = false, searching = true;
 
         entry = this.latest;
+
         while (searching) {
-            if (entry == null)
+
+            if (entry == null) {
                 searching = false;
-            else if (entry.id.equals(id)) {
+
+            } else if (entry.id.equals(id)) {
                 present = true;
                 searching = false;
                 attr = entry.attr;
-            } else
+
+            } else {
                 entry = entry.previous;
+            }
         }
 
         return attr;
     }
-
 }

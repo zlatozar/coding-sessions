@@ -33,35 +33,47 @@ public final class Checker implements Visitor {
     public Checker(ErrorReporter reporter) {
         this.reporter = reporter;
         this.idTable = new IdentificationTable();
+
         establishStdEnvironment();
     }
 
     private static TypeDenoter checkFieldIdentifier(FieldTypeDenoter ast, Identifier I) {
+
         if (ast instanceof MultipleFieldTypeDenoter) {
             MultipleFieldTypeDenoter ft = (MultipleFieldTypeDenoter) ast;
+
             if (ft.I.spelling.compareTo(I.spelling) == 0) {
                 I.decl = ast;
                 return ft.T;
+
             } else {
                 return checkFieldIdentifier(ft.FT, I);
             }
+
         } else if (ast instanceof SingleFieldTypeDenoter) {
             SingleFieldTypeDenoter ft = (SingleFieldTypeDenoter) ast;
+
             if (ft.I.spelling.compareTo(I.spelling) == 0) {
                 I.decl = ast;
                 return ft.T;
             }
         }
+
         return StdEnvironment.errorType;
     }
 
     public Object visitAssignCommand(AssignCommand ast, Object o) {
         TypeDenoter vType = (TypeDenoter) ast.V.visit(this, null);
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
-        if (!ast.V.variable)
+
+        if (!ast.V.variable) {
             reporter.reportError("LHS of assignment is not a variable", "", ast.V.position);
-        if (!eType.equals(vType))
-            reporter.reportError("assignment incompatibilty", "", ast.position);
+        }
+
+        if (!eType.equals(vType)) {
+            reporter.reportError("assignment incompatibility", "", ast.position);
+        }
+
         return null;
     }
 
@@ -73,15 +85,20 @@ public final class Checker implements Visitor {
     public Object visitCallCommand(CallCommand ast, Object o) {
 
         Declaration binding = (Declaration) ast.I.visit(this, null);
-        if (binding == null)
+        if (binding == null) {
             reportUndeclared(ast.I);
-        else if (binding instanceof ProcDeclaration) {
+
+        } else if (binding instanceof ProcDeclaration) {
             ast.APS.visit(this, ((ProcDeclaration) binding).FPS);
+
         } else if (binding instanceof ProcFormalParameter) {
             ast.APS.visit(this, ((ProcFormalParameter) binding).FPS);
-        } else
+
+        } else {
             reporter.reportError("\"%\" is not a procedure identifier",
                     ast.I.spelling, ast.I.position);
+        }
+
         return null;
     }
 
@@ -90,41 +107,57 @@ public final class Checker implements Visitor {
     }
 
     public Object visitIfCommand(IfCommand ast, Object o) {
+
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
-        if (!eType.equals(StdEnvironment.booleanType))
+
+        if (!eType.equals(StdEnvironment.booleanType)) {
             reporter.reportError("Boolean expression expected here", "", ast.E.position);
+        }
+
         ast.C1.visit(this, null);
         ast.C2.visit(this, null);
+
         return null;
     }
 
     public Object visitLetCommand(LetCommand ast, Object o) {
         idTable.openScope();
+
         ast.D.visit(this, null);
         ast.C.visit(this, null);
+
         idTable.closeScope();
+
         return null;
     }
 
     public Object visitSequentialCommand(SequentialCommand ast, Object o) {
         ast.C1.visit(this, null);
         ast.C2.visit(this, null);
+
         return null;
     }
 
     public Object visitWhileCommand(WhileCommand ast, Object o) {
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
-        if (!eType.equals(StdEnvironment.booleanType))
+
+        if (!eType.equals(StdEnvironment.booleanType)) {
             reporter.reportError("Boolean expression expected here", "", ast.E.position);
+        }
+
         ast.C.visit(this, null);
+
         return null;
     }
 
     public Object visitArrayExpression(ArrayExpression ast, Object o) {
+
         TypeDenoter elemType = (TypeDenoter) ast.AA.visit(this, null);
-        IntegerLiteral il = new IntegerLiteral(new Integer(ast.AA.elemCount).toString(),
-                ast.position);
+
+        IntegerLiteral il = new IntegerLiteral(new Integer(ast.AA.elemCount).toString(), ast.position);
+
         ast.type = new ArrayTypeDenoter(il, elemType, ast.position);
+
         return ast.type;
     }
 
@@ -134,87 +167,116 @@ public final class Checker implements Visitor {
         TypeDenoter e2Type = (TypeDenoter) ast.E2.visit(this, null);
         Declaration binding = (Declaration) ast.O.visit(this, null);
 
-        if (binding == null)
+        if (binding == null) {
             reportUndeclared(ast.O);
-        else {
-            if (!(binding instanceof BinaryOperatorDeclaration))
-                reporter.reportError("\"%\" is not a binary operator",
-                        ast.O.spelling, ast.O.position);
+
+        } else {
+
+            if (!(binding instanceof BinaryOperatorDeclaration)) {
+                reporter.reportError("\"%\" is not a binary operator", ast.O.spelling, ast.O.position);
+            }
+
             BinaryOperatorDeclaration bbinding = (BinaryOperatorDeclaration) binding;
+
             if (bbinding.ARG1 == StdEnvironment.anyType) {
+
                 // this operator must be "=" or "\="
-                if (!e1Type.equals(e2Type))
-                    reporter.reportError("incompatible argument types for \"%\"",
-                            ast.O.spelling, ast.position);
-            } else if (!e1Type.equals(bbinding.ARG1))
-                reporter.reportError("wrong argument type for \"%\"",
-                        ast.O.spelling, ast.E1.position);
-            else if (!e2Type.equals(bbinding.ARG2))
-                reporter.reportError("wrong argument type for \"%\"",
-                        ast.O.spelling, ast.E2.position);
+                if (!e1Type.equals(e2Type)) {
+                    reporter.reportError("incompatible argument types for \"%\"", ast.O.spelling, ast.position);
+                }
+
+            } else if (!e1Type.equals(bbinding.ARG1)) {
+                reporter.reportError("wrong argument type for \"%\"", ast.O.spelling, ast.E1.position);
+
+            } else if (!e2Type.equals(bbinding.ARG2)) {
+                reporter.reportError("wrong argument type for \"%\"", ast.O.spelling, ast.E2.position);
+            }
+
             ast.type = bbinding.RES;
         }
+
         return ast.type;
     }
 
     public Object visitCallExpression(CallExpression ast, Object o) {
+
         Declaration binding = (Declaration) ast.I.visit(this, null);
+
         if (binding == null) {
             reportUndeclared(ast.I);
             ast.type = StdEnvironment.errorType;
+
         } else if (binding instanceof FuncDeclaration) {
             ast.APS.visit(this, ((FuncDeclaration) binding).FPS);
             ast.type = ((FuncDeclaration) binding).T;
+
         } else if (binding instanceof FuncFormalParameter) {
             ast.APS.visit(this, ((FuncFormalParameter) binding).FPS);
             ast.type = ((FuncFormalParameter) binding).T;
-        } else
-            reporter.reportError("\"%\" is not a function identifier",
-                    ast.I.spelling, ast.I.position);
+
+        } else {
+            reporter.reportError("\"%\" is not a function identifier", ast.I.spelling, ast.I.position);
+        }
+
         return ast.type;
     }
 
     public Object visitCharacterExpression(CharacterExpression ast, Object o) {
         ast.type = StdEnvironment.charType;
+
         return ast.type;
     }
 
     public Object visitEmptyExpression(EmptyExpression ast, Object o) {
         ast.type = null;
+
         return ast.type;
     }
 
     // Declarations
 
     public Object visitIfExpression(IfExpression ast, Object o) {
+
         TypeDenoter e1Type = (TypeDenoter) ast.E1.visit(this, null);
-        if (!e1Type.equals(StdEnvironment.booleanType))
-            reporter.reportError("Boolean expression expected here", "",
-                    ast.E1.position);
+
+        if (!e1Type.equals(StdEnvironment.booleanType)) {
+            reporter.reportError("Boolean expression expected here", "", ast.E1.position);
+        }
+
         TypeDenoter e2Type = (TypeDenoter) ast.E2.visit(this, null);
         TypeDenoter e3Type = (TypeDenoter) ast.E3.visit(this, null);
-        if (!e2Type.equals(e3Type))
+
+        if (!e2Type.equals(e3Type)) {
             reporter.reportError("incompatible limbs in if-expression", "", ast.position);
+        }
+
         ast.type = e2Type;
+
         return ast.type;
     }
 
     public Object visitIntegerExpression(IntegerExpression ast, Object o) {
         ast.type = StdEnvironment.integerType;
+
         return ast.type;
     }
 
     public Object visitLetExpression(LetExpression ast, Object o) {
         idTable.openScope();
+
         ast.D.visit(this, null);
         ast.type = (TypeDenoter) ast.E.visit(this, null);
+
         idTable.closeScope();
+
         return ast.type;
     }
 
     public Object visitRecordExpression(RecordExpression ast, Object o) {
+
         FieldTypeDenoter rType = (FieldTypeDenoter) ast.RA.visit(this, null);
         ast.type = new RecordTypeDenoter(rType, ast.position);
+
         return ast.type;
     }
 
@@ -222,17 +284,21 @@ public final class Checker implements Visitor {
 
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
         Declaration binding = (Declaration) ast.O.visit(this, null);
+
         if (binding == null) {
             reportUndeclared(ast.O);
             ast.type = StdEnvironment.errorType;
-        } else if (!(binding instanceof UnaryOperatorDeclaration))
+
+        } else if (!(binding instanceof UnaryOperatorDeclaration)) {
             reporter.reportError("\"%\" is not a unary operator",
                     ast.O.spelling, ast.O.position);
-        else {
+        } else {
             UnaryOperatorDeclaration ubinding = (UnaryOperatorDeclaration) binding;
-            if (!eType.equals(ubinding.ARG))
-                reporter.reportError("wrong argument type for \"%\"",
-                        ast.O.spelling, ast.O.position);
+
+            if (!eType.equals(ubinding.ARG)) {
+                reporter.reportError("wrong argument type for \"%\"", ast.O.spelling, ast.O.position);
+            }
+
             ast.type = ubinding.RES;
         }
         return ast.type;
@@ -240,6 +306,7 @@ public final class Checker implements Visitor {
 
     public Object visitVnameExpression(VnameExpression ast, Object o) {
         ast.type = (TypeDenoter) ast.V.visit(this, null);
+
         return ast.type;
     }
 
@@ -249,11 +316,14 @@ public final class Checker implements Visitor {
     }
 
     public Object visitConstDeclaration(ConstDeclaration ast, Object o) {
+
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
         idTable.enter(ast.I.spelling, ast);
-        if (ast.duplicated)
-            reporter.reportError("identifier \"%\" already declared",
-                    ast.I.spelling, ast.position);
+
+        if (ast.duplicated) {
+            reporter.reportError("identifier \"%\" already declared", ast.I.spelling, ast.position);
+        }
+
         return null;
     }
 
@@ -263,30 +333,43 @@ public final class Checker implements Visitor {
     // given object.
 
     public Object visitFuncDeclaration(FuncDeclaration ast, Object o) {
+
         ast.T = (TypeDenoter) ast.T.visit(this, null);
         idTable.enter(ast.I.spelling, ast); // permits recursion
-        if (ast.duplicated)
-            reporter.reportError("identifier \"%\" already declared",
-                    ast.I.spelling, ast.position);
+
+        if (ast.duplicated) {
+            reporter.reportError("identifier \"%\" already declared", ast.I.spelling, ast.position);
+        }
+
         idTable.openScope();
+
         ast.FPS.visit(this, null);
+
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
         idTable.closeScope();
-        if (!ast.T.equals(eType))
-            reporter.reportError("body of function \"%\" has wrong type",
-                    ast.I.spelling, ast.E.position);
+
+        if (!ast.T.equals(eType)) {
+            reporter.reportError("body of function \"%\" has wrong type", ast.I.spelling, ast.E.position);
+        }
+
         return null;
     }
 
     public Object visitProcDeclaration(ProcDeclaration ast, Object o) {
+
         idTable.enter(ast.I.spelling, ast); // permits recursion
-        if (ast.duplicated)
-            reporter.reportError("identifier \"%\" already declared",
-                    ast.I.spelling, ast.position);
+
+        if (ast.duplicated) {
+            reporter.reportError("identifier \"%\" already declared", ast.I.spelling, ast.position);
+        }
+
         idTable.openScope();
+
         ast.FPS.visit(this, null);
         ast.C.visit(this, null);
+
         idTable.closeScope();
+
         return null;
     }
 
@@ -298,15 +381,19 @@ public final class Checker implements Visitor {
     public Object visitSequentialDeclaration(SequentialDeclaration ast, Object o) {
         ast.D1.visit(this, null);
         ast.D2.visit(this, null);
+
         return null;
     }
 
     public Object visitTypeDeclaration(TypeDeclaration ast, Object o) {
+
         ast.T = (TypeDenoter) ast.T.visit(this, null);
         idTable.enter(ast.I.spelling, ast);
-        if (ast.duplicated)
-            reporter.reportError("identifier \"%\" already declared",
-                    ast.I.spelling, ast.position);
+
+        if (ast.duplicated) {
+            reporter.reportError("identifier \"%\" already declared", ast.I.spelling, ast.position);
+        }
+
         return null;
     }
 
@@ -319,53 +406,67 @@ public final class Checker implements Visitor {
     }
 
     public Object visitVarDeclaration(VarDeclaration ast, Object o) {
+
         ast.T = (TypeDenoter) ast.T.visit(this, null);
         idTable.enter(ast.I.spelling, ast);
-        if (ast.duplicated)
-            reporter.reportError("identifier \"%\" already declared",
-                    ast.I.spelling, ast.position);
+
+        if (ast.duplicated) {
+            reporter.reportError("identifier \"%\" already declared", ast.I.spelling, ast.position);
+        }
 
         return null;
     }
 
     public Object visitMultipleArrayAggregate(MultipleArrayAggregate ast, Object o) {
+
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
         TypeDenoter elemType = (TypeDenoter) ast.AA.visit(this, null);
         ast.elemCount = ast.AA.elemCount + 1;
-        if (!eType.equals(elemType))
+
+        if (!eType.equals(elemType)) {
             reporter.reportError("incompatible array-aggregate element", "", ast.E.position);
+        }
+
         return elemType;
     }
 
     public Object visitSingleArrayAggregate(SingleArrayAggregate ast, Object o) {
         TypeDenoter elemType = (TypeDenoter) ast.E.visit(this, null);
         ast.elemCount = 1;
+
         return elemType;
     }
 
     public Object visitMultipleRecordAggregate(MultipleRecordAggregate ast, Object o) {
+
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
         FieldTypeDenoter rType = (FieldTypeDenoter) ast.RA.visit(this, null);
         TypeDenoter fType = checkFieldIdentifier(rType, ast.I);
-        if (fType != StdEnvironment.errorType)
-            reporter.reportError("duplicate field \"%\" in record",
-                    ast.I.spelling, ast.I.position);
+
+        if (fType != StdEnvironment.errorType) {
+            reporter.reportError("duplicate field \"%\" in record", ast.I.spelling, ast.I.position);
+        }
+
         ast.type = new MultipleFieldTypeDenoter(ast.I, eType, rType, ast.position);
+
         return ast.type;
     }
 
     public Object visitSingleRecordAggregate(SingleRecordAggregate ast, Object o) {
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
         ast.type = new SingleFieldTypeDenoter(ast.I, eType, ast.position);
+
         return ast.type;
     }
 
     public Object visitConstFormalParameter(ConstFormalParameter ast, Object o) {
         ast.T = (TypeDenoter) ast.T.visit(this, null);
         idTable.enter(ast.I.spelling, ast);
-        if (ast.duplicated)
-            reporter.reportError("duplicated formal parameter \"%\"",
-                    ast.I.spelling, ast.position);
+
+        if (ast.duplicated) {
+            reporter.reportError("duplicated formal parameter \"%\"", ast.I.spelling, ast.position);
+        }
+
         return null;
     }
 
@@ -374,34 +475,49 @@ public final class Checker implements Visitor {
     // Always returns null. Uses the given FormalParameter.
 
     public Object visitFuncFormalParameter(FuncFormalParameter ast, Object o) {
+
         idTable.openScope();
+
         ast.FPS.visit(this, null);
         idTable.closeScope();
         ast.T = (TypeDenoter) ast.T.visit(this, null);
+
         idTable.enter(ast.I.spelling, ast);
-        if (ast.duplicated)
-            reporter.reportError("duplicated formal parameter \"%\"",
-                    ast.I.spelling, ast.position);
+
+        if (ast.duplicated) {
+            reporter.reportError("duplicated formal parameter \"%\"", ast.I.spelling, ast.position);
+        }
+
         return null;
     }
 
     public Object visitProcFormalParameter(ProcFormalParameter ast, Object o) {
+
         idTable.openScope();
+
         ast.FPS.visit(this, null);
+
         idTable.closeScope();
+
         idTable.enter(ast.I.spelling, ast);
-        if (ast.duplicated)
-            reporter.reportError("duplicated formal parameter \"%\"",
-                    ast.I.spelling, ast.position);
+
+        if (ast.duplicated) {
+            reporter.reportError("duplicated formal parameter \"%\"", ast.I.spelling, ast.position);
+        }
+
         return null;
     }
 
     public Object visitVarFormalParameter(VarFormalParameter ast, Object o) {
+
         ast.T = (TypeDenoter) ast.T.visit(this, null);
+
         idTable.enter(ast.I.spelling, ast);
-        if (ast.duplicated)
-            reporter.reportError("duplicated formal parameter \"%\"",
-                    ast.I.spelling, ast.position);
+
+        if (ast.duplicated) {
+            reporter.reportError("duplicated formal parameter \"%\"", ast.I.spelling, ast.position);
+        }
+
         return null;
     }
 
@@ -412,24 +528,28 @@ public final class Checker implements Visitor {
     public Object visitMultipleFormalParameterSequence(MultipleFormalParameterSequence ast, Object o) {
         ast.FP.visit(this, null);
         ast.FPS.visit(this, null);
+
         return null;
     }
 
     public Object visitSingleFormalParameterSequence(SingleFormalParameterSequence ast, Object o) {
         ast.FP.visit(this, null);
+
         return null;
     }
 
     public Object visitConstActualParameter(ConstActualParameter ast, Object o) {
+
         FormalParameter fp = (FormalParameter) o;
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
 
-        if (!(fp instanceof ConstFormalParameter))
-            reporter.reportError("const actual parameter not expected here", "",
-                    ast.position);
-        else if (!eType.equals(((ConstFormalParameter) fp).T))
-            reporter.reportError("wrong type for const actual parameter", "",
-                    ast.E.position);
+        if (!(fp instanceof ConstFormalParameter)) {
+            reporter.reportError("const actual parameter not expected here", "", ast.position);
+
+        } else if (!eType.equals(((ConstFormalParameter) fp).T)) {
+            reporter.reportError("wrong type for const actual parameter", "", ast.E.position);
+        }
+
         return null;
     }
 
@@ -439,105 +559,137 @@ public final class Checker implements Visitor {
     // use the given object.
 
     public Object visitFuncActualParameter(FuncActualParameter ast, Object o) {
+
         FormalParameter fp = (FormalParameter) o;
 
         Declaration binding = (Declaration) ast.I.visit(this, null);
-        if (binding == null)
+
+        if (binding == null) {
             reportUndeclared(ast.I);
-        else if (!(binding instanceof FuncDeclaration ||
-                binding instanceof FuncFormalParameter))
-            reporter.reportError("\"%\" is not a function identifier",
-                    ast.I.spelling, ast.I.position);
-        else if (!(fp instanceof FuncFormalParameter))
-            reporter.reportError("func actual parameter not expected here", "",
-                    ast.position);
-        else {
+
+        } else if (!(binding instanceof FuncDeclaration || binding instanceof FuncFormalParameter)) {
+            reporter.reportError("\"%\" is not a function identifier", ast.I.spelling, ast.I.position);
+
+        } else if (!(fp instanceof FuncFormalParameter)) {
+            reporter.reportError("func actual parameter not expected here", "", ast.position);
+
+        } else {
+
             FormalParameterSequence FPS = null;
             TypeDenoter T = null;
+
             if (binding instanceof FuncDeclaration) {
                 FPS = ((FuncDeclaration) binding).FPS;
                 T = ((FuncDeclaration) binding).T;
+
             } else {
                 FPS = ((FuncFormalParameter) binding).FPS;
                 T = ((FuncFormalParameter) binding).T;
             }
-            if (!FPS.equals(((FuncFormalParameter) fp).FPS))
-                reporter.reportError("wrong signature for function \"%\"",
-                        ast.I.spelling, ast.I.position);
-            else if (!T.equals(((FuncFormalParameter) fp).T))
-                reporter.reportError("wrong type for function \"%\"",
-                        ast.I.spelling, ast.I.position);
+
+            if (!FPS.equals(((FuncFormalParameter) fp).FPS)) {
+                reporter.reportError("wrong signature for function \"%\"", ast.I.spelling, ast.I.position);
+
+            } else if (!T.equals(((FuncFormalParameter) fp).T)) {
+                reporter.reportError("wrong type for function \"%\"", ast.I.spelling, ast.I.position);
+
+            }
         }
+
         return null;
     }
 
     public Object visitProcActualParameter(ProcActualParameter ast, Object o) {
+
         FormalParameter fp = (FormalParameter) o;
 
         Declaration binding = (Declaration) ast.I.visit(this, null);
-        if (binding == null)
+
+        if (binding == null) {
             reportUndeclared(ast.I);
-        else if (!(binding instanceof ProcDeclaration ||
-                binding instanceof ProcFormalParameter))
-            reporter.reportError("\"%\" is not a procedure identifier",
-                    ast.I.spelling, ast.I.position);
-        else if (!(fp instanceof ProcFormalParameter))
-            reporter.reportError("proc actual parameter not expected here", "",
-                    ast.position);
-        else {
+
+        } else if (!(binding instanceof ProcDeclaration || binding instanceof ProcFormalParameter)) {
+            reporter.reportError("\"%\" is not a procedure identifier", ast.I.spelling, ast.I.position);
+
+        } else if (!(fp instanceof ProcFormalParameter)) {
+            reporter.reportError("proc actual parameter not expected here", "", ast.position);
+
+        } else {
+
             FormalParameterSequence FPS = null;
-            if (binding instanceof ProcDeclaration)
+
+            if (binding instanceof ProcDeclaration) {
                 FPS = ((ProcDeclaration) binding).FPS;
-            else
+
+            } else {
                 FPS = ((ProcFormalParameter) binding).FPS;
-            if (!FPS.equals(((ProcFormalParameter) fp).FPS))
-                reporter.reportError("wrong signature for procedure \"%\"",
-                        ast.I.spelling, ast.I.position);
+            }
+
+            if (!FPS.equals(((ProcFormalParameter) fp).FPS)) {
+                reporter.reportError("wrong signature for procedure \"%\"", ast.I.spelling, ast.I.position);
+            }
         }
+
         return null;
     }
 
     public Object visitVarActualParameter(VarActualParameter ast, Object o) {
+
         FormalParameter fp = (FormalParameter) o;
 
         TypeDenoter vType = (TypeDenoter) ast.V.visit(this, null);
-        if (!ast.V.variable)
-            reporter.reportError("actual parameter is not a variable", "",
-                    ast.V.position);
-        else if (!(fp instanceof VarFormalParameter))
-            reporter.reportError("var actual parameter not expected here", "",
-                    ast.V.position);
-        else if (!vType.equals(((VarFormalParameter) fp).T))
-            reporter.reportError("wrong type for var actual parameter", "",
-                    ast.V.position);
+
+        if (!ast.V.variable) {
+            reporter.reportError("actual parameter is not a variable", "", ast.V.position);
+
+        } else if (!(fp instanceof VarFormalParameter)) {
+            reporter.reportError("var actual parameter not expected here", "", ast.V.position);
+
+        } else if (!vType.equals(((VarFormalParameter) fp).T)) {
+            reporter.reportError("wrong type for var actual parameter", "", ast.V.position);
+        }
+
         return null;
     }
 
     public Object visitEmptyActualParameterSequence(EmptyActualParameterSequence ast, Object o) {
+
         FormalParameterSequence fps = (FormalParameterSequence) o;
-        if (!(fps instanceof EmptyFormalParameterSequence))
+
+        if (!(fps instanceof EmptyFormalParameterSequence)) {
             reporter.reportError("too few actual parameters", "", ast.position);
+        }
+
         return null;
     }
 
     public Object visitMultipleActualParameterSequence(MultipleActualParameterSequence ast, Object o) {
+
         FormalParameterSequence fps = (FormalParameterSequence) o;
-        if (!(fps instanceof MultipleFormalParameterSequence))
+
+        if (!(fps instanceof MultipleFormalParameterSequence)) {
             reporter.reportError("too many actual parameters", "", ast.position);
-        else {
+
+        } else {
             ast.AP.visit(this, ((MultipleFormalParameterSequence) fps).FP);
             ast.APS.visit(this, ((MultipleFormalParameterSequence) fps).FPS);
         }
+
         return null;
     }
 
     public Object visitSingleActualParameterSequence(SingleActualParameterSequence ast, Object o) {
+
         FormalParameterSequence fps = (FormalParameterSequence) o;
-        if (!(fps instanceof SingleFormalParameterSequence))
+
+        if (!(fps instanceof SingleFormalParameterSequence)) {
             reporter.reportError("incorrect number of actual parameters", "", ast.position);
-        else {
+
+        }else {
             ast.AP.visit(this, ((SingleFormalParameterSequence) fps).FP);
+
         }
+
         return null;
     }
 
@@ -546,9 +698,13 @@ public final class Checker implements Visitor {
     }
 
     public Object visitArrayTypeDenoter(ArrayTypeDenoter ast, Object o) {
+
         ast.T = (TypeDenoter) ast.T.visit(this, null);
-        if ((Integer.valueOf(ast.IL.spelling).intValue()) == 0)
+
+        if ((Integer.valueOf(ast.IL.spelling).intValue()) == 0) {
             reporter.reportError("arrays must not be empty", "", ast.IL.position);
+        }
+
         return ast;
     }
 
@@ -565,15 +721,20 @@ public final class Checker implements Visitor {
     }
 
     public Object visitSimpleTypeDenoter(SimpleTypeDenoter ast, Object o) {
+
         Declaration binding = (Declaration) ast.I.visit(this, null);
+
         if (binding == null) {
             reportUndeclared(ast.I);
+
             return StdEnvironment.errorType;
+
         } else if (!(binding instanceof TypeDeclaration)) {
-            reporter.reportError("\"%\" is not a type identifier",
-                    ast.I.spelling, ast.I.position);
+            reporter.reportError("\"%\" is not a type identifier", ast.I.spelling, ast.I.position);
+
             return StdEnvironment.errorType;
         }
+
         return ((TypeDeclaration) binding).T;
     }
 
@@ -583,6 +744,7 @@ public final class Checker implements Visitor {
 
     public Object visitRecordTypeDenoter(RecordTypeDenoter ast, Object o) {
         ast.FT = (FieldTypeDenoter) ast.FT.visit(this, null);
+
         return ast;
     }
 
@@ -590,26 +752,26 @@ public final class Checker implements Visitor {
 
     // Determines the address of a named object (constant or variable).
     // This consists of a base object, to which 0 or more field-selection
-    // or array-indexing operations may be applied (if it is a record or
-    // array).  As much as possible of the address computation is done at
-    // compile-time. Code is generated only when necessary to evaluate
-    // index expressions at run-time.
+    // or array-indexing operations may be applied (if it is a record or array).
+    //
+    // As much as possible of the address computation is done at compile-time.
+    // Code is generated only when necessary to evaluate index expressions at run-time.
     // currentLevel is the routine level where the v-name occurs.
-    // frameSize is the anticipated size of the local stack frame when
-    // the object is addressed at run-time.
-    // It returns the description of the base object.
+    //
+    // 'frameSize' is the anticipated size of the local stack frame when
+    // the object is addressed at run-time. It returns the description of the base object.
     // offset is set to the total of any field offsets (plus any offsets
     // due to index expressions that happen to be literals).
-    // indexed is set to true iff there are any index expressions (other
-    // than literals). In that case code is generated to compute the
-    // offset due to these indexing operations at run-time.
+    //
+    // 'indexed' is set to true iff there are any index expressions (other than literals).
+    // In that case code is generated to compute the offset due to these indexing operations at run-time.
 
-    // Returns the TypeDenoter of the Vname. Does not use the
-    // given object.
+    // Returns the TypeDenoter of the Vname. Does not use the given object.
 
     public Object visitMultipleFieldTypeDenoter(MultipleFieldTypeDenoter ast, Object o) {
         ast.T = (TypeDenoter) ast.T.visit(this, null);
         ast.FT.visit(this, null);
+
         return ast;
     }
 
@@ -627,18 +789,23 @@ public final class Checker implements Visitor {
 
     public Object visitIdentifier(Identifier I, Object o) {
         Declaration binding = idTable.retrieve(I.spelling);
-        if (binding != null)
+
+        if (binding != null) {
             I.decl = binding;
+        }
+
         return binding;
     }
 
     // Checks whether the source program, represented by its AST, satisfies the
     // language's scope rules and type rules.
+    //
     // Also decorates the AST as follows:
     //  (a) Each applied occurrence of an identifier or operator is linked to
     //      the corresponding declaration of that identifier or operator.
     //  (b) Each expression and value-or-variable-name is decorated by its type.
     //  (c) Each type identifier is replaced by the type it denotes.
+    //
     // Types are represented by small ASTs.
 
     public Object visitIntegerLiteral(IntegerLiteral IL, Object o) {
@@ -656,57 +823,79 @@ public final class Checker implements Visitor {
 
     public Object visitDotVname(DotVname ast, Object o) {
         ast.type = null;
+
         TypeDenoter vType = (TypeDenoter) ast.V.visit(this, null);
+
         ast.variable = ast.V.variable;
-        if (!(vType instanceof RecordTypeDenoter))
+
+        if (!(vType instanceof RecordTypeDenoter)) {
             reporter.reportError("record expected here", "", ast.V.position);
-        else {
+
+        } else {
             ast.type = checkFieldIdentifier(((RecordTypeDenoter) vType).FT, ast.I);
-            if (ast.type == StdEnvironment.errorType)
-                reporter.reportError("no field \"%\" in this record type",
-                        ast.I.spelling, ast.I.position);
+
+            if (ast.type == StdEnvironment.errorType) {
+                reporter.reportError("no field \"%\" in this record type", ast.I.spelling, ast.I.position);
+            }
         }
+
         return ast.type;
     }
 
     public Object visitSimpleVname(SimpleVname ast, Object o) {
         ast.variable = false;
         ast.type = StdEnvironment.errorType;
+
         Declaration binding = (Declaration) ast.I.visit(this, null);
-        if (binding == null)
+
+        if (binding == null) {
             reportUndeclared(ast.I);
-        else if (binding instanceof ConstDeclaration) {
+
+        } else if (binding instanceof ConstDeclaration) {
             ast.type = ((ConstDeclaration) binding).E.type;
             ast.variable = false;
+
         } else if (binding instanceof VarDeclaration) {
             ast.type = ((VarDeclaration) binding).T;
             ast.variable = true;
+
         } else if (binding instanceof ConstFormalParameter) {
             ast.type = ((ConstFormalParameter) binding).T;
             ast.variable = false;
+
         } else if (binding instanceof VarFormalParameter) {
             ast.type = ((VarFormalParameter) binding).T;
             ast.variable = true;
-        } else
-            reporter.reportError("\"%\" is not a const or var identifier",
-                    ast.I.spelling, ast.I.position);
+
+        } else {
+            reporter.reportError("\"%\" is not a const or var identifier", ast.I.spelling, ast.I.position);
+        }
+
         return ast.type;
     }
 
     public Object visitSubscriptVname(SubscriptVname ast, Object o) {
+
         TypeDenoter vType = (TypeDenoter) ast.V.visit(this, null);
         ast.variable = ast.V.variable;
+
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+
         if (vType != StdEnvironment.errorType) {
-            if (!(vType instanceof ArrayTypeDenoter))
+
+            if (!(vType instanceof ArrayTypeDenoter)) {
                 reporter.reportError("array expected here", "", ast.V.position);
-            else {
-                if (!eType.equals(StdEnvironment.integerType))
-                    reporter.reportError("Integer expression expected here", "",
-                            ast.E.position);
+
+            } else {
+
+                if (!eType.equals(StdEnvironment.integerType)) {
+                    reporter.reportError("Integer expression expected here", "", ast.E.position);
+                }
+
                 ast.type = ((ArrayTypeDenoter) vType).T;
             }
         }
+
         return ast.type;
     }
 
@@ -739,6 +928,7 @@ public final class Checker implements Visitor {
 
         binding = new TypeDeclaration(new Identifier(id, dummyPos), typedenoter, dummyPos);
         idTable.enter(id, binding);
+
         return binding;
     }
 
@@ -753,8 +943,11 @@ public final class Checker implements Visitor {
         // constExpr used only as a placeholder for constType
         constExpr = new IntegerExpression(null, dummyPos);
         constExpr.type = constType;
+
         binding = new ConstDeclaration(new Identifier(id, dummyPos), constExpr, dummyPos);
+
         idTable.enter(id, binding);
+
         return binding;
     }
 
@@ -765,8 +958,8 @@ public final class Checker implements Visitor {
 
         ProcDeclaration binding;
 
-        binding = new ProcDeclaration(new Identifier(id, dummyPos), fps,
-                new EmptyCommand(dummyPos), dummyPos);
+        binding = new ProcDeclaration(new Identifier(id, dummyPos), fps, new EmptyCommand(dummyPos), dummyPos);
+
         idTable.enter(id, binding);
         return binding;
     }
@@ -775,14 +968,13 @@ public final class Checker implements Visitor {
     // unary operator, and enters it in the identification table.
     // This "declaration" summarises the operator's type info.
 
-    private FuncDeclaration declareStdFunc(String id, FormalParameterSequence fps,
-                                           TypeDenoter resultType) {
+    private FuncDeclaration declareStdFunc(String id, FormalParameterSequence fps, TypeDenoter resultType) {
 
         FuncDeclaration binding;
 
-        binding = new FuncDeclaration(new Identifier(id, dummyPos), fps, resultType,
-                new EmptyExpression(dummyPos), dummyPos);
+        binding = new FuncDeclaration(new Identifier(id, dummyPos), fps, resultType, new EmptyExpression(dummyPos), dummyPos);
         idTable.enter(id, binding);
+
         return binding;
     }
 
@@ -790,14 +982,13 @@ public final class Checker implements Visitor {
     // binary operator, and enters it in the identification table.
     // This "declaration" summarises the operator's type info.
 
-    private UnaryOperatorDeclaration declareStdUnaryOp
-            (String op, TypeDenoter argType, TypeDenoter resultType) {
+    private UnaryOperatorDeclaration declareStdUnaryOp(String op, TypeDenoter argType, TypeDenoter resultType) {
 
         UnaryOperatorDeclaration binding;
 
-        binding = new UnaryOperatorDeclaration(new Operator(op, dummyPos),
-                argType, resultType, dummyPos);
+        binding = new UnaryOperatorDeclaration(new Operator(op, dummyPos), argType, resultType, dummyPos);
         idTable.enter(op, binding);
+
         return binding;
     }
 
@@ -806,14 +997,14 @@ public final class Checker implements Visitor {
     // constants, procedures, functions, and operators.
     // Enters these "declarations" in the identification table.
 
-    private BinaryOperatorDeclaration declareStdBinaryOp
-            (String op, TypeDenoter arg1Type, TypeDenoter arg2type, TypeDenoter resultType) {
+    private BinaryOperatorDeclaration declareStdBinaryOp(String op, TypeDenoter arg1Type, TypeDenoter arg2type,
+                                                         TypeDenoter resultType) {
 
         BinaryOperatorDeclaration binding;
 
-        binding = new BinaryOperatorDeclaration(new Operator(op, dummyPos),
-                arg1Type, arg2type, resultType, dummyPos);
+        binding = new BinaryOperatorDeclaration(new Operator(op, dummyPos), arg1Type, arg2type, resultType, dummyPos);
         idTable.enter(op, binding);
+
         return binding;
     }
 
@@ -846,20 +1037,14 @@ public final class Checker implements Visitor {
         StdEnvironment.notlessDecl = declareStdBinaryOp(">=", StdEnvironment.integerType, StdEnvironment.integerType, StdEnvironment.booleanType);
 
         StdEnvironment.charDecl = declareStdType("Char", StdEnvironment.charType);
-        StdEnvironment.chrDecl = declareStdFunc("chr", new SingleFormalParameterSequence(
-                new ConstFormalParameter(dummyI, StdEnvironment.integerType, dummyPos), dummyPos), StdEnvironment.charType);
-        StdEnvironment.ordDecl = declareStdFunc("ord", new SingleFormalParameterSequence(
-                new ConstFormalParameter(dummyI, StdEnvironment.charType, dummyPos), dummyPos), StdEnvironment.integerType);
+        StdEnvironment.chrDecl = declareStdFunc("chr", new SingleFormalParameterSequence(new ConstFormalParameter(dummyI, StdEnvironment.integerType, dummyPos), dummyPos), StdEnvironment.charType);
+        StdEnvironment.ordDecl = declareStdFunc("ord", new SingleFormalParameterSequence(new ConstFormalParameter(dummyI, StdEnvironment.charType, dummyPos), dummyPos), StdEnvironment.integerType);
         StdEnvironment.eofDecl = declareStdFunc("eof", new EmptyFormalParameterSequence(dummyPos), StdEnvironment.booleanType);
         StdEnvironment.eolDecl = declareStdFunc("eol", new EmptyFormalParameterSequence(dummyPos), StdEnvironment.booleanType);
-        StdEnvironment.getDecl = declareStdProc("get", new SingleFormalParameterSequence(
-                new VarFormalParameter(dummyI, StdEnvironment.charType, dummyPos), dummyPos));
-        StdEnvironment.putDecl = declareStdProc("put", new SingleFormalParameterSequence(
-                new ConstFormalParameter(dummyI, StdEnvironment.charType, dummyPos), dummyPos));
-        StdEnvironment.getintDecl = declareStdProc("getint", new SingleFormalParameterSequence(
-                new VarFormalParameter(dummyI, StdEnvironment.integerType, dummyPos), dummyPos));
-        StdEnvironment.putintDecl = declareStdProc("putint", new SingleFormalParameterSequence(
-                new ConstFormalParameter(dummyI, StdEnvironment.integerType, dummyPos), dummyPos));
+        StdEnvironment.getDecl = declareStdProc("get", new SingleFormalParameterSequence(new VarFormalParameter(dummyI, StdEnvironment.charType, dummyPos), dummyPos));
+        StdEnvironment.putDecl = declareStdProc("put", new SingleFormalParameterSequence(new ConstFormalParameter(dummyI, StdEnvironment.charType, dummyPos), dummyPos));
+        StdEnvironment.getintDecl = declareStdProc("getint", new SingleFormalParameterSequence(new VarFormalParameter(dummyI, StdEnvironment.integerType, dummyPos), dummyPos));
+        StdEnvironment.putintDecl = declareStdProc("putint", new SingleFormalParameterSequence(new ConstFormalParameter(dummyI, StdEnvironment.integerType, dummyPos), dummyPos));
         StdEnvironment.geteolDecl = declareStdProc("geteol", new EmptyFormalParameterSequence(dummyPos));
         StdEnvironment.puteolDecl = declareStdProc("puteol", new EmptyFormalParameterSequence(dummyPos));
         StdEnvironment.equalDecl = declareStdBinaryOp("=", StdEnvironment.anyType, StdEnvironment.anyType, StdEnvironment.booleanType);
