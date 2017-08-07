@@ -127,5 +127,17 @@ public interface Visitor {
     Object visitOutputList(OutputList ast, Object o);
     Object visitSingleOutputExpression(SingleOutputExpression ast, Object o);
 
+//_____________________________________________________________________________
+//                                                                  Expression
+
+    Object visitBinaryExpression(BinaryExpression ast, Object o);
     Object visitOperator(Operator ast, Object o);
+    Object visitCharacterLiteral(CharacterLiteral ast, Object o);
+    Object visitIntegerLiteral(IntegerLiteral ast, Object o);
+    Object visitUnaryExpression(UnaryExpression ast, Object o);
+    Object visitIntegerExpression(IntegerExpression ast, Object o);
+    Object visitFunctionCall(FunctionCall ast, Object o);
+    Object visitCharacterExpression(CharacterExpression ast, Object o);
+
+
 }

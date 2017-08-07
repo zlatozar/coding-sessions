@@ -115,7 +115,7 @@ final class Token {
     // literals, identifiers, operators...
 
     public static final int INTLITERAL    = 0;
-    public static final int STRINGLITERAL = 1;
+    public static final int CHARLITERAL   = 1;
     public static final int IDENTIFIER    = 2;
     public static final int OPERATOR      = 3;
 

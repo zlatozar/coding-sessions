@@ -32,7 +32,7 @@ Build **scanner** based on this _lexical grammar_:
                          ARRAY | BEGIN | BY | CALL | CASE | DECLARE | DO | ELSE | END | EXIT | FI |
                          FIELD | FOR | FUNCTION | IF | INPUT | IS | NAME | OF | OTHERWISE | OUTPUT |
                          PROCEDURE | PROGRAM | REPEAT | REPENT | RETURN | SELECT | STRUCTURE |
-                         THEN | TO | TYPE | WHILE | . | : | ; | , | :(empty|=) | ( | ) | [ | ]
+                         THEN | TO | TYPE | WHILE | . | : | ; | , | := | ( | ) | [ | ]
                         
 <Integer-Literal>   ::=  <Digit>(<Digit>)*
 <String-Literal>    ::=  " <Graphic>* "
@@ -97,6 +97,7 @@ Expression         ::=  PrimaryExpression
 PrimaryExpression  ::=  Integer-Literal
                     |   Char-Literal
                     |   Variable
+                    |   Operator PrimaryExpression
                     |   Function Reference
                     |   ( Expression )
 
@@ -116,8 +117,8 @@ A value-or-variable-name identifies a value or variable.
 ### Function reference
         
 ```
-<function reference>  ::=  <identifier> ( )
-                       |   <identifier> <actual argument list>
+<function reference>   ::=  <identifier> ( )
+                        |   <identifier> <actual argument list>
                        
 <actual argument list> ::=  ( <expression>  | {, <expression>}* )                       
 ```
@@ -377,3 +378,45 @@ EscapeCase     ::=  OTHERWISE : <segment body>
 ```
 TRUE, FALSE, XOR, NOT, FLOOR, LENGTH, SUBSTR, CHARACTER, NUMBER, FLOAT, FIX, MOD, <>
 ```
+
+
+### EXPRESSIONS
+
+```
+<expression>       ::=  <expression one>
+                    |   <expression> | <expression one>
+                    |   <expression> XOR <expression one>
+                    
+<expression one>   ::=  <expression two>
+                    |   <expression one> & <expression two>
+                    
+<expression two>   ::=  <expression three>
+                    |   NOT <expression three>
+
+<expression three> ::=  <expression four>
+                    |   <expression three> <relation> <expression four>
+
+<expression four>  ::=  <expression five>
+                    |   <expression four> || <expression five>
+                    
+<expression five>  ::=  <expression six>
+                    |   <expression five> <adding operator> <expression six>
+                    |   <adding operator> <expression six>
+                    
+<expression six>   ::=  <expression seven>
+                    |   <expression six> <multiplying operator> <expression seven>
+                    
+<expression seven> ::=  FLOOR  ( <expression> )
+                    |   LENGTH ( <expression> )
+                    |   SUBSTR ( <expression> , <expression> , <expression> )
+                    |   CHARACTER ( <expression> )
+                    |   NUMBER ( <expression> )
+                    |   FLOAT  ( <expression> )
+                    |   FIX    ( <expression> )
+                    |   <expression eight> 
+
+<expression eight> ::=  <variable>
+                    |   <constant>
+                    |   <function reference>
+                    |   ( <expression> )
+```                    

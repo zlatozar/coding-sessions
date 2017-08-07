@@ -37,12 +37,12 @@ PROGRAM Eratosthenes:
              DECLARE sqrt INTEGER;
 
              SET ra := FLOAT(a);
-             SET epsilon := 0.0000001*ra;
+             SET epsilon := 0.0000001 * ra;
 
-          FOR x := ra/2. BY (ra/x-x)/2. WHILE abs(ra-x*x) > epsilon
+          FOR x := ra/2.0 BY (ra/x - x)/2.0 WHILE abs(ra - x*x) > epsilon
              DO ; END FOR;
 
-          FOR sqrt := FIX(x)-l BY 1 WHILE (sqrt+1)*(sqrt+1) <= a
+          FOR sqrt := FIX(x) - l BY 1 WHILE (sqrt + 1)*(sqrt + 1) <= a
             DO ; END FOR;
 
           RETURN sqrt;
@@ -57,13 +57,14 @@ PROGRAM Eratosthenes:
 
           FOR i := 1 TO topnum DO SET sieve[i] := TRUE; END FOR;
 
-          SET limit := integersqrt(topnum)+l; /* Avoid repeating square root */
+          SET limit := integersqrt(topnum) + l; /* Avoid repeating square root */
 
           FOR i := 2 TO limit DO
              IF sieve[i] THEN
                 DECLARE j INTEGER;
-                FOR j := 2*i BY i TO topnum DO SET sieve[j] := FALSE; END FOR;
+                FOR j := 2 * i BY i TO topnum DO SET sieve[j] := FALSE; END FOR;
              FI ;
+
           END FOR;
 
           SET count := 0;
@@ -72,10 +73,12 @@ PROGRAM Eratosthenes:
              IF sieve[i] THEN
                 SET count := count + 1;
                 OUTPUT "Prime[" || count || "] = " || i;
+
              FI ;
           END FOR;
     ELSE
        OUTPUT "Input value " || topnum || " non-positive.";
+
     FI ;
     EXIT;
 

@@ -1387,17 +1387,106 @@ public class Parser {
 //_____________________________________________________________________________
 //                                                                  Expression
 
-    // Dummy for now
     Expression parseExpression() throws SyntaxError {
+
+        // in case there's a syntactic error
+        Expression expressionAST;
+
+        SourcePosition expressionPos = new SourcePosition();
+        start(expressionPos);
+
+        expressionAST = parsePrimaryExpression();
+
+        while (currentToken.kind == Token.OPERATOR) {
+            Operator opAST = parseOperator();
+            Expression e2AST = parsePrimaryExpression();
+
+            expressionAST = new BinaryExpression(expressionPos, expressionAST, opAST, e2AST);
+        }
+
+        return expressionAST;
+    }
+
+    Expression parsePrimaryExpression() throws SyntaxError {
+
+        Expression expressionAST = null;
+
         SourcePosition srcPos = new SourcePosition();
         start(srcPos);
 
-        String expr = currentToken.spelling;
+        switch (currentToken.kind) {
 
-        acceptIt();
-        finish(srcPos);
+            case Token.INTLITERAL: {
+                IntegerLiteral ilAST = parseIntegerLiteral();
+                finish(srcPos);
 
-        return new ConstantExpression(srcPos, new Identifier(srcPos, expr));
+                expressionAST = new IntegerExpression(srcPos, ilAST);
+            }
+            break;
+
+            case Token.CHARLITERAL: {
+                CharacterLiteral clAST = parseCharacterLiteral();
+                finish(srcPos);
+
+                expressionAST = new CharacterExpression(srcPos, clAST);
+            }
+            break;
+
+            case Token.IDENTIFIER: {
+
+                Identifier iAST = parseIdentifier();
+
+                if (currentToken.kind == Token.LPAREN) {
+                    acceptIt();
+
+                    Expression param = parseExpression();
+                    finish(srcPos);
+
+                    while (currentToken.kind == Token.COMMA) {
+                        acceptIt();
+
+                        Expression nextParam = parseExpression();
+                        finish(srcPos);
+
+                        param = new ExpressionList(srcPos, param, nextParam);
+                    }
+
+                    accept(Token.RPAREN);
+                    finish(srcPos);
+
+                    expressionAST = new FunctionCall(srcPos, iAST, param);
+
+                } else {
+                    Vname vAST = parseRestOfVname(iAST);
+                    finish(srcPos);
+
+                    expressionAST = new VnameExpression(srcPos, vAST);
+                }
+            }
+            break;
+
+            case Token.OPERATOR: {
+                Operator opAST = parseOperator();
+                Expression eAST = parseExpression();  // recursive call
+                finish(srcPos);
+
+                expressionAST = new UnaryExpression(srcPos, opAST, eAST);
+            }
+            break;
+
+            case Token.LPAREN:
+                acceptIt();
+
+                expressionAST = parseExpression();
+                accept(Token.RPAREN);
+                break;
+
+            default:
+                syntacticError("\"%\" cannot start an expression", currentToken.spelling);
+                break;
+        }
+
+        return expressionAST;
     }
 
 //_____________________________________________________________________________
@@ -1420,29 +1509,6 @@ public class Parser {
         }
 
         return O;
-    }
-
-//_____________________________________________________________________________
-//                                                                    Literals
-
-    Identifier parseIdentifier() throws SyntaxError {
-        Identifier I;
-
-        if (currentToken.kind == Token.IDENTIFIER) {
-
-            previousTokenPosition = currentToken.position;
-            String spelling = currentToken.spelling;
-
-            I = new Identifier(previousTokenPosition, spelling);
-
-            currentToken = lexicalAnalyser.scan();
-
-        } else {
-            I = null;
-            syntacticError("identifier expected here", "");
-        }
-
-        return I;
     }
 
 //_____________________________________________________________________________
@@ -1485,4 +1551,67 @@ public class Parser {
 
         return vAST;
     }
+
+
+//_____________________________________________________________________________
+//                                                                 Microsyntax
+
+    IntegerLiteral parseIntegerLiteral() throws SyntaxError {
+        IntegerLiteral IL;
+
+        if (currentToken.kind == Token.INTLITERAL) {
+            previousTokenPosition = currentToken.position;
+            String spelling = currentToken.spelling;
+
+            IL = new IntegerLiteral(previousTokenPosition, spelling);
+
+            currentToken = lexicalAnalyser.scan();
+
+        } else {
+            IL = null;
+            syntacticError("integer literal expected here", "");
+        }
+
+        return IL;
+    }
+
+    CharacterLiteral parseCharacterLiteral() throws SyntaxError {
+        CharacterLiteral CL;
+
+        if (currentToken.kind == Token.CHARLITERAL) {
+            previousTokenPosition = currentToken.position;
+            String spelling = currentToken.spelling;
+
+            CL = new CharacterLiteral(previousTokenPosition, spelling);
+
+            currentToken = lexicalAnalyser.scan();
+
+        } else {
+            CL = null;
+            syntacticError("character literal expected here", "");
+        }
+
+        return CL;
+    }
+
+    Identifier parseIdentifier() throws SyntaxError {
+        Identifier I;
+
+        if (currentToken.kind == Token.IDENTIFIER) {
+
+            previousTokenPosition = currentToken.position;
+            String spelling = currentToken.spelling;
+
+            I = new Identifier(previousTokenPosition, spelling);
+
+            currentToken = lexicalAnalyser.scan();
+
+        } else {
+            I = null;
+            syntacticError("identifier expected here", "");
+        }
+
+        return I;
+    }
+
 }

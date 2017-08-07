@@ -146,7 +146,7 @@ class ScannerPhrasesSpec extends Specification {
 
         then: 'Tokens should be with correct kind'
         assert output.kind == Token.IDENTIFIER
-        assert stringLiteral.kind == Token.STRINGLITERAL
+        assert stringLiteral.kind == Token.CHARLITERAL
         assert operator1.kind == Token.OPERATOR
         assert variable.kind == Token.IDENTIFIER
     }
@@ -160,6 +160,6 @@ class ScannerPhrasesSpec extends Specification {
         Token stringLiteral = scanner.scan()
 
         then: 'Tokens should be with correct kind'
-        assert stringLiteral.kind == Token.STRINGLITERAL
+        assert stringLiteral.kind == Token.CHARLITERAL
     }
 }

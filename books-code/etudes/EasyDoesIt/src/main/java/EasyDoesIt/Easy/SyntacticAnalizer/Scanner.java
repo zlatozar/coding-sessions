@@ -238,7 +238,7 @@ public final class Scanner {
 
                 // empty string
                 if (currentChar == '\"') {
-                    return Token.STRINGLITERAL;
+                    return Token.CHARLITERAL;
                 }
 
                 while (currentChar != '\"' && (currentChar != SourceFile.EOT)) {
@@ -247,7 +247,7 @@ public final class Scanner {
 
                 if (currentChar == '\"') {
                     takeIt();
-                    return Token.STRINGLITERAL;
+                    return Token.CHARLITERAL;
 
                 } else {
                     return Token.ERROR;

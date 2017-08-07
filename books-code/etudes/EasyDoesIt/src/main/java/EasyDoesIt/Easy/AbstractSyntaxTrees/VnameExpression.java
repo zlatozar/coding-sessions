@@ -2,7 +2,7 @@ package EasyDoesIt.Easy.AbstractSyntaxTrees;
 
 import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
-public class VnameExpression extends Statement {
+public class VnameExpression extends Expression {
 
     public Vname V;
 
