@@ -145,7 +145,7 @@ class ScannerPhrasesSpec extends Specification {
         Token variable = scanner.scan()
 
         then: 'Tokens should be with correct kind'
-        assert output.kind == Token.IDENTIFIER
+        assert output.kind == Token.OUTPUT
         assert stringLiteral.kind == Token.CHARLITERAL
         assert operator1.kind == Token.OPERATOR
         assert variable.kind == Token.IDENTIFIER
@@ -161,5 +161,17 @@ class ScannerPhrasesSpec extends Specification {
 
         then: 'Tokens should be with correct kind'
         assert stringLiteral.kind == Token.CHARLITERAL
+    }
+
+    def 'Real numbers'() {
+        given: 'Real number'
+        SourceFile sourceFile = new SourceFile('2.0', true)
+        Scanner scanner = new Scanner(sourceFile)
+
+        when: 'Scanner starts'
+        Token stringLiteral = scanner.scan()
+
+        then: 'Token should be with correct kind'
+        assert stringLiteral.kind == Token.INTLITERAL
     }
 }

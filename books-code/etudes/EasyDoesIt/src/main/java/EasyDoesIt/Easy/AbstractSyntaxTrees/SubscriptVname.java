@@ -4,10 +4,10 @@ import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
 public class SubscriptVname extends Vname {
 
-    public Statement E;
+    public Expression E;
     public Vname V;
 
-    public SubscriptVname(SourcePosition srcPos, Vname vAST, Statement eAST) {
+    public SubscriptVname(SourcePosition srcPos, Vname vAST, Expression eAST) {
         super(srcPos);
 
         this.V = vAST;

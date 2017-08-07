@@ -1,5 +1,7 @@
 package EasyDoesIt.Easy.SyntacticAnalizer;
 
+import java.io.IOException;
+
 /**
  * Since the source  program text actually consists of individual characters, and a token
  * may consist of several characters, scanning is needed to group the characters into tokens,
@@ -30,7 +32,7 @@ public final class Scanner {
         currentlyScanningToken = false;
 
         // part of the scanner's function is to discard blank space and comments
-        while (currentChar == '/' || currentChar == ' ' || currentChar == '\n' || currentChar == '\r' || currentChar == '\t') {
+        while (isCommentBegins(currentChar) || currentChar == ' ' || currentChar == '\n' || currentChar == '\r' || currentChar == '\t') {
             scanSeparator();
         }
 
@@ -59,6 +61,14 @@ public final class Scanner {
 
 //_____________________________________________________________________________
 //
+
+    private boolean isCommentBegins(char c) {
+        return c == '/' && nextIs('*');
+    }
+
+    private boolean nextIs(char c) {
+        return c == probeIt();
+    }
 
     private boolean isLetter(char c) {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
@@ -90,6 +100,19 @@ public final class Scanner {
         }
 
         currentChar = sourceFile.getSource();
+    }
+
+    private char probeIt() {
+        char c;
+
+        try {
+            c = sourceFile.getProbe();
+
+        } catch (IOException e) {
+            c = SourceFile.EOT;
+        }
+
+        return c;
     }
 
     /**
@@ -208,7 +231,7 @@ public final class Scanner {
 
                 takeIt();
 
-                while (isDigit(currentChar)) {
+                while (isDigit(currentChar) || currentChar == '.') {
                     takeIt();
                 }
 

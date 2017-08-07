@@ -42,7 +42,7 @@ PROGRAM Eratosthenes:
              SET ra := FLOAT(a);
              SET epsilon := 0.0000001*ra;
 
-          FOR x := ra/2. BY (ra/x-x)/2. WHILE abs(ra-x*x) > epsilon
+          FOR x := ra/2.0 BY (ra/x-x)/2.0 WHILE abs(ra-x*x) > epsilon
              DO ; END FOR;
 
           FOR sqrt := FIX(x)-l BY 1 WHILE (sqrt+1)*(sqrt+1) <= a

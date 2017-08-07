@@ -67,8 +67,20 @@ class ScannerCommentsSpec extends Specification {
         when: 'Scanning starts'
         currentToken = scanner.scan()
 
-        then: 'Many weird lines'
+        then: 'Many weird lines will be skipped'
         assert currentToken.kind == Token.EOT
+    }
+
+    def 'Dived not a comment'() {
+        given: 'Scanner and source that contains dividing expression'
+        SourceFile sourceFile = new SourceFile('a/b', false)
+        Scanner scanner = new Scanner(sourceFile)
+
+        when: 'Scanning starts'
+        currentToken = scanner.scan()
+
+        then: 'All symbols will be return'
+        assert currentToken.spelling == 'a'
     }
 
 }

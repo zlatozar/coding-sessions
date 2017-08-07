@@ -1541,7 +1541,7 @@ public class Parser {
             } else {
                 acceptIt();
 
-                Statement eAST = parseExecutableStatementSeq();
+                Expression eAST = parseExpression();
                 accept(Token.RBRACKET);
                 finish(srcPos);
 

@@ -51,6 +51,7 @@ PROGRAM Eratosthenes:
     END FUNCTION integersqrt;
 
     INPUT topnum; /* main */
+
     IF topnum > 0 THEN
           DECLARE sieve ARRAY[1:topnum] OF BOOLEAN;
           DECLARE (i, limit, count) INTEGER;
@@ -62,7 +63,9 @@ PROGRAM Eratosthenes:
           FOR i := 2 TO limit DO
              IF sieve[i] THEN
                 DECLARE j INTEGER;
-                FOR j := 2 * i BY i TO topnum DO SET sieve[j] := FALSE; END FOR;
+                FOR j := 2 * i BY i TO topnum DO
+                   SET sieve[j] := FALSE;
+                END FOR;
              FI ;
 
           END FOR;

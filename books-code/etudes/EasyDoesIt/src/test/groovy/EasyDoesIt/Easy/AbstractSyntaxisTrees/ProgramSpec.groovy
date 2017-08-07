@@ -11,7 +11,10 @@ import spock.lang.Title
 @Title('AST')
 class ProgramSpec extends Specification {
 
+    private static final String EXAMPLE_PROGRAM = 'src/test/resources/example.esy'
+
     private static final String PROGRAM_STRUCTURE =
+            '/* Demo program */' +
             'PROGRAM simple:\n' +
             ';\n' +
             ';\n' +
@@ -24,6 +27,21 @@ class ProgramSpec extends Specification {
 
         given: 'Parser and simple program'
         SourceFile sourceFile = new SourceFile(PROGRAM_STRUCTURE, false)
+        Scanner scanner = new Scanner(sourceFile);
+        ErrorReporter reporter = new ErrorReporter();
+        Parser parser = new Parser(scanner, reporter);
+
+        when: 'Parser finish'
+
+        then: 'AST should be constructed'
+        AST theAST = parser.parseProgram();
+        assert theAST
+    }
+
+    def 'Example program from the book'() {
+
+        given: 'Parser and the example program'
+        SourceFile sourceFile = new SourceFile(EXAMPLE_PROGRAM)
         Scanner scanner = new Scanner(sourceFile);
         ErrorReporter reporter = new ErrorReporter();
         Parser parser = new Parser(scanner, reporter);

@@ -1,14 +1,17 @@
 package EasyDoesIt.Easy.SyntacticAnalizer;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 public class SourceFile {
 
     public static final char EOL = '\n';      // end of line
     public static final char EOT = '\u0000';  // end of transition
+
     File sourceFile;
-    InputStream source;
+    BufferedInputStream source;
+
     int currentLine;
     private boolean debug = false;
 
@@ -16,7 +19,7 @@ public class SourceFile {
 
         try {
             this.sourceFile = new File(filename);
-            this.source = new FileInputStream(sourceFile);
+            this.source = new BufferedInputStream(new FileInputStream(sourceFile));
 
             this.currentLine = 1;
 
@@ -31,7 +34,7 @@ public class SourceFile {
     public SourceFile(String snippet, boolean debug) {
 
         try {
-            this.source = new ByteArrayInputStream(snippet.getBytes(StandardCharsets.UTF_8));
+            this.source = new BufferedInputStream(new ByteArrayInputStream(snippet.getBytes(StandardCharsets.UTF_8)));
             this.currentLine = 1;
 
             this.debug = debug;
@@ -71,6 +74,25 @@ public class SourceFile {
         } catch (IOException _) {
             return EOT;
         }
+    }
+
+    char getProbe() throws IOException {
+
+        source.mark(2);
+
+        int c = source.read();
+
+        if (c == -1) {
+            c = EOT;
+        }
+
+        if (debug) {
+            System.out.println("     next char: " + (char) c);
+        }
+
+        source.reset();
+
+        return (char) c;
     }
 
     int getCurrentLineNumber() {
