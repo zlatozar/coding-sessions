@@ -19,8 +19,13 @@ import Triangle.AbstractSyntaxTrees.Declaration;
 public class IdEntry {
 
     protected String id;
+
+    // 'pointer' to the AST
     protected Declaration attr;
+
     protected int level;
+
+    // used to move backwards (linked list)
     protected IdEntry previous;
 
     IdEntry(String id, Declaration attr, int level, IdEntry previous) {
