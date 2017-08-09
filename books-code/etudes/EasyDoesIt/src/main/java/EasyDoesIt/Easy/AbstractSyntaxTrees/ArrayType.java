@@ -17,4 +17,18 @@ public class ArrayType extends TypeDenoter {
     public Object visit(Visitor v, Object o) {
         return v.visitArrayType(this, o);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj != null && obj instanceof ErrorTypeDenoter) {
+            return true;
+
+        } else if (obj != null && obj instanceof ArrayType) {
+            return this.type.equals(((ArrayType) obj).type);
+
+        } else {
+            return false;
+        }
+    }
 }

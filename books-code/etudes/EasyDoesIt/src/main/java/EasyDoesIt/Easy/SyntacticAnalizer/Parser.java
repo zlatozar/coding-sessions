@@ -553,7 +553,7 @@ public class Parser {
             Parameter params = parseParameters();
             finish(srcPos);
 
-            blockCodeName = new ProgramNameWithParams(srcPos, identifier, params);
+            blockCodeName = new ProcedureNameWithParams(srcPos, identifier, params);
 
         } else {
             blockCodeName = new ProcedureName(srcPos, identifier);

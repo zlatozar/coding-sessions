@@ -15,4 +15,17 @@ public class IdentifierType extends TypeDenoter {
     public Object visit(Visitor v, Object o) {
         return v.visitIdentifierType(this, o);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof ErrorTypeDenoter) {
+            return true;
+
+        } else if (obj != null && obj instanceof IdentifierType) {
+            return this.identifier.equals(((IdentifierType) obj).identifier);
+
+        } else {
+            return false;
+        }
+    }
 }

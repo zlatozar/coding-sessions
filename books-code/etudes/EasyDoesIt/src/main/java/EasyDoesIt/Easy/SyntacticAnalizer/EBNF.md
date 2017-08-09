@@ -113,6 +113,7 @@ A value-or-variable-name identifies a value or variable.
 <rest of variable>  ::= {. <identifier> | [ expression ] }*
 ```    
 
+Implementation note: If RHS contains ORs they should have common interface.
 
 ### Function reference
         
@@ -178,7 +179,7 @@ A value-or-variable-name identifies a value or variable.
 ```                        
 
 
-### Internal procedures
+### Procedure definition
 
 A function returns a value and a procedure just executes commands.
 
@@ -376,47 +377,8 @@ EscapeCase     ::=  OTHERWISE : <segment body>
 ## Standard environment
 
 ```
-TRUE, FALSE, XOR, NOT, FLOOR, LENGTH, SUBSTR, CHARACTER, NUMBER, FLOAT, FIX, MOD, <>
+BOOLEAN TRUE, FALSE, XOR, NOT, AND, OR
+INTEGER, FLOAT, REAL, FLOOR, FIX, MOD, <, >, <=, >=, +, -, *, /
+CHARACTER, SUBSTR, LENGTH, ||
+ =, <>,
 ```
-
-
-### EXPRESSIONS
-
-```
-<expression>       ::=  <expression one>
-                    |   <expression> | <expression one>
-                    |   <expression> XOR <expression one>
-                    
-<expression one>   ::=  <expression two>
-                    |   <expression one> & <expression two>
-                    
-<expression two>   ::=  <expression three>
-                    |   NOT <expression three>
-
-<expression three> ::=  <expression four>
-                    |   <expression three> <relation> <expression four>
-
-<expression four>  ::=  <expression five>
-                    |   <expression four> || <expression five>
-                    
-<expression five>  ::=  <expression six>
-                    |   <expression five> <adding operator> <expression six>
-                    |   <adding operator> <expression six>
-                    
-<expression six>   ::=  <expression seven>
-                    |   <expression six> <multiplying operator> <expression seven>
-                    
-<expression seven> ::=  FLOOR  ( <expression> )
-                    |   LENGTH ( <expression> )
-                    |   SUBSTR ( <expression> , <expression> , <expression> )
-                    |   CHARACTER ( <expression> )
-                    |   NUMBER ( <expression> )
-                    |   FLOAT  ( <expression> )
-                    |   FIX    ( <expression> )
-                    |   <expression eight> 
-
-<expression eight> ::=  <variable>
-                    |   <constant>
-                    |   <function reference>
-                    |   ( <expression> )
-```                    

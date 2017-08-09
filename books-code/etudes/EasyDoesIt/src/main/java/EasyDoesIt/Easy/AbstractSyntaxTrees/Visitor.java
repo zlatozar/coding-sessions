@@ -16,20 +16,24 @@ public interface Visitor {
 
 
 //_____________________________________________________________________________
+//                                                                  Expression
+
+    Object visitBinaryExpression(BinaryExpression ast, Object o);
+    Object visitOperator(Operator ast, Object o);
+    Object visitCharacterLiteral(CharacterLiteral ast, Object o);
+    Object visitIntegerLiteral(IntegerLiteral ast, Object o);
+    Object visitUnaryExpression(UnaryExpression ast, Object o);
+    Object visitIntegerExpression(IntegerExpression ast, Object o);
+    Object visitFunctionCall(FunctionCall ast, Object o);
+    Object visitCharacterExpression(CharacterExpression ast, Object o);
+
+
+//_____________________________________________________________________________
 //                                                                     Program
 
     Object visitProgram(Program ast, Object o);
     Object visitProgramBody(ProgramBody ast, Object o);
     Object visitCommand(Segment ast, Object o);
-
-
-//_____________________________________________________________________________
-//                                                                  Statements
-
-    Object visitEmptyStatement(EmptyStatement ast, Object o);
-    Object visitNullStmt(NullStmt ast, Object o);
-    Object visitStatementSeq(StatementSeq ast, Object o);
-
 
 //_____________________________________________________________________________
 //                                                                 Definitions
@@ -58,14 +62,19 @@ public interface Visitor {
     Object visitProcedureEnd(ProcedureEnd ast, Object o);
     Object visitProcedureName(ProcedureName ast, Object o);
     Object visitParameterList(ParameterList ast, Object o);
-    Object visitProgramWithParams(ProgramNameWithParams ast, Object o);
+    Object visitProcedureNameWithParams(ProcedureNameWithParams ast, Object o);
     Object visitParameterByValue(ParameterByValue ast, Object o);
     Object visitParameterByName(ParameterByName ast, Object o);
     Object visitFunctionHead(FunctionHead ast, Object o);
     Object visitFunctionEnd(FunctionEnd ast, Object o);
 
+
 //_____________________________________________________________________________
 //                                                                  Statements
+
+    Object visitEmptyStatement(EmptyStatement ast, Object o);
+    Object visitNullStmt(NullStmt ast, Object o);
+    Object visitStatementSeq(StatementSeq ast, Object o);
 
     Object visitVariableList(VariableList ast, Object o);
     Object visitAssignmentStmt(AssignmentStmt ast, Object o);
@@ -128,16 +137,15 @@ public interface Visitor {
     Object visitSingleOutputExpression(SingleOutputExpression ast, Object o);
 
 //_____________________________________________________________________________
-//                                                                  Expression
+//                                                        Standard Environment
 
-    Object visitBinaryExpression(BinaryExpression ast, Object o);
-    Object visitOperator(Operator ast, Object o);
-    Object visitCharacterLiteral(CharacterLiteral ast, Object o);
-    Object visitIntegerLiteral(IntegerLiteral ast, Object o);
-    Object visitUnaryExpression(UnaryExpression ast, Object o);
-    Object visitIntegerExpression(IntegerExpression ast, Object o);
-    Object visitFunctionCall(FunctionCall ast, Object o);
-    Object visitCharacterExpression(CharacterExpression ast, Object o);
-
-
+    Object visitUnaryOperatorDefinition(UnaryOperatorDefinition ast, Object o);
+    Object visitBinaryOperatorDefinition(BinaryOperatorDefinition ast, Object o);
+    Object visitAnyTypeDenoter(AnyTypeDenoter ast, Object o);
+    Object visitErrorTypeDenoter(ErrorTypeDenoter ast, Object o);
+    Object visitBoolTypeDenoter(BoolTypeDenoter ast, Object o);
+    Object visitIntTypeDenoter(IntTypeDenoter ast, Object o);
+    Object visitCharTypeDenoter(CharTypeDenoter ast, Object o);
+    Object visitFloatTypeDenoter(FloatTypeDenoter ast, Object o);
+    Object visitRealTypeDenoter(RealTypeDenoter ast, Object o);
 }

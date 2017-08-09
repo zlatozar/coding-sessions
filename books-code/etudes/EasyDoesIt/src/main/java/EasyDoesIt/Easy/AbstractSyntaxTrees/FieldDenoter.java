@@ -17,4 +17,20 @@ public class FieldDenoter extends Field {
     public Object visit(Visitor v, Object o) {
         return v.visitFieldDenoter(this, o);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj != null && obj instanceof ErrorTypeDenoter) {
+            return true;
+
+        } else if (obj != null && obj instanceof FieldDenoter) {
+            return
+                    this.I.spelling.compareTo(((FieldDenoter) obj).I.spelling) == 0
+                            && this.typeDenoter.equals(((FieldDenoter) obj).typeDenoter);
+
+        } else {
+            return false;
+        }
+    }
 }
