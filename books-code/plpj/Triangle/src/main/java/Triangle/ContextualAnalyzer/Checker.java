@@ -32,12 +32,12 @@ public final class Checker implements Visitor {
 
     private final static Identifier dummyI = new Identifier("", dummyPos);
 
-    private IdentificationTable idTable;
+    private IdentificationTable indTable;
     private ErrorReporter reporter;
 
     public Checker(ErrorReporter reporter) {
         this.reporter = reporter;
-        this.idTable = new IdentificationTable();
+        this.indTable = new IdentificationTable();
 
         establishStdEnvironment();
     }
@@ -131,12 +131,12 @@ public final class Checker implements Visitor {
     }
 
     public Object visitLetCommand(LetCommand ast, Object o) {
-        idTable.openScope();
+        indTable.openScope();
 
         ast.D.visit(this, null);
         ast.C.visit(this, null);
 
-        idTable.closeScope();
+        indTable.closeScope();
 
         return null;
     }
@@ -275,12 +275,12 @@ public final class Checker implements Visitor {
     }
 
     public Object visitLetExpression(LetExpression ast, Object o) {
-        idTable.openScope();
+        indTable.openScope();
 
         ast.D.visit(this, null);
         ast.type = (TypeDenoter) ast.E.visit(this, null);
 
-        idTable.closeScope();
+        indTable.closeScope();
 
         return ast.type;
     }
@@ -335,7 +335,7 @@ public final class Checker implements Visitor {
     public Object visitConstDeclaration(ConstDeclaration ast, Object o) {
 
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
-        idTable.enter(ast.I.spelling, ast);
+        indTable.enter(ast.I.spelling, ast);
 
         if (ast.duplicated) {
             reporter.reportError("identifier \"%\" already declared", ast.I.spelling, ast.position);
@@ -350,18 +350,18 @@ public final class Checker implements Visitor {
 
         ast.T = (TypeDenoter) ast.T.visit(this, null);
 
-        idTable.enter(ast.I.spelling, ast);  // permits recursion
+        indTable.enter(ast.I.spelling, ast);  // permits recursion
 
         if (ast.duplicated) {
             reporter.reportError("identifier \"%\" already declared", ast.I.spelling, ast.position);
         }
 
-        idTable.openScope();
+        indTable.openScope();
 
         ast.FPS.visit(this, null);
 
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
-        idTable.closeScope();
+        indTable.closeScope();
 
         if (!ast.T.equals(eType)) {
             reporter.reportError("body of function \"%\" has wrong type", ast.I.spelling, ast.E.position);
@@ -372,18 +372,18 @@ public final class Checker implements Visitor {
 
     public Object visitProcDeclaration(ProcDeclaration ast, Object o) {
 
-        idTable.enter(ast.I.spelling, ast);  // permits recursion
+        indTable.enter(ast.I.spelling, ast);  // permits recursion
 
         if (ast.duplicated) {
             reporter.reportError("identifier \"%\" already declared", ast.I.spelling, ast.position);
         }
 
-        idTable.openScope();
+        indTable.openScope();
 
         ast.FPS.visit(this, null);
         ast.C.visit(this, null);
 
-        idTable.closeScope();
+        indTable.closeScope();
 
         return null;
     }
@@ -400,7 +400,7 @@ public final class Checker implements Visitor {
     public Object visitTypeDeclaration(TypeDeclaration ast, Object o) {
 
         ast.T = (TypeDenoter) ast.T.visit(this, null);
-        idTable.enter(ast.I.spelling, ast);
+        indTable.enter(ast.I.spelling, ast);
 
         if (ast.duplicated) {
             reporter.reportError("identifier \"%\" already declared", ast.I.spelling, ast.position);
@@ -416,8 +416,9 @@ public final class Checker implements Visitor {
 
     public Object visitVarDeclaration(VarDeclaration ast, Object o) {
 
+        // eliminate type identifiers
         ast.T = (TypeDenoter) ast.T.visit(this, null);
-        idTable.enter(ast.I.spelling, ast);
+        indTable.enter(ast.I.spelling, ast);
 
         if (ast.duplicated) {
             reporter.reportError("identifier \"%\" already declared", ast.I.spelling, ast.position);
@@ -478,7 +479,7 @@ public final class Checker implements Visitor {
 
     public Object visitConstFormalParameter(ConstFormalParameter ast, Object o) {
         ast.T = (TypeDenoter) ast.T.visit(this, null);
-        idTable.enter(ast.I.spelling, ast);
+        indTable.enter(ast.I.spelling, ast);
 
         if (ast.duplicated) {
             reporter.reportError("duplicated formal parameter \"%\"", ast.I.spelling, ast.position);
@@ -490,15 +491,15 @@ public final class Checker implements Visitor {
     // Always returns null. Uses the given FormalParameter.
     public Object visitFuncFormalParameter(FuncFormalParameter ast, Object o) {
 
-        idTable.openScope();
+        indTable.openScope();
 
         ast.FPS.visit(this, null);
 
-        idTable.closeScope();
+        indTable.closeScope();
 
         ast.T = (TypeDenoter) ast.T.visit(this, null);
 
-        idTable.enter(ast.I.spelling, ast);
+        indTable.enter(ast.I.spelling, ast);
 
         if (ast.duplicated) {
             reporter.reportError("duplicated formal parameter \"%\"", ast.I.spelling, ast.position);
@@ -509,13 +510,13 @@ public final class Checker implements Visitor {
 
     public Object visitProcFormalParameter(ProcFormalParameter ast, Object o) {
 
-        idTable.openScope();
+        indTable.openScope();
 
         ast.FPS.visit(this, null);
 
-        idTable.closeScope();
+        indTable.closeScope();
 
-        idTable.enter(ast.I.spelling, ast);
+        indTable.enter(ast.I.spelling, ast);
 
         if (ast.duplicated) {
             reporter.reportError("duplicated formal parameter \"%\"", ast.I.spelling, ast.position);
@@ -528,7 +529,7 @@ public final class Checker implements Visitor {
 
         ast.T = (TypeDenoter) ast.T.visit(this, null);
 
-        idTable.enter(ast.I.spelling, ast);
+        indTable.enter(ast.I.spelling, ast);
 
         if (ast.duplicated) {
             reporter.reportError("duplicated formal parameter \"%\"", ast.I.spelling, ast.position);
@@ -804,7 +805,7 @@ public final class Checker implements Visitor {
     // In that case code is generated to compute the offset due to these indexing operations at run-time.
 
     public Object visitIdentifier(Identifier I, Object o) {
-        Declaration binding = idTable.retrieve(I.spelling);
+        Declaration binding = indTable.retrieve(I.spelling);
 
         if (binding != null) {
             I.decl = binding;
@@ -821,7 +822,7 @@ public final class Checker implements Visitor {
 
     public Object visitOperator(Operator O, Object o) {
 
-        Declaration binding = idTable.retrieve(O.spelling);
+        Declaration binding = indTable.retrieve(O.spelling);
 
         if (binding != null) {
             O.decl = binding;
@@ -935,29 +936,30 @@ public final class Checker implements Visitor {
         ast.visit(this, null);
     }
 
-//_____________________________________________________________________________
-//                                                             STD ENVIRONMENT
-
-    // Creates a small AST to represent the "declaration" of a standard
-    // type, and enters it in the identification table.
     private void reportUndeclared(Terminal leaf) {
         reporter.reportError("\"%\" is not declared", leaf.spelling, leaf.position);
     }
 
-    // Creates a small AST to represent the "declaration" of a standard
-    // type, and enters it in the identification table.
+//_____________________________________________________________________________
+//                                                             STD ENVIRONMENT
+
+    // Creates 'small' ASTs to represent the standard types.
+    //
+    // Creates small ASTs to represent "declarations" of standard types, constants, procedures, functions, and operators.
+    // Enters these "declarations" in the identification table.
+    //
+    // This "declaration" summarises the operator's type info.
+
     private TypeDeclaration declareStdType(String id, TypeDenoter typedenoter) {
 
         TypeDeclaration binding;
 
         binding = new TypeDeclaration(new Identifier(id, dummyPos), typedenoter, dummyPos);
-        idTable.enter(id, binding);
+        indTable.enter(id, binding);
 
         return binding;
     }
 
-    // Creates a small AST to represent the "declaration" of a standard
-    // type, and enters it in the identification table.
     private ConstDeclaration declareStdConst(String id, TypeDenoter constType) {
 
         IntegerExpression constExpr;
@@ -969,61 +971,49 @@ public final class Checker implements Visitor {
 
         binding = new ConstDeclaration(new Identifier(id, dummyPos), constExpr, dummyPos);
 
-        idTable.enter(id, binding);
+        indTable.enter(id, binding);
 
         return binding;
     }
 
-    // Creates a small AST to represent the "declaration" of a standard
-    // type, and enters it in the identification table.
     private ProcDeclaration declareStdProc(String id, FormalParameterSequence fps) {
 
         ProcDeclaration binding;
 
         binding = new ProcDeclaration(new Identifier(id, dummyPos), fps, new EmptyCommand(dummyPos), dummyPos);
 
-        idTable.enter(id, binding);
+        indTable.enter(id, binding);
         return binding;
     }
 
-    // Creates a small AST to represent the "declaration" of a
-    // unary operator, and enters it in the identification table.
-    //
-    // This "declaration" summarises the operator's type info.
+
     private FuncDeclaration declareStdFunc(String id, FormalParameterSequence fps, TypeDenoter resultType) {
 
         FuncDeclaration binding;
 
         binding = new FuncDeclaration(new Identifier(id, dummyPos), fps, resultType, new EmptyExpression(dummyPos), dummyPos);
-        idTable.enter(id, binding);
+        indTable.enter(id, binding);
 
         return binding;
     }
 
-    // Creates a small AST to represent the "declaration" of a
-    // binary operator, and enters it in the identification table.
-    // This "declaration" summarises the operator's type info.
     private UnaryOperatorDeclaration declareStdUnaryOp(String op, TypeDenoter argType, TypeDenoter resultType) {
 
         UnaryOperatorDeclaration binding;
 
         binding = new UnaryOperatorDeclaration(new Operator(op, dummyPos), argType, resultType, dummyPos);
-        idTable.enter(op, binding);
+        indTable.enter(op, binding);
 
         return binding;
     }
 
-    // Creates small ASTs to represent the standard types.
-    // Creates small ASTs to represent "declarations" of standard types,
-    // constants, procedures, functions, and operators.
-    // Enters these "declarations" in the identification table.
     private BinaryOperatorDeclaration declareStdBinaryOp(String op, TypeDenoter arg1Type, TypeDenoter arg2type,
                                                          TypeDenoter resultType) {
 
         BinaryOperatorDeclaration binding;
 
         binding = new BinaryOperatorDeclaration(new Operator(op, dummyPos), arg1Type, arg2type, resultType, dummyPos);
-        idTable.enter(op, binding);
+        indTable.enter(op, binding);
 
         return binding;
     }
