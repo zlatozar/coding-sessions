@@ -28,31 +28,6 @@ public final class Checker implements Visitor {
     }
 
 
-    private static TypeDenoter checkFieldIdentifier(FieldTypeDenoter ast, Identifier I) {
-
-        if (ast instanceof MultipleFieldTypeDenoter) {
-            MultipleFieldTypeDenoter ft = (MultipleFieldTypeDenoter) ast;
-
-            if (ft.I.spelling.compareTo(I.spelling) == 0) {
-                I.decl = ast;
-                return ft.T;
-
-            } else {
-                return checkFieldIdentifier(ft.FT, I);
-            }
-
-        } else if (ast instanceof SingleFieldTypeDenoter) {
-            SingleFieldTypeDenoter ft = (SingleFieldTypeDenoter) ast;
-
-            if (ft.I.spelling.compareTo(I.spelling) == 0) {
-                I.decl = ast;
-                return ft.T;
-            }
-        }
-
-        return StdEnvironment.errorType;
-    }
-
 //_____________________________________________________________________________
 //                                                          Value or variables
 
@@ -68,24 +43,7 @@ public final class Checker implements Visitor {
     }
 
     public Object visitDotVname(DotVname ast, Object o) {
-        ast.type = null;
-
-        TypeDenoter vType = (TypeDenoter) ast.V.visit(this, null);
-
-        ast.variable = ast.V.variable;
-
-        if (!(vType instanceof StructureType)) {
-            reporter.reportError("record expected here", "", ast.V.position);
-
-        } else {
-            ast.type = checkFieldIdentifier(((StructureType) vType).fieldDenoter, ast.I);
-
-            if (ast.type == StdEnvironment.errorType) {
-                reporter.reportError("no field \"%\" in this record type", ast.I.spelling, ast.I.position);
-            }
-        }
-
-        return ast.type;
+       return null;
     }
 
     @Override
@@ -285,8 +243,6 @@ public final class Checker implements Visitor {
 
     @Override
     public Object visitFieldDenoter(FieldDenoter ast, Object o) {
-
-
 
         return null;
     }
