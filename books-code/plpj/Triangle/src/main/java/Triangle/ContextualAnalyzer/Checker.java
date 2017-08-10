@@ -20,10 +20,20 @@ import Triangle.StdEnvironment;
 import Triangle.SyntacticAnalyzer.SourcePosition;
 
 /**
- * VISITOR PATTERN:
+ * p. 136-168
  *
- * Allows for one or more operation to be applied to a set of objects at runtime,
- * decoupling the operations from the object structure.
+ * Checks whether the source program, represented by its AST, satisfies the
+ * language's scope rules and type rules.
+ *
+ * Also decorates the AST as follows:
+ *  (a) Each applied occurrence of an identifier or operator is linked to
+ *      the corresponding declaration of that identifier or operator.
+ *  (b) Each expression and value-or-variable-name is decorated by its type.
+ *  (c) Each type identifier is replaced by the type it denotes.
+ *
+ * Standard types are represented by small ASTs.
+ *
+ * Reports that the identifier or operator used at a leaf of the AST has not been declared.
  */
 public final class Checker implements Visitor {
 
@@ -70,11 +80,15 @@ public final class Checker implements Visitor {
 //_____________________________________________________________________________
 //                                                                    COMMANDS
 
+    // 1. Check that the given command is well formed
+    // 2. Always returns null and does not use the given subtree(phrase) 'o'
+
     public Object visitAssignCommand(AssignCommand ast, Object o) {
 
         TypeDenoter vType = (TypeDenoter) ast.V.visit(this, null);
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
 
+        // only variables could be assigned
         if (!ast.V.variable) {
             reporter.reportError("LHS of assignment is not a variable", "", ast.V.position);
         }
@@ -86,11 +100,6 @@ public final class Checker implements Visitor {
         return null;
     }
 
-    /**
-     *     Returns the TypeDenoter denoting the type of the expression. Does
-     not use the given object.
-
-     */
     public Object visitCallCommand(CallCommand ast, Object o) {
 
         Declaration binding = (Declaration) ast.I.visit(this, null);
@@ -120,6 +129,7 @@ public final class Checker implements Visitor {
 
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
 
+        // 'if' expression should be boolean type
         if (!eType.equals(StdEnvironment.booleanType)) {
             reporter.reportError("Boolean expression expected here", "", ast.E.position);
         }
@@ -152,6 +162,7 @@ public final class Checker implements Visitor {
 
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
 
+        // 'while' expression should be boolean type
         if (!eType.equals(StdEnvironment.booleanType)) {
             reporter.reportError("Boolean expression expected here", "", ast.E.position);
         }
@@ -164,12 +175,17 @@ public final class Checker implements Visitor {
 //_____________________________________________________________________________
 //                                                                 EXPRESSIONS
 
+    // 1. Checks that the expression is well formed
+    // 2. Decorates the expression node with its inferred type
+    // 3. Return that type
+
     public Object visitArrayExpression(ArrayExpression ast, Object o) {
 
         TypeDenoter elemType = (TypeDenoter) ast.AA.visit(this, null);
 
         IntegerLiteral il = new IntegerLiteral(new Integer(ast.AA.elemCount).toString(), ast.position);
 
+        // V[E] could not be found(dynamic) in the AST so we create one
         ast.type = new ArrayTypeDenoter(il, elemType, ast.position);
 
         return ast.type;
@@ -180,6 +196,7 @@ public final class Checker implements Visitor {
         TypeDenoter e1Type = (TypeDenoter) ast.E1.visit(this, null);
         TypeDenoter e2Type = (TypeDenoter) ast.E2.visit(this, null);
 
+        // return pointer to the 'declaration' of O so
         Declaration binding = (Declaration) ast.O.visit(this, null);
 
         if (binding == null) {
@@ -216,6 +233,8 @@ public final class Checker implements Visitor {
     public Object visitCallExpression(CallExpression ast, Object o) {
 
         Declaration binding = (Declaration) ast.I.visit(this, null);
+
+        // NOTE that the subtree is passed when visit ActualParameterSequence (APS)
 
         if (binding == null) {
             reportUndeclared(ast.I);
@@ -263,6 +282,7 @@ public final class Checker implements Visitor {
             reporter.reportError("incompatible limbs in if-expression", "", ast.position);
         }
 
+        // e2Type is equal to e3Type so take one of them
         ast.type = e2Type;
 
         return ast.type;
@@ -296,6 +316,7 @@ public final class Checker implements Visitor {
     public Object visitUnaryExpression(UnaryExpression ast, Object o) {
 
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+
         Declaration binding = (Declaration) ast.O.visit(this, null);
 
         if (binding == null) {
@@ -303,8 +324,8 @@ public final class Checker implements Visitor {
             ast.type = StdEnvironment.errorType;
 
         } else if (!(binding instanceof UnaryOperatorDeclaration)) {
-            reporter.reportError("\"%\" is not a unary operator",
-                    ast.O.spelling, ast.O.position);
+            reporter.reportError("\"%\" is not a unary operator", ast.O.spelling, ast.O.position);
+
         } else {
             UnaryOperatorDeclaration ubinding = (UnaryOperatorDeclaration) binding;
 
@@ -318,6 +339,8 @@ public final class Checker implements Visitor {
     }
 
     public Object visitVnameExpression(VnameExpression ast, Object o) {
+
+        // Expression return types so cast
         ast.type = (TypeDenoter) ast.V.visit(this, null);
 
         return ast.type;
@@ -326,8 +349,9 @@ public final class Checker implements Visitor {
 //_____________________________________________________________________________
 //                                                                DECLARATIONS
 
+    // 1. Always returns null and does not use the given subtree(phrase) 'o'.
+    // 2. Enters all declared identifiers into the identification table
 
-    // Always returns null. Does not use the given object.
     public Object visitBinaryOperatorDeclaration(BinaryOperatorDeclaration ast, Object o) {
         return null;
     }
@@ -335,6 +359,7 @@ public final class Checker implements Visitor {
     public Object visitConstDeclaration(ConstDeclaration ast, Object o) {
 
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+
         indTable.enter(ast.I.spelling, ast);
 
         if (ast.duplicated) {
@@ -344,13 +369,12 @@ public final class Checker implements Visitor {
         return null;
     }
 
-    // Returns the TypeDenoter for the Array Aggregate.
-    // Does not use the given object.
     public Object visitFuncDeclaration(FuncDeclaration ast, Object o) {
 
+        // eliminate type identifiers
         ast.T = (TypeDenoter) ast.T.visit(this, null);
 
-        indTable.enter(ast.I.spelling, ast);  // permits recursion
+        indTable.enter(ast.I.spelling, ast);
 
         if (ast.duplicated) {
             reporter.reportError("identifier \"%\" already declared", ast.I.spelling, ast.position);
@@ -359,8 +383,8 @@ public final class Checker implements Visitor {
         indTable.openScope();
 
         ast.FPS.visit(this, null);
-
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+
         indTable.closeScope();
 
         if (!ast.T.equals(eType)) {
@@ -372,7 +396,7 @@ public final class Checker implements Visitor {
 
     public Object visitProcDeclaration(ProcDeclaration ast, Object o) {
 
-        indTable.enter(ast.I.spelling, ast);  // permits recursion
+        indTable.enter(ast.I.spelling, ast);
 
         if (ast.duplicated) {
             reporter.reportError("identifier \"%\" already declared", ast.I.spelling, ast.position);
@@ -388,9 +412,8 @@ public final class Checker implements Visitor {
         return null;
     }
 
-    // Returns the TypeDenoter for the Record Aggregate.
-    // Does not use the given object.
     public Object visitSequentialDeclaration(SequentialDeclaration ast, Object o) {
+
         ast.D1.visit(this, null);
         ast.D2.visit(this, null);
 
@@ -400,6 +423,7 @@ public final class Checker implements Visitor {
     public Object visitTypeDeclaration(TypeDeclaration ast, Object o) {
 
         ast.T = (TypeDenoter) ast.T.visit(this, null);
+
         indTable.enter(ast.I.spelling, ast);
 
         if (ast.duplicated) {
@@ -409,7 +433,7 @@ public final class Checker implements Visitor {
         return null;
     }
 
-    // Always returns null. Does not use the given object.
+    // Always returns null
     public Object visitUnaryOperatorDeclaration(UnaryOperatorDeclaration ast, Object o) {
         return null;
     }
@@ -418,6 +442,7 @@ public final class Checker implements Visitor {
 
         // eliminate type identifiers
         ast.T = (TypeDenoter) ast.T.visit(this, null);
+
         indTable.enter(ast.I.spelling, ast);
 
         if (ast.duplicated) {
@@ -445,8 +470,10 @@ public final class Checker implements Visitor {
     }
 
     public Object visitSingleArrayAggregate(SingleArrayAggregate ast, Object o) {
+
         TypeDenoter elemType = (TypeDenoter) ast.E.visit(this, null);
-        ast.elemCount = 1;
+
+        ast.elemCount = 1;  // decorate
 
         return elemType;
     }
@@ -456,18 +483,21 @@ public final class Checker implements Visitor {
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
         FieldTypeDenoter rType = (FieldTypeDenoter) ast.RA.visit(this, null);
 
+        // !!!
         TypeDenoter fType = checkFieldIdentifier(rType, ast.I);
 
         if (fType != StdEnvironment.errorType) {
             reporter.reportError("duplicate field \"%\" in record", ast.I.spelling, ast.I.position);
         }
 
+        // ???
         ast.type = new MultipleFieldTypeDenoter(ast.I, eType, rType, ast.position);
 
         return ast.type;
     }
 
     public Object visitSingleRecordAggregate(SingleRecordAggregate ast, Object o) {
+
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
         ast.type = new SingleFieldTypeDenoter(ast.I, eType, ast.position);
 
@@ -478,6 +508,7 @@ public final class Checker implements Visitor {
 //                                                           FORMAL PARAMETERS
 
     public Object visitConstFormalParameter(ConstFormalParameter ast, Object o) {
+
         ast.T = (TypeDenoter) ast.T.visit(this, null);
         indTable.enter(ast.I.spelling, ast);
 
@@ -488,7 +519,6 @@ public final class Checker implements Visitor {
         return null;
     }
 
-    // Always returns null. Uses the given FormalParameter.
     public Object visitFuncFormalParameter(FuncFormalParameter ast, Object o) {
 
         indTable.openScope();
@@ -558,9 +588,12 @@ public final class Checker implements Visitor {
 //_____________________________________________________________________________
 //                                                           ACTUAL PARAMETERS
 
+
     public Object visitConstActualParameter(ConstActualParameter ast, Object o) {
 
+        // use passed FormalParameter
         FormalParameter fp = (FormalParameter) o;
+
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
 
         if (!(fp instanceof ConstFormalParameter)) {
@@ -573,8 +606,6 @@ public final class Checker implements Visitor {
         return null;
     }
 
-    // Returns the expanded version of the TypeDenoter.
-    // Does not use the given object.
     public Object visitFuncActualParameter(FuncActualParameter ast, Object o) {
 
         FormalParameter fp = (FormalParameter) o;
@@ -618,6 +649,7 @@ public final class Checker implements Visitor {
 
     public Object visitProcActualParameter(ProcActualParameter ast, Object o) {
 
+        // use passed FormalParameter
         FormalParameter fp = (FormalParameter) o;
 
         Declaration binding = (Declaration) ast.I.visit(this, null);
@@ -652,6 +684,7 @@ public final class Checker implements Visitor {
 
     public Object visitVarActualParameter(VarActualParameter ast, Object o) {
 
+        // Use passed FormalParameter
         FormalParameter fp = (FormalParameter) o;
 
         TypeDenoter vType = (TypeDenoter) ast.V.visit(this, null);
@@ -671,6 +704,7 @@ public final class Checker implements Visitor {
 
     public Object visitEmptyActualParameterSequence(EmptyActualParameterSequence ast, Object o) {
 
+        // use passed FormalParameterSequence
         FormalParameterSequence fps = (FormalParameterSequence) o;
 
         if (!(fps instanceof EmptyFormalParameterSequence)) {
@@ -682,6 +716,7 @@ public final class Checker implements Visitor {
 
     public Object visitMultipleActualParameterSequence(MultipleActualParameterSequence ast, Object o) {
 
+        // use passed FormalParameterSequence
         FormalParameterSequence fps = (FormalParameterSequence) o;
 
         if (!(fps instanceof MultipleFormalParameterSequence)) {
@@ -697,6 +732,7 @@ public final class Checker implements Visitor {
 
     public Object visitSingleActualParameterSequence(SingleActualParameterSequence ast, Object o) {
 
+        // use passed FormalParameterSequence
         FormalParameterSequence fps = (FormalParameterSequence) o;
 
         if (!(fps instanceof SingleFormalParameterSequence)) {
@@ -711,6 +747,7 @@ public final class Checker implements Visitor {
 
 //_____________________________________________________________________________
 //                                                               TYPE DENOTERS
+
 
     public Object visitAnyTypeDenoter(AnyTypeDenoter ast, Object o) {
         return StdEnvironment.anyType;
@@ -767,8 +804,9 @@ public final class Checker implements Visitor {
         return ast;
     }
 
-    // Returns the TypeDenoter of the Vname. Does not use the given object.
+    // ???
     public Object visitMultipleFieldTypeDenoter(MultipleFieldTypeDenoter ast, Object o) {
+
         ast.T = (TypeDenoter) ast.T.visit(this, null);
         ast.FT.visit(this, null);
 
@@ -780,30 +818,17 @@ public final class Checker implements Visitor {
         return ast;
     }
 
-    // Literals, Identifiers and Operators
+//_____________________________________________________________________________
+//                                         Literals, Identifiers and Operators
+
     public Object visitCharacterLiteral(CharacterLiteral CL, Object o) {
         return StdEnvironment.charType;
     }
 
-//_____________________________________________________________________________
-//                                                      VALUE or VARIABLE NAMES
-
-    // Determines the address of a named object (constant or variable).
-    // This consists of a base object, to which 0 or more field-selection
-    // or array-indexing operations may be applied (if it is a record or array).
-    //
-    // As much as possible of the address computation is done at compile-time.
-    // Code is generated only when necessary to evaluate index expressions at run-time.
-    // currentLevel is the routine level where the v-name occurs.
-    //
-    // 'frameSize' is the anticipated size of the local stack frame when
-    // the object is addressed at run-time. It returns the description of the base object.
-    // offset is set to the total of any field offsets (plus any offsets
-    // due to index expressions that happen to be literals).
-    //
-    // 'indexed' is set to true iff there are any index expressions (other than literals).
-    // In that case code is generated to compute the offset due to these indexing operations at run-time.
-
+    /**
+     * Links an applied occurrence of an identifier to the corresponding declaration (if any).
+     * Its result is a pointer to that declaration.
+     */
     public Object visitIdentifier(Identifier I, Object o) {
         Declaration binding = indTable.retrieve(I.spelling);
 
@@ -818,10 +843,8 @@ public final class Checker implements Visitor {
         return StdEnvironment.integerType;
     }
 
-    /////////////////////////////////////////////////////////////////////////////
-
     public Object visitOperator(Operator O, Object o) {
-
+        // Binary or Unary Operators could be declared above
         Declaration binding = indTable.retrieve(O.spelling);
 
         if (binding != null) {
@@ -830,6 +853,14 @@ public final class Checker implements Visitor {
 
         return binding;
     }
+
+//_____________________________________________________________________________
+//                                                      VALUE or VARIABLE NAMES
+
+    // 1. Checks that the value-or-variable-name is well-formed
+    // 2. Decorates it with its inferred type
+    // 3. Add indication of whether it is a variable or not
+    // 4. The method's result is the inferred type
 
     public Object visitDotVname(DotVname ast, Object o) {
         ast.type = null;
@@ -912,19 +943,6 @@ public final class Checker implements Visitor {
 //_____________________________________________________________________________
 //                                                                    PROGRAMS
 
-    // Checks whether the source program, represented by its AST, satisfies the
-    // language's scope rules and type rules.
-    //
-    // Also decorates the AST as follows:
-    //  (a) Each applied occurrence of an identifier or operator is linked to
-    //      the corresponding declaration of that identifier or operator.
-    //  (b) Each expression and value-or-variable-name is decorated by its type.
-    //  (c) Each type identifier is replaced by the type it denotes.
-    //
-    // Types are represented by small ASTs.
-
-    // Reports that the identifier or operator used at a leaf of the AST
-    // has not been declared.
     public Object visitProgram(Program ast, Object o) {
         ast.C.visit(this, null);
 

@@ -18,6 +18,7 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public abstract class Declaration extends AST {
 
+    // used by IdentificationTable
     public boolean duplicated;
 
     public Declaration(SourcePosition thePosition) {

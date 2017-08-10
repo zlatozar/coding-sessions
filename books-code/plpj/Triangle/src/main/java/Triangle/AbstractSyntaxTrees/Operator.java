@@ -18,6 +18,8 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public class Operator extends Terminal {
 
+    // Somewhere it is declared so 'decl' could be
+    // either a BinaryOperatorDeclaration or UnaryOperatorDeclaration
     public Declaration decl;
 
     public Operator(String theSpelling, SourcePosition thePosition) {

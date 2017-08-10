@@ -9,7 +9,7 @@ import spock.lang.Specification
 
 class CheckerSpec extends Specification {
 
-    private static final String SIMPLE_TRIANGLE_FILE = 'src/test/resources/simple.tri'
+    private static final String SIMPLE_TRIANGLE_FILE = 'src/test/resources/sample.tri'
 
     def 'How checker works'() {
 
@@ -20,8 +20,6 @@ class CheckerSpec extends Specification {
 
         Parser parser = new Parser(scanner, errorReporter)
         Checker checker = new Checker(errorReporter)
-
-
 
         when: 'Start reading file, like compiler do'
 

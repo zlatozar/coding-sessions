@@ -638,6 +638,22 @@ public final class Encoder implements Visitor {
         return null;
     }
 
+    // Determines the address of a named object (constant or variable).
+    // This consists of a base object, to which 0 or more field-selection
+    // or array-indexing operations may be applied (if it is a record or array).
+    //
+    // As much as possible of the address computation is done at compile-time.
+    // Code is generated only when necessary to evaluate index expressions at run-time.
+    // currentLevel is the routine level where the v-name occurs.
+    //
+    // 'frameSize' is the anticipated size of the local stack frame when
+    // the object is addressed at run-time. It returns the description of the base object.
+    // offset is set to the total of any field offsets (plus any offsets
+    // due to index expressions that happen to be literals).
+    //
+    // 'indexed' is set to true iff there are any index expressions (other than literals).
+    // In that case code is generated to compute the offset due to these indexing operations at run-time.
+
     public Object visitIdentifier(Identifier ast, Object o) {
         Frame frame = (Frame) o;
 

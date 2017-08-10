@@ -6,7 +6,7 @@ import spock.lang.Title
 @Title('Syntactic analyzer')
 class SourceFileSpec extends Specification {
 
-    private static final String SIMPLE_TRIANGLE_FILE = 'src/test/resources/simple.tri'
+    private static final String SIMPLE_TRIANGLE_FILE = 'src/test/resources/sample.tri'
 
     def 'How source file is read'() {
 

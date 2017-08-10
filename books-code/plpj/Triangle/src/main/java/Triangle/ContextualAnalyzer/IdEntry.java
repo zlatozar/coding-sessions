@@ -18,7 +18,7 @@ import Triangle.AbstractSyntaxTrees.Declaration;
 
 public class IdEntry {
 
-    protected String id;
+    protected String name;
 
     // 'pointer' to the AST
     protected Declaration attr;
@@ -28,8 +28,8 @@ public class IdEntry {
     // used to move backwards (linked list)
     protected IdEntry previous;
 
-    IdEntry(String id, Declaration attr, int level, IdEntry previous) {
-        this.id = id;
+    IdEntry(String name, Declaration attr, int level, IdEntry previous) {
+        this.name = name;
         this.attr = attr;
         this.level = level;
         this.previous = previous;

@@ -6,7 +6,7 @@ import spock.lang.Title
 @Title('Syntactic analyzer')
 class ScannerSpec extends Specification {
 
-    private static final String SIMPLE_TRIANGLE_FILE = 'src/test/resources/simple.tri'
+    private static final String SIMPLE_TRIANGLE_FILE = 'src/test/resources/sample.tri'
     private static final String COMMENT = '!Sample'
     private static final String FUNC = 'func leap (yr: Integer) : Boolean ~'
     private static final String ASSIGNMENT = 'i := -42'

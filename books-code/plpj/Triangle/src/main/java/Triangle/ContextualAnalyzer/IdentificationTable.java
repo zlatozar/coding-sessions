@@ -64,7 +64,7 @@ public final class IdentificationTable {
      * duplicated is set to to true iff there is already an entry for the
      * same identifier at the current level.
      */
-    public void enter(String id, Declaration attr) {
+    public void enter(String name, Declaration attr) {
 
         IdEntry entry = this.latest;
 
@@ -77,7 +77,7 @@ public final class IdentificationTable {
             if (entry == null || entry.level < this.level) {
                 searching = false;
 
-            } else if (entry.id.equals(id)) {
+            } else if (entry.name.equals(name)) {
                 present = true;
                 searching = false;
 
@@ -89,7 +89,7 @@ public final class IdentificationTable {
         attr.duplicated = present;
 
         // Add new entry ...
-        entry = new IdEntry(id, attr, this.level, this.latest);
+        entry = new IdEntry(name, attr, this.level, this.latest);
 
         this.latest = entry;
     }
@@ -101,7 +101,7 @@ public final class IdentificationTable {
      * Returns null iff no entry is found otherwise returns the attribute
      * field of the entry found.
      */
-    public Declaration retrieve(String id) {
+    public Declaration retrieve(String name) {
 
         IdEntry entry;
         Declaration attr = null;
@@ -115,7 +115,7 @@ public final class IdentificationTable {
             if (entry == null) {
                 searching = false;
 
-            } else if (entry.id.equals(id)) {
+            } else if (entry.name.equals(name)) {
                 searching = false;
                 attr = entry.attr;
 
