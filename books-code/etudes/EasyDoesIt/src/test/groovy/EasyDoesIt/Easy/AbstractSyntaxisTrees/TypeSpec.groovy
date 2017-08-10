@@ -1,10 +1,8 @@
 package EasyDoesIt.Easy.AbstractSyntaxisTrees
 
+import EasyDoesIt.Easy.ASTSpec
 import EasyDoesIt.Easy.AbstractSyntaxTrees.AST
-import EasyDoesIt.Easy.ErrorReporter
 import EasyDoesIt.Easy.SyntacticAnalizer.Parser
-import EasyDoesIt.Easy.SyntacticAnalizer.Scanner
-import EasyDoesIt.Easy.SyntacticAnalizer.SourceFile
 import spock.lang.Title
 
 @Title('AST')

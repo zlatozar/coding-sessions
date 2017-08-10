@@ -6,7 +6,8 @@ public class Identifier extends Terminal {
 
     public TypeDenoter type;
 
-    // Either a Declaration or a FieldTypeDenoter
+    // Somewhere it is declared so 'decl' could be
+    // either a Declaration or a FieldTypeDenoter
     public AST decl;
 
     public Identifier(SourcePosition srcPos, String theSpelling) {

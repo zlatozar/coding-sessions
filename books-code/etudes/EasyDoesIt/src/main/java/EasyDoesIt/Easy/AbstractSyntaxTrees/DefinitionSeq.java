@@ -4,14 +4,14 @@ import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
 public class DefinitionSeq extends Definition {
 
-    public Definition definition;
     public Definition definitionSeq;
+    public Definition definition;
 
-    public DefinitionSeq(SourcePosition srcPos, Definition definition, Definition definitionSeq) {
+    public DefinitionSeq(SourcePosition srcPos, Definition definitionSeq, Definition definition) {
         super(srcPos);
 
-        this.definition = definition;
         this.definitionSeq = definitionSeq;
+        this.definition = definition;
     }
 
     @Override

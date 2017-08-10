@@ -23,12 +23,12 @@ public class BinaryExpression extends Expression {
     public Expression E2;
 
     // binary operator symbol
-    public Operator O;
+    public Operator Op;
 
     public BinaryExpression(Expression e1AST, Operator oAST, Expression e2AST, SourcePosition thePosition) {
         super(thePosition);
 
-        this.O = oAST;
+        this.Op = oAST;
         this.E1 = e1AST;
         this.E2 = e2AST;
     }

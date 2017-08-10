@@ -4,8 +4,8 @@ import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
 public class FieldList extends Field {
 
-    Field fieldSeq;
-    Field field;
+    public Field fieldSeq;
+    public Field field;
 
     public FieldList(SourcePosition srcPos, Field fieldSeq, Field field) {
         super(srcPos);

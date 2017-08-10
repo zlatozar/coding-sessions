@@ -10,7 +10,7 @@ import spock.lang.Specification
 
 class CheckerSpec extends Specification {
 
-    private static final String SIMPLE_TRIANGLE_FILE = 'src/test/resources/simple.tri'
+    private static final String SIMPLE_TRIANGLE_FILE = 'src/test/resources/example.esy'
 
     def 'How checker works'() {
 

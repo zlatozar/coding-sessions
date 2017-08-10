@@ -65,7 +65,7 @@ public class LayoutVisitor implements Visitor {
     }
 
     public Object visitBinaryExpression(BinaryExpression ast, Object obj) {
-        return layoutTernary("Bin.Expr.", ast.E1, ast.O, ast.E2);
+        return layoutTernary("Bin.Expr.", ast.E1, ast.Op, ast.E2);
     }
 
     public Object visitCallExpression(CallExpression ast, Object obj) {
@@ -97,7 +97,7 @@ public class LayoutVisitor implements Visitor {
     }
 
     public Object visitUnaryExpression(UnaryExpression ast, Object obj) {
-        return layoutBinary("UnaryExpr.", ast.O, ast.E);
+        return layoutBinary("UnaryExpr.", ast.Op, ast.E);
     }
 
     public Object visitVnameExpression(VnameExpression ast, Object obj) {
@@ -107,7 +107,7 @@ public class LayoutVisitor implements Visitor {
 
     // Declarations
     public Object visitBinaryOperatorDeclaration(BinaryOperatorDeclaration ast, Object obj) {
-        return layoutQuaternary("Bin.Op.Decl.", ast.O, ast.ARG1, ast.ARG2, ast.RES);
+        return layoutQuaternary("Bin.Op.Decl.", ast.Op, ast.ARG1, ast.ARG2, ast.RES);
     }
 
     public Object visitConstDeclaration(ConstDeclaration ast, Object obj) {
@@ -131,7 +131,7 @@ public class LayoutVisitor implements Visitor {
     }
 
     public Object visitUnaryOperatorDeclaration(UnaryOperatorDeclaration ast, Object obj) {
-        return layoutTernary("UnaryOp.Decl.", ast.O, ast.ARG, ast.RES);
+        return layoutTernary("UnaryOp.Decl.", ast.Op, ast.ARG, ast.RES);
     }
 
     public Object visitVarDeclaration(VarDeclaration ast, Object obj) {

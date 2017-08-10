@@ -21,12 +21,12 @@ public class UnaryExpression extends Expression {
     public Expression E;
 
     // unary operator symbol
-    public Operator O;
+    public Operator Op;
 
     public UnaryExpression(Operator oAST, Expression eAST, SourcePosition thePosition) {
         super(thePosition);
 
-        this.O = oAST;
+        this.Op = oAST;
         this.E = eAST;
     }
 

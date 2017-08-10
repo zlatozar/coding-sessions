@@ -18,7 +18,7 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public class BinaryOperatorDeclaration extends Declaration {
 
-    public Operator O;
+    public Operator Op;
 
     public TypeDenoter ARG1;
     public TypeDenoter ARG2;
@@ -28,7 +28,7 @@ public class BinaryOperatorDeclaration extends Declaration {
                                      SourcePosition thePosition) {
         super(thePosition);
 
-        this.O = oAST;
+        this.Op = oAST;
         this.ARG1 = arg1AST;
         this.ARG2 = arg2AST;
         this.RES = resultAST;

@@ -4,7 +4,7 @@ import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
 public class Operator extends Terminal {
 
-    public Declaration decl;
+    public Definition decl;
 
     public Operator(SourcePosition srcPos, String spelling) {
         super(srcPos, spelling);

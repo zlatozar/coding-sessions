@@ -133,7 +133,7 @@ public final class Encoder implements Visitor {
         int valSize2 = ((Integer) ast.E2.visit(this, frame1)).intValue();
 
         Frame frame2 = new Frame(frame.level, valSize1 + valSize2);
-        ast.O.visit(this, frame2);
+        ast.Op.visit(this, frame2);
 
         return valSize;
     }
@@ -213,7 +213,7 @@ public final class Encoder implements Visitor {
 
         Integer valSize = (Integer) ast.type.visit(this, null);
         ast.E.visit(this, frame);
-        ast.O.visit(this, new Frame(frame.level, valSize.intValue()));
+        ast.Op.visit(this, new Frame(frame.level, valSize.intValue()));
 
         return valSize;
     }

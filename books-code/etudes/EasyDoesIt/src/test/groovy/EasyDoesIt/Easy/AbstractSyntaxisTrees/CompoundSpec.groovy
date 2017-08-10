@@ -1,5 +1,6 @@
 package EasyDoesIt.Easy.AbstractSyntaxisTrees
 
+import EasyDoesIt.Easy.ASTSpec
 import EasyDoesIt.Easy.AbstractSyntaxTrees.AST
 import EasyDoesIt.Easy.SyntacticAnalizer.Parser
 
