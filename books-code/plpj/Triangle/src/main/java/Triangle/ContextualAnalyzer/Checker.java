@@ -38,12 +38,12 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 public final class Checker implements Visitor {
 
     // Always returns null. Does not use the given object.
-    private static SourcePosition dummyPos = new SourcePosition();
+    private static final SourcePosition dummyPos = new SourcePosition();
 
-    private final static Identifier dummyI = new Identifier("", dummyPos);
+    private static final Identifier dummyI = new Identifier("", dummyPos);
 
-    private IdentificationTable indTable;
-    private ErrorReporter reporter;
+    private final IdentificationTable indTable;
+    private final ErrorReporter reporter;
 
     public Checker(ErrorReporter reporter) {
         this.reporter = reporter;
@@ -183,7 +183,7 @@ public final class Checker implements Visitor {
 
         TypeDenoter elemType = (TypeDenoter) arrayExpression.AA.visit(this, null);
 
-        IntegerLiteral il = new IntegerLiteral(new Integer(arrayExpression.AA.elemCount).toString(), arrayExpression.position);
+        IntegerLiteral il = new IntegerLiteral(Integer.toString(arrayExpression.AA.elemCount), arrayExpression.position);
 
         // V[E] could not be found(dynamic) in the AST so we create one
         arrayExpression.type = new ArrayTypeDenoter(il, elemType, arrayExpression.position);
@@ -262,10 +262,7 @@ public final class Checker implements Visitor {
     }
 
     public Object visitEmptyExpression(EmptyExpression emptyExpression, Object _) {
-        emptyExpression.type = null;
-
-        // retrun link to empty 'null'
-        return emptyExpression.type;
+        return null;
     }
 
     public Object visitIfExpression(IfExpression ifExpression, Object _) {
@@ -341,7 +338,7 @@ public final class Checker implements Visitor {
 
     public Object visitVnameExpression(VnameExpression vnameExpression, Object o) {
 
-        // Expression return types so cast
+        // Vname successors return inferred types
         vnameExpression.type = (TypeDenoter) vnameExpression.V.visit(this, null);
 
         return vnameExpression.type;
@@ -359,7 +356,10 @@ public final class Checker implements Visitor {
 
     public Object visitConstDeclaration(ConstDeclaration constDeclaration, Object _) {
 
-        TypeDenoter eType = (TypeDenoter) constDeclaration.E.visit(this, null);
+        // Just verify the type of the expression, but more important is the identifier.
+        // It it is defined more than ones even with the same type is again a error.
+
+        constDeclaration.E.visit(this, null);
 
         indTable.enter(constDeclaration.I.spelling, constDeclaration);
 
@@ -456,12 +456,14 @@ public final class Checker implements Visitor {
 //_____________________________________________________________________________
 //                                                            ARRAY AGGREGATES
 
+
     public Object visitMultipleArrayAggregate(MultipleArrayAggregate multiArrayAggregate, Object _) {
 
         TypeDenoter eType = (TypeDenoter) multiArrayAggregate.E.visit(this, null);
         TypeDenoter elemType = (TypeDenoter) multiArrayAggregate.AA.visit(this, null);
 
-        multiArrayAggregate.elemCount = multiArrayAggregate.AA.elemCount + 1; // decorate ???
+        // number of elements will be needed during code generation
+        multiArrayAggregate.elemCount = multiArrayAggregate.AA.elemCount + 1;
 
         if (!eType.equals(elemType)) {
             reporter.reportError("incompatible array-aggregate element", "", multiArrayAggregate.E.position);
@@ -474,7 +476,8 @@ public final class Checker implements Visitor {
 
         TypeDenoter elemType = (TypeDenoter) singleArrayAggregate.E.visit(this, null);
 
-        singleArrayAggregate.elemCount = 1;  // decorate ???
+        // e.g [1]
+        singleArrayAggregate.elemCount = 1;
 
         return elemType;
     }
@@ -491,7 +494,7 @@ public final class Checker implements Visitor {
             reporter.reportError("duplicate field \"%\" in record", multiRecordAggregate.I.spelling, multiRecordAggregate.I.position);
         }
 
-        // ???
+        // number of elements could vary that's why we create a new one
         multiRecordAggregate.type = new MultipleFieldTypeDenoter(multiRecordAggregate.I, eType, rType, multiRecordAggregate.position);
 
         return multiRecordAggregate.type;
@@ -758,7 +761,7 @@ public final class Checker implements Visitor {
 
         arrayTypeDenoter.T = (TypeDenoter) arrayTypeDenoter.T.visit(this, null);
 
-        if ((Integer.valueOf(arrayTypeDenoter.IL.spelling).intValue()) == 0) {
+        if (Integer.valueOf(arrayTypeDenoter.IL.spelling) == 0) {
             reporter.reportError("arrays must not be empty", "", arrayTypeDenoter.IL.position);
         }
 
@@ -777,6 +780,8 @@ public final class Checker implements Visitor {
         return StdEnvironment.errorType;
     }
 
+    // e.g. var currentline: Line
+    // So we have to find using Line the actual type declaraion
     public Object visitSimpleTypeDenoter(SimpleTypeDenoter simpleTypeDenoter, Object _) {
 
         Declaration binding = (Declaration) simpleTypeDenoter.I.visit(this, null);
@@ -805,7 +810,7 @@ public final class Checker implements Visitor {
         return recordTypeDenoter;
     }
 
-    // ???
+    // Return the location in AST where MultipleFieldTypeDenoter is declared
     public Object visitMultipleFieldTypeDenoter(MultipleFieldTypeDenoter multiFieldTypeDenoter, Object _) {
 
         multiFieldTypeDenoter.T = (TypeDenoter) multiFieldTypeDenoter.T.visit(this, null);
@@ -885,6 +890,7 @@ public final class Checker implements Visitor {
     }
 
     public Object visitSimpleVname(SimpleVname simpleVname, Object _) {
+
         simpleVname.variable = false;
         simpleVname.type = StdEnvironment.errorType;
 

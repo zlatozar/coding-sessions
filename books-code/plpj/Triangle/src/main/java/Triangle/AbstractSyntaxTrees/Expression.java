@@ -16,6 +16,9 @@ package Triangle.AbstractSyntaxTrees;
 
 import Triangle.SyntacticAnalyzer.SourcePosition;
 
+/**
+ * Ever expression has a type
+ */
 public abstract class Expression extends AST {
 
     public TypeDenoter type;

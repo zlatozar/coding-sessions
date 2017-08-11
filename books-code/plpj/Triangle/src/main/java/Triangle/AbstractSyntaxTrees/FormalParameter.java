@@ -16,6 +16,9 @@ package Triangle.AbstractSyntaxTrees;
 
 import Triangle.SyntacticAnalyzer.SourcePosition;
 
+/**
+ * The type and the order of the parameters defines equality
+ */
 public abstract class FormalParameter extends Declaration {
 
     public FormalParameter(SourcePosition thePosition) {

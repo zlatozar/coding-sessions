@@ -18,6 +18,7 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public class MultipleFieldTypeDenoter extends FieldTypeDenoter {
 
+    // all are used in equality
     public Identifier I;
     public TypeDenoter T;
     public FieldTypeDenoter FT;
@@ -42,8 +43,9 @@ public class MultipleFieldTypeDenoter extends FieldTypeDenoter {
         if (obj != null && obj instanceof MultipleFieldTypeDenoter) {
             MultipleFieldTypeDenoter ft = (MultipleFieldTypeDenoter) obj;
 
-            return (this.I.spelling.compareTo(ft.I.spelling) == 0) &&
-                    this.T.equals(ft.T) && this.FT.equals(ft.FT);
+            return (this.I.spelling.compareTo(ft.I.spelling) == 0)
+                    && this.T.equals(ft.T)
+                    && this.FT.equals(ft.FT);
 
         } else {
             return false;

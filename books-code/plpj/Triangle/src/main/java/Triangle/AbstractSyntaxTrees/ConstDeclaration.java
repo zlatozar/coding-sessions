@@ -24,8 +24,7 @@ public class ConstDeclaration extends Declaration {
     // const value
     public Expression E;
 
-    public ConstDeclaration(Identifier iAST, Expression eAST,
-                            SourcePosition thePosition) {
+    public ConstDeclaration(Identifier iAST, Expression eAST, SourcePosition thePosition) {
         super(thePosition);
         I = iAST;
         E = eAST;

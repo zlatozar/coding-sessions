@@ -21,8 +21,7 @@ public class ConstFormalParameter extends FormalParameter {
     public Identifier I;
     public TypeDenoter T;
 
-    public ConstFormalParameter(Identifier iAST, TypeDenoter tAST,
-                                SourcePosition thePosition) {
+    public ConstFormalParameter(Identifier iAST, TypeDenoter tAST, SourcePosition thePosition) {
         super(thePosition);
         I = iAST;
         T = tAST;
@@ -35,10 +34,14 @@ public class ConstFormalParameter extends FormalParameter {
 
     @Override
     public boolean equals(Object fpAST) {
+
         if (fpAST instanceof ConstFormalParameter) {
             ConstFormalParameter cfpAST = (ConstFormalParameter) fpAST;
+
             return T.equals(cfpAST.T);
-        } else
+
+        } else {
             return false;
+        }
     }
 }

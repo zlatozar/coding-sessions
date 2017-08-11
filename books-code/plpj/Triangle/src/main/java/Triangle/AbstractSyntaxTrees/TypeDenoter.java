@@ -16,6 +16,9 @@ package Triangle.AbstractSyntaxTrees;
 
 import Triangle.SyntacticAnalyzer.SourcePosition;
 
+/**
+ * During context analysis it is vital to now if two types are equal
+ */
 public abstract class TypeDenoter extends AST {
 
     public TypeDenoter(SourcePosition thePosition) {

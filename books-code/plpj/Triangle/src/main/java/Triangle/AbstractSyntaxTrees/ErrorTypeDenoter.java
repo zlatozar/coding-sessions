@@ -16,6 +16,9 @@ package Triangle.AbstractSyntaxTrees;
 
 import Triangle.SyntacticAnalyzer.SourcePosition;
 
+/**
+ * Error compared to anything else is an error
+ */
 public class ErrorTypeDenoter extends TypeDenoter {
 
     public ErrorTypeDenoter(SourcePosition thePosition) {

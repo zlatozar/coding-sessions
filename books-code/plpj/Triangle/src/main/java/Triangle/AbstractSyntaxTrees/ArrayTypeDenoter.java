@@ -16,6 +16,9 @@ package Triangle.AbstractSyntaxTrees;
 
 import Triangle.SyntacticAnalyzer.SourcePosition;
 
+/**
+ * Array size and type forms the equality
+ */
 public class ArrayTypeDenoter extends TypeDenoter {
 
     public IntegerLiteral IL;
@@ -40,7 +43,9 @@ public class ArrayTypeDenoter extends TypeDenoter {
             return true;
 
         } else if (obj != null && obj instanceof ArrayTypeDenoter) {
-            return this.IL.spelling.compareTo(((ArrayTypeDenoter) obj).IL.spelling) == 0 && this.T.equals(((ArrayTypeDenoter) obj).T);
+
+            return this.IL.spelling.compareTo(((ArrayTypeDenoter) obj).IL.spelling) == 0
+                    && this.T.equals(((ArrayTypeDenoter) obj).T);
 
         } else {
             return false;

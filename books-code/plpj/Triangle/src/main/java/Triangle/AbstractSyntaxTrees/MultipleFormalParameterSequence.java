@@ -38,7 +38,9 @@ public class MultipleFormalParameterSequence extends FormalParameterSequence {
     public boolean equals(Object fpsAST) {
 
         if (fpsAST instanceof MultipleFormalParameterSequence) {
+
             MultipleFormalParameterSequence mfpsAST =  (MultipleFormalParameterSequence) fpsAST;
+
             return FP.equals(mfpsAST.FP) && FPS.equals(mfpsAST.FPS);
 
         } else {

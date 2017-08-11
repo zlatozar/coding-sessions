@@ -16,6 +16,7 @@ package Triangle.AbstractSyntaxTrees;
 
 import Triangle.SyntacticAnalyzer.SourcePosition;
 
+// not equal to anything
 public class AnyTypeDenoter extends TypeDenoter {
 
     public AnyTypeDenoter(SourcePosition thePosition) {
@@ -27,6 +28,7 @@ public class AnyTypeDenoter extends TypeDenoter {
         return v.visitAnyTypeDenoter(this, o);
     }
 
+    @Override
     public boolean equals(Object obj) {
         return false;
     }

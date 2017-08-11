@@ -18,7 +18,7 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public class BinaryExpression extends Expression {
 
-    // left and right operands
+    // left and right operands (keep the order)
     public Expression E1;
     public Expression E2;
 

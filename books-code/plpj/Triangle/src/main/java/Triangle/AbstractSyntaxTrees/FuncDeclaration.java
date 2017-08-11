@@ -16,6 +16,9 @@ package Triangle.AbstractSyntaxTrees;
 
 import Triangle.SyntacticAnalyzer.SourcePosition;
 
+/**
+ * Note that lack of equality. Formal parameters are the key.
+ */
 public class FuncDeclaration extends Declaration {
 
     public Identifier I;

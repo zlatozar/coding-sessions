@@ -20,8 +20,8 @@ public class Identifier extends Terminal {
 
     public TypeDenoter type;
 
-    // Somewhere it is declared so 'decl' could be
-    // either a Declaration or a FieldTypeDenoter
+    // Identifier is declared somewhere so 'decl' could be either a Declaration or a FieldTypeDenoter.
+    // 'decl' will be a pointer to that declaration.
     public AST decl;
 
     public Identifier(String theSpelling, SourcePosition thePosition) {

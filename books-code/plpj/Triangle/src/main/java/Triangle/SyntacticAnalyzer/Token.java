@@ -28,7 +28,7 @@ final class Token {
     // (must correspond to the token kinds):
     private static String[] spellingTable =
             {
-                    // micro syntax
+                    // terminals in parser
                     "<int>",
                     "<char>",        // string literal
                     "<identifier>",

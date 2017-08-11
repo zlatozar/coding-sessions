@@ -18,7 +18,8 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public abstract class Declaration extends AST {
 
-    // used by IdentificationTable
+    // Used by IdentificationTable during contextual analysis.
+    // It is error if something is declared more than once
     public boolean duplicated;
 
     public Declaration(SourcePosition thePosition) {

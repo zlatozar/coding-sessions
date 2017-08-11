@@ -22,7 +22,6 @@ public class ArrayExpression extends Expression {
 
     public ArrayExpression(ArrayAggregate aaAST, SourcePosition thePosition) {
         super(thePosition);
-
         this.AA = aaAST;
     }
 

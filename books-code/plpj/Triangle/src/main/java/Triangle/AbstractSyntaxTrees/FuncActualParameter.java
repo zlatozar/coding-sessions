@@ -22,7 +22,6 @@ public class FuncActualParameter extends ActualParameter {
 
     public FuncActualParameter(Identifier iAST, SourcePosition thePosition) {
         super(thePosition);
-
         this.I = iAST;
     }
 

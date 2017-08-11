@@ -42,6 +42,7 @@ public class FuncFormalParameter extends FormalParameter {
 
         if (fpAST instanceof FuncFormalParameter) {
             FuncFormalParameter ffpAST = (FuncFormalParameter) fpAST;
+
             return FPS.equals(ffpAST.FPS) && T.equals(ffpAST.T);
 
         } else {

@@ -18,6 +18,7 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public abstract class ArrayAggregate extends AST {
 
+    // the number of elements is a characteristic of the array
     public int elemCount;
 
     public ArrayAggregate(SourcePosition thePosition) {
