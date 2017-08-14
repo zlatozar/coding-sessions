@@ -4,9 +4,9 @@ import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
 public class InternalProcedure extends Definition {
 
-    public BlockCode blockCode;
+    public Definition blockCode;
 
-    public InternalProcedure(SourcePosition srcPos, BlockCode blockCode) {
+    public InternalProcedure(SourcePosition srcPos, Definition blockCode) {
         super(srcPos);
         this.blockCode = blockCode;
     }

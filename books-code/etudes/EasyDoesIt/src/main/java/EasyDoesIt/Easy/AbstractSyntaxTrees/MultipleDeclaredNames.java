@@ -2,12 +2,12 @@ package EasyDoesIt.Easy.AbstractSyntaxTrees;
 
 import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
-public class MultipleDeclaredNames extends DeclaredNames {
+public class MultipleDeclaredNames extends Definition {
 
-    public DeclaredNames declaredNames;
-    public DeclaredNames declaredNamesSeq;
+    public Definition declaredNames;
+    public Definition declaredNamesSeq;
 
-    public MultipleDeclaredNames(SourcePosition srcPos, DeclaredNames declaredNames, DeclaredNames declaredNamesSeq) {
+    public MultipleDeclaredNames(SourcePosition srcPos, Definition declaredNames, Definition declaredNamesSeq) {
         super(srcPos);
         this.declaredNames = declaredNames;
         this.declaredNamesSeq = declaredNamesSeq;

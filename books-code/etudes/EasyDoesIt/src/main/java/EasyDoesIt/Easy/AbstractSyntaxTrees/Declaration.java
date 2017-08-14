@@ -2,12 +2,13 @@ package EasyDoesIt.Easy.AbstractSyntaxTrees;
 
 import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
+// DECLARE ... END;
 public class Declaration extends Definition {
 
-    public DeclaredNames declaredNames;
+    public Definition declaredNames;
     public TypeDenoter typeDenoter;
 
-    public Declaration(SourcePosition srcPos, DeclaredNames declaredNames, TypeDenoter typeDenoter) {
+    public Declaration(SourcePosition srcPos, Definition declaredNames, TypeDenoter typeDenoter) {
         super(srcPos);
         this.declaredNames = declaredNames;
         this.typeDenoter = typeDenoter;

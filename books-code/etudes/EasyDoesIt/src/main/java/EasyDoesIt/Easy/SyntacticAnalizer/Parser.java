@@ -358,7 +358,7 @@ public class Parser {
 
         accept(Token.DECLARE);
 
-        DeclaredNames declaredNames = parseDeclaredNames();
+        Definition declaredNames = parseDeclaredNames();
         TypeDenoter typeDenoter = parseTypeDenoter();
 
         accept(Token.SEMICOLON);
@@ -367,9 +367,9 @@ public class Parser {
         return new Declaration(srcPos, declaredNames, typeDenoter);
     }
 
-    DeclaredNames parseDeclaredNames() throws SyntaxError {
+    Definition parseDeclaredNames() throws SyntaxError {
 
-        DeclaredNames declaredNames;
+        Definition declaredNames;
 
         SourcePosition srcPos = new SourcePosition();
         start(srcPos);
@@ -388,14 +388,14 @@ public class Parser {
         return declaredNames;
     }
 
-    DeclaredNames parseMultipleDeclaredNames() throws SyntaxError {
+    Definition parseMultipleDeclaredNames() throws SyntaxError {
 
         SourcePosition srcPos = new SourcePosition();
         start(srcPos);
 
         accept(Token.LPAREN);
 
-        DeclaredNames multipleDeclaredNames = parseDeclaredNamesSeq();
+        Definition multipleDeclaredNames = parseDeclaredNamesSeq();
 
         accept(Token.RPAREN);
         finish(srcPos);
@@ -403,9 +403,9 @@ public class Parser {
         return multipleDeclaredNames;
     }
 
-    DeclaredNames parseDeclaredNamesSeq() throws SyntaxError {
+    Definition parseDeclaredNamesSeq() throws SyntaxError {
 
-        DeclaredNames declaredNames;
+        Definition declaredNames;
 
         SourcePosition srcPos = new SourcePosition();
         start(srcPos);
@@ -415,7 +415,7 @@ public class Parser {
         while (currentToken.kind == Token.COMMA) {
             acceptIt();
 
-            DeclaredNames declaredNames2 = parseDeclaredNames();
+            Definition declaredNames2 = parseDeclaredNames();
             finish(srcPos);
 
             declaredNames = new MultipleDeclaredNames(srcPos, declaredNames, declaredNames2);
@@ -429,7 +429,7 @@ public class Parser {
 
     Definition parseInternalProcedure() throws SyntaxError {
 
-        BlockCode blockBlockCode;
+        Definition blockBlockCode;
 
         SourcePosition srcPos = new SourcePosition();
         start(srcPos);
@@ -440,9 +440,9 @@ public class Parser {
         return new InternalProcedure(srcPos, blockBlockCode);
     }
 
-    BlockCode parseBlockCode() throws SyntaxError {
+    Definition parseBlockCode() throws SyntaxError {
 
-        BlockCode blockBlockCode = null;
+        Definition blockBlockCode = null;
 
         SourcePosition srcPos = new SourcePosition();
         start(srcPos);
@@ -468,7 +468,7 @@ public class Parser {
         return blockBlockCode;
     }
 
-    BlockCode parseProcedureDefinition() throws SyntaxError {
+    Definition parseProcedureDefinition() throws SyntaxError {
         SourcePosition srcPos = new SourcePosition();
         start(srcPos);
 
@@ -483,7 +483,7 @@ public class Parser {
         return new ProcedureDefinition(srcPos, procHead, segment, procEnd);
     }
 
-    BlockCode parseFunctionDefinition() throws SyntaxError {
+    Definition parseFunctionDefinition() throws SyntaxError {
 
         SourcePosition srcPos = new SourcePosition();
         start(srcPos);

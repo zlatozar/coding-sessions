@@ -2,7 +2,7 @@ package EasyDoesIt.Easy.AbstractSyntaxTrees;
 
 import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
-public abstract class Statement extends Definition {
+public abstract class Statement extends AST {
 
     public TypeDenoter type;
 

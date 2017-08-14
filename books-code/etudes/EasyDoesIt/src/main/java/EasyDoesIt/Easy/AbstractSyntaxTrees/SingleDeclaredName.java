@@ -2,7 +2,7 @@ package EasyDoesIt.Easy.AbstractSyntaxTrees;
 
 import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
-public class SingleDeclaredName extends DeclaredNames {
+public class SingleDeclaredName extends Definition {
 
     public Identifier identifier;
 

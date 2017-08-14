@@ -71,20 +71,24 @@ Comments can't be nested.
 
 Here is some definitions that are important:
 
-- A **command** is executed in order to update variables. (This includes input-output.)
+- A **command** is executed in order to update variables. (This includes _input-output_.)
 
 - An **expression** is evaluated to yield a value. A record-aggregate is evaluated to construct
   a record value from its component values. An array-aggregate is evaluated to construct
   an array value from its component values.
 
-- A **declaration** is elaborated to produce bindings. Elaborating a declaration may alsqhave
+- A **declaration** is elaborated to produce bindings. Elaborating a declaration may also have
   the side effect of creating and updating variables.
+  
+- A **value-or-variable-name** may be identified either to yield a value or to assign a
+  value to a variable (as required by the context).  
   
 - **Formal-parameters** are used to parameterize a procedure or function with respect to
   (some of) the free identifiers in its body.
     
 - A **type-denoter** denotes a data type. Every value, constant, variable, and function has a
   specified type.    
+
 
 ### EXPRESSIONS
 
@@ -143,6 +147,7 @@ Implementation note: If RHS contains ORs they should have common interface.
 <segment body>  ::=  {<type definition>}*
                      {<variable declaration>}*
                      {<procedure definition>}*
+                        
                      <executable statement> | {<executable statement>}*
 ```
 
@@ -382,3 +387,68 @@ INTEGER, FLOAT, REAL, FLOOR, FIX, MOD, <, >, <=, >=, +, -, *, /
 CHARACTER, SUBSTR, LENGTH, ||
  =, <>,
 ```
+
+
+## CHECKER
+
+1. Checks whether the source program, represented by its AST, satisfies the
+   language's scope rules and type rules.
+
+2. Also decorates the AST as follows:
+   (a) Each applied occurrence of an identifier or operator is linked to
+       the corresponding declaration of that identifier or operator.
+   (b) Each expression and value-or-variable-name is decorated by its type.
+   (c) Each type identifier is replaced by the type it denotes.
+ 
+3. Standard types are represented by small ASTs.
+
+4. Reports that the identifier or operator used at a leaf of the AST has not been declared.
+
+
+### Commands
+
+- Check that the given command is well formed
+- Always returns null and does not use the given subtree(phrase)
+
+### Expression
+
+- Checks that the expression is well formed
+- Decorates the expression node with its inferred type
+- Return that type
+
+### Declaration
+
+- Always returns null and does not use the given subtree(phrase)
+- Enters all declared identifiers into the identification table
+
+### Value or variable
+
+- Checks that the value-or-variable-name is well-formed
+- Decorates it with its inferred type
+- Add indication of whether it is a variable or not
+- The method's result is the inferred type
+
+### Formal parameters
+
+- Always returns null and does not use the given subtree(phrase)
+- Enters all declared identifiers into the identification table
+
+### Type denoters
+
+- Return denoters (sub-tree)
+
+#### Array aggregates
+
+- Return type
+- Decorate 'elemCount'
+
+#### Literals, Identifiers and Operators
+
+- Return bindings
+
+#### Standard environment
+
+- Creates 'small' ASTs to represent the standard types.
+- Creates small ASTs to represent "declarations" of standard types, constants, procedures, functions, and operators.
+- Enters these "declarations" in the identification table.
+- This "declaration" summarises the operator's type info.

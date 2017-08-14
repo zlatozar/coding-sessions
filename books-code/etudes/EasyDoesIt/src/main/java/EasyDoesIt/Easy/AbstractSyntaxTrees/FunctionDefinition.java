@@ -2,7 +2,7 @@ package EasyDoesIt.Easy.AbstractSyntaxTrees;
 
 import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
-public class FunctionDefinition extends BlockCode {
+public class FunctionDefinition extends Definition {
 
     public FunctionHead funcHead;
     public Segment segment;

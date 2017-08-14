@@ -8,6 +8,8 @@ public class BinaryOperatorDefinition extends Definition {
 
     public TypeDenoter ARG1;
     public TypeDenoter ARG2;
+
+    // result type
     public TypeDenoter RES;
 
     public BinaryOperatorDefinition(SourcePosition thePosition, Operator oAST, TypeDenoter arg1AST,

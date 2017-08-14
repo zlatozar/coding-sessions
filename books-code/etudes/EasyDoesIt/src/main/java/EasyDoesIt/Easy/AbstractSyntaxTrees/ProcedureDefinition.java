@@ -2,7 +2,7 @@ package EasyDoesIt.Easy.AbstractSyntaxTrees;
 
 import EasyDoesIt.Easy.SyntacticAnalizer.SourcePosition;
 
-public class ProcedureDefinition extends BlockCode {
+public class ProcedureDefinition extends Definition {
 
     public ProcedureHead procHead;
     public Segment segment;

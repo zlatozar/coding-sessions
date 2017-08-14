@@ -97,7 +97,7 @@ public interface Visitor {
     Object visitFalseBranch(FalseBranch ast, Object o);
 
     Object visitSimpleCompoundEnd(SimpleCompoundEnd ast, Object o);
-    Object visitCompoundNameWithName(CompoundEndWithName ast, Object o);
+    Object visitCompoundEndWithName(CompoundEndWithName ast, Object o);
     Object visitCompoundStmt(CompoundStmt ast, Object o);
 
     Object visitForLoopStmt(ForLoopStmt ast, Object o);
@@ -134,7 +134,6 @@ public interface Visitor {
 
     Object visitOutput(Output ast, Object o);
     Object visitOutputList(OutputList ast, Object o);
-    Object visitSingleOutputExpression(SingleOutputExpression ast, Object o);
 
 //_____________________________________________________________________________
 //                                                        Standard Environment

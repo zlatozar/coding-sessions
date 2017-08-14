@@ -22,6 +22,10 @@ public final class Checker implements Visitor {
         establishStdEnvironment();
     }
 
+    public IdentificationTable getIdentificationTable() {
+        return indTable;
+    }
+
     // Checker entry point
     public void check(Program ast) {
         ast.visit(this, null);
@@ -48,8 +52,21 @@ public final class Checker implements Visitor {
 
     @Override
     public Object visitSimpleVname(SimpleVname ast, Object o) {
-        System.out.println("SimpleVname");
-        return null;
+        System.out.println("              SimpleVname");
+
+        ast.variable = false;
+        ast.type = StdEnvironment.errorType;
+
+        Definition binding = (Definition) ast.I.visit(this, null);
+
+        if (binding == null) {
+            reportUndeclared(ast.I);
+
+        } else if (binding instanceof IntTypeDenoter) {
+            ast.type = ((IntTypeDenoter) binding);
+        }
+
+        return ast.type;
     }
 
     @Override
@@ -63,8 +80,11 @@ public final class Checker implements Visitor {
 
     @Override
     public Object visitVnameExpression(VnameExpression ast, Object o) {
-        System.out.println("VnameExpression");
-        return null;
+
+        // Vname successors return inferred types
+        ast.type = (TypeDenoter) ast.V.visit(this, null);
+
+        return ast.type;
     }
 
     @Override
@@ -76,7 +96,42 @@ public final class Checker implements Visitor {
     @Override
     public Object visitBinaryExpression(BinaryExpression ast, Object o) {
         System.out.println("BinaryExpression");
-        return null;
+
+        TypeDenoter e1Type = (TypeDenoter) ast.E1.visit(this, null);
+        TypeDenoter e2Type = (TypeDenoter) ast.E2.visit(this, null);
+
+        // return pointer to the 'declaration' of Op so
+        Definition binding = (Definition) ast.O.visit(this, null);
+
+        if (binding == null) {
+            reportUndeclared(ast.O);
+
+        } else {
+
+            if (!(binding instanceof BinaryOperatorDefinition)) {
+                reporter.reportError("\"%\" is not a binary operator", ast.O.spelling, ast.O.position);
+            }
+
+            BinaryOperatorDefinition bbinding = (BinaryOperatorDefinition) binding;
+
+            if (bbinding.ARG1 == StdEnvironment.anyType) {
+
+                // this operator must be "=" or "\="
+                if (!e1Type.equals(e2Type)) {
+                    reporter.reportError("incompatible argument types for \"%\"", ast.O.spelling, ast.position);
+                }
+
+            } else if (!e1Type.equals(bbinding.ARG1)) {
+                reporter.reportError("wrong argument type for \"%\"", ast.O.spelling, ast.E1.position);
+
+            } else if (!e2Type.equals(bbinding.ARG2)) {
+                reporter.reportError("wrong argument type for \"%\"", ast.O.spelling, ast.E2.position);
+            }
+
+            ast.type = bbinding.RES;
+        }
+
+        return ast.type;
     }
 
     @Override
@@ -94,13 +149,13 @@ public final class Checker implements Visitor {
     @Override
     public Object visitCharacterLiteral(CharacterLiteral ast, Object o) {
         System.out.println("CharacterLiteral");
-        return null;
+        return StdEnvironment.charType;
     }
 
     @Override
     public Object visitIntegerLiteral(IntegerLiteral ast, Object o) {
-        System.out.println("IntegerLiteral");
-        return null;
+        System.out.println("              IntegerLiteral");
+        return StdEnvironment.integerType;
     }
 
     @Override
@@ -111,8 +166,9 @@ public final class Checker implements Visitor {
 
     @Override
     public Object visitIntegerExpression(IntegerExpression ast, Object o) {
-        System.out.println("IntegerExpression");
-        return null;
+        ast.type = StdEnvironment.integerType;
+
+        return ast.type;
     }
 
     @Override
@@ -124,7 +180,9 @@ public final class Checker implements Visitor {
     @Override
     public Object visitCharacterExpression(CharacterExpression ast, Object o) {
         System.out.println("CharacterExpression");
-        return null;
+        ast.type = StdEnvironment.charType;
+
+        return ast.type;
     }
 
 //_____________________________________________________________________________
@@ -164,22 +222,21 @@ public final class Checker implements Visitor {
 //_____________________________________________________________________________
 //                                                                 Definitions
 
+    // 1. Always returns null and does not use the given subtree(phrase)
+    // 2. Enters all declared identifiers into the identification table
+
     @Override
     public Object visitDefinitionSeq(DefinitionSeq ast, Object o) {
-        indTable.openScope();
 
         // order matters
         ast.definitionSeq.visit(this, o);
         ast.definition.visit(this, o);
-
-        indTable.closeScope();
 
         return null;
     }
 
     @Override
     public Object visitEmptyDefinition(EmptyDefinition ast, Object o) {
-        System.out.println("EmptyDefinition");
         return null;
     }
 
@@ -197,37 +254,71 @@ public final class Checker implements Visitor {
 
     @Override
     public Object visitIdentifierType(IdentifierType ast, Object o) {
-        System.out.println("IdentifierType");
-        return null;
+        System.out.println("         IdentifierType");
+        Definition binding = (Definition) ast.identifier.visit(this, null);
+
+        if (binding == null) {
+            reportUndeclared(ast.identifier);
+
+            return StdEnvironment.errorType;
+
+        } else if (!(binding instanceof TypeDefinition)) {
+            reporter.reportError("\"%\" is not a type identifier", ast.identifier.spelling, ast.identifier.position);
+
+            return StdEnvironment.errorType;
+        }
+
+        return ((TypeDefinition) binding).T;
     }
 
     @Override
     public Object visitArrayType(ArrayType ast, Object o) {
-        System.out.println("ArrayType");
-        return null;
+        System.out.println("      ArrayType");
+
+        ast.type =  (TypeDenoter) ast.type.visit(this, null);
+        TypeDenoter boundsType  = (TypeDenoter) ast.arrayBounds.visit(this, null);
+
+        if (! (boundsType instanceof IntTypeDenoter) ) {
+            reporter.reportError("Array bound type must be integer", "", ast.arrayBounds.position);
+        }
+
+        return ast;
     }
 
     @Override
     public Object visitSingleArrayBounds(SingleArrayBounds ast, Object o) {
-        System.out.println("SingleArrayBounds");
-        return null;
+        System.out.println("           SingleArrayBounds");
+
+        TypeDenoter binding = (TypeDenoter) ast.expression.visit(this, null);
+        ast.elemCount = 1;
+
+        return binding;
     }
 
     @Override
     public Object visitSegmentedArrayBounds(SegmentedArrayBounds ast, Object o) {
-        System.out.println("SegmentedArrayBounds");
-        return null;
+        System.out.println("           SegmentedArrayBounds");
+
+        TypeDenoter fromBinding = (TypeDenoter) ast.from.visit(this, null);
+        TypeDenoter toBinding = (TypeDenoter) ast.to.visit(this, null);
+
+        if (! (fromBinding instanceof IntTypeDenoter) ) {
+            reporter.reportError("Array bound type must be integer", "", ast.from.position);
+        }
+
+        if (! (toBinding instanceof IntTypeDenoter) ) {
+            reporter.reportError("Array bound type must be integer", "", ast.to.position);
+        }
+
+        // fromBiding < toBinding
+
+        return toBinding;
     }
 
     @Override
     public Object visitStructureType(StructureType ast, Object o) {
         System.out.println("      StructureType");
-
-        indTable.openScope();
-
         ast.fieldDenoter = (Field) ast.fieldDenoter.visit(this, null);
-
-        indTable.closeScope();
 
         return ast;
     }
@@ -244,24 +335,39 @@ public final class Checker implements Visitor {
     @Override
     public Object visitFieldDenoter(FieldDenoter ast, Object o) {
 
+        TypeDenoter typeDenoter = (TypeDenoter) ast.typeDenoter.visit(this, null);
+        indTable.enter(ast.I.spelling, typeDenoter);
+
         return null;
     }
 
     @Override
     public Object visitDeclaration(Declaration ast, Object o) {
-        System.out.println("Declaration");
-        return null;
+        System.out.println("   Declaration");
+
+        ast.typeDenoter = (TypeDenoter) ast.typeDenoter.visit(this, null);
+        ast.declaredNames.visit(this, ast.typeDenoter);
+
+        return ast.typeDenoter;
     }
 
     @Override
     public Object visitSingleDeclaredName(SingleDeclaredName ast, Object o) {
-        System.out.println("SingleDeclaredName");
+        System.out.println("         SingleDeclaredName");
+
+        ast.identifier.visit(this, null);
+        indTable.enter(ast.identifier.spelling, (Definition) o);
+
         return null;
     }
 
     @Override
     public Object visitMultipleDeclaredNames(MultipleDeclaredNames ast, Object o) {
-        System.out.println("MultipleDeclaredNames");
+        System.out.println("   MultipleDeclaredNames");
+
+        ast.declaredNamesSeq.visit(this, o);
+        ast.declaredNames.visit(this, o);
+
         return null;
     }
 
@@ -360,19 +466,29 @@ public final class Checker implements Visitor {
 
     @Override
     public Object visitStatementSeq(StatementSeq ast, Object o) {
-        System.out.println("StatementSeq");
+
+        ast.stmtSeq.visit(this, null);
+        ast.stmt.visit(this, null);
+
         return null;
     }
 
     @Override
     public Object visitVariableList(VariableList ast, Object o) {
-        System.out.println("VariableList");
+        System.out.println("      VariableList");
+        ast.vnameSeq.visit(this, null);
+        ast.vname.visit(this, null);
+
         return null;
     }
 
     @Override
     public Object visitAssignmentStmt(AssignmentStmt ast, Object o) {
-        System.out.println("AssignmentStmt");
+        System.out.println("      AssignmentStmt");
+
+        ast.variableList.visit(this, null);
+        ast.expression.visit(this, null);
+
         return null;
     }
 
@@ -421,30 +537,51 @@ public final class Checker implements Visitor {
     @Override
     public Object visitIfStmt(IfStmt ast, Object o) {
         System.out.println("IfStmt");
+
+        ast.conditionalClause.visit(this, null);
+        ast.trueBranch.visit(this, null);
+
         return null;
     }
 
     @Override
     public Object visitIfElseStmt(IfElseStmt ast, Object o) {
         System.out.println("IfElseStmt");
+
+        ast.conditionalClause.visit(this, null);
+
+        ast.trueBranch.visit(this, null);
+        ast.falseBranch.visit(this, null);
+
         return null;
     }
 
     @Override
     public Object visitConditionalClause(ConditionalClause ast, Object o) {
         System.out.println("ConditionalClause");
+
+        TypeDenoter eType = (TypeDenoter) ast.expression.visit(this, null);
+
+        // 'if' expression should be boolean type
+        if (!eType.equals(StdEnvironment.booleanType)) {
+            reporter.reportError("Boolean expression expected here", "", ast.expression.position);
+        }
+
         return null;
     }
 
     @Override
     public Object visitTrueBranch(TrueBranch ast, Object o) {
-        System.out.println("TrueBranch");
+        ast.segment.visit(this, null);
         return null;
     }
 
     @Override
     public Object visitFalseBranch(FalseBranch ast, Object o) {
         System.out.println("FalseBranch");
+
+        ast.segment.visit(this, null);
+
         return null;
     }
 
@@ -455,14 +592,22 @@ public final class Checker implements Visitor {
     }
 
     @Override
-    public Object visitCompoundNameWithName(CompoundEndWithName ast, Object o) {
-        System.out.println("CompoundNameWithName");
+    public Object visitCompoundEndWithName(CompoundEndWithName ast, Object o) {
+        ast.name.visit(this, null);
         return null;
     }
 
     @Override
     public Object visitCompoundStmt(CompoundStmt ast, Object o) {
-        System.out.println("CompoundStmt");
+        System.out.println("      CompoundStmt");
+
+        indTable.openScope();
+
+        ast.segment.visit(this, null);
+        ast.compoundEnd.visit(this, null);
+
+        indTable.closeScope();
+
         return null;
     }
 
@@ -618,31 +763,36 @@ public final class Checker implements Visitor {
 
     @Override
     public Object visitInput(Input ast, Object o) {
-        System.out.println("Input");
+        System.out.println("         Input");
+        ast.inputList.visit(this, null);
+
         return null;
     }
 
     @Override
     public Object visitInputList(InputList ast, Object o) {
-        System.out.println("InputList");
+        System.out.println("           InputList");
+        ast.varList.visit(this, null);
         return null;
     }
 
     @Override
     public Object visitOutput(Output ast, Object o) {
-        System.out.println("Output");
+        System.out.println("         Output");
+        ast.outputList.visit(this, null);
         return null;
     }
 
     @Override
     public Object visitOutputList(OutputList ast, Object o) {
-        System.out.println("OutputList");
-        return null;
-    }
+        System.out.println("            OutputList");
 
-    @Override
-    public Object visitSingleOutputExpression(SingleOutputExpression ast, Object o) {
-        System.out.println("SingleOutputExpression");
+        TypeDenoter binding = (TypeDenoter) ast.expr.visit(this, null);
+
+        if (!binding.equals(StdEnvironment.charType)) {
+            reporter.reportError("Character expression expected here", "", ast.expr.position);
+        }
+
         return null;
     }
 
@@ -657,7 +807,6 @@ public final class Checker implements Visitor {
 
     @Override
     public Object visitBinaryOperatorDefinition(BinaryOperatorDefinition ast, Object o) {
-        System.out.println("BinaryOperatorDefinition");
         return null;
     }
 
@@ -720,16 +869,12 @@ public final class Checker implements Visitor {
         return binding;
     }
 
-    private AssignmentStmt declareStdConst(String id, TypeDenoter constType) {
+    private Declaration declareStdBoolean(String id, TypeDenoter constType) {
 
-        IntegerExpression constExpr;
-        AssignmentStmt binding;
+        Declaration binding;
+        Identifier identifier = new Identifier(dummyPos, id);
 
-        // constExpr used only as a placeholder for constType
-        constExpr = new IntegerExpression(dummyPos, null);
-        constExpr.type = constType;
-
-        binding = new AssignmentStmt(dummyPos, new SimpleVname(dummyPos, new Identifier(dummyPos, id)), constExpr);
+        binding = new Declaration(dummyPos, new SingleDeclaredName(dummyPos, identifier), constType);
 
         indTable.enter(id, binding);
 
@@ -786,8 +931,8 @@ public final class Checker implements Visitor {
         StdEnvironment.errorType = new ErrorTypeDenoter(dummyPos);
 
         StdEnvironment.booleanDecl = declareStdType("BOOLEAN", StdEnvironment.booleanType);
-        StdEnvironment.falseDecl = declareStdConst("TRUE", StdEnvironment.booleanType);
-        StdEnvironment.trueDecl = declareStdConst("FALSE", StdEnvironment.booleanType);
+        StdEnvironment.trueDecl = declareStdBoolean("TRUE", StdEnvironment.booleanType);
+        StdEnvironment.falseDecl = declareStdBoolean("FALSE", StdEnvironment.booleanType);
         StdEnvironment.notDecl = declareStdUnaryOp("NOT", StdEnvironment.booleanType, StdEnvironment.booleanType);
         StdEnvironment.andDecl = declareStdBinaryOp("AND", StdEnvironment.booleanType, StdEnvironment.booleanType, StdEnvironment.booleanType);
         StdEnvironment.orDecl = declareStdBinaryOp("OR", StdEnvironment.booleanType, StdEnvironment.booleanType, StdEnvironment.booleanType);
@@ -807,7 +952,7 @@ public final class Checker implements Visitor {
         StdEnvironment.multiplyDecl = declareStdBinaryOp("*", StdEnvironment.floatType, StdEnvironment.floatType, StdEnvironment.floatType);
         StdEnvironment.divideDecl = declareStdBinaryOp("/", StdEnvironment.floatType, StdEnvironment.floatType, StdEnvironment.floatType);
 
-        StdEnvironment.charDecl = declareStdType("CHARACTER", StdEnvironment.charType);
+        StdEnvironment.charDecl = declareStdType("STRING", StdEnvironment.charType);
 
         StdEnvironment.substrDecl = declareStdFunc("SUBSTR",
                 new ParameterList(dummyPos,

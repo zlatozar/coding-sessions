@@ -13,6 +13,6 @@ public class CompoundEndWithName extends CompoundEnd {
 
     @Override
     public Object visit(Visitor v, Object o) {
-        return v.visitCompoundNameWithName(this, o);
+        return v.visitCompoundEndWithName(this, o);
     }
 }

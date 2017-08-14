@@ -45,7 +45,7 @@ PROGRAM Eratosthenes:
           FOR x := ra/2.0 BY (ra/x-x)/2.0 WHILE abs(ra-x*x) > epsilon
              DO ; END FOR;
 
-          FOR sqrt := FIX(x)-l BY 1 WHILE (sqrt+1)*(sqrt+1) <= a
+          FOR sqrt := FIX(x)-1 BY 1 WHILE (sqrt+1)*(sqrt+1) <= a
              DO ; END FOR;
 
           RETURN sqrt;
@@ -61,7 +61,7 @@ PROGRAM Eratosthenes:
 
           FOR i := 1 TO topnum DO SET sieve[i] := TRUE; END FOR;
 
-          SET limit := integersqrt(topnum)+l; /* Avoid repeating square root */
+          SET limit := integersqrt(topnum) + 1; /* Avoid repeating square root */
 
           FOR i := 2 TO limit DO
              IF sieve[i] THEN

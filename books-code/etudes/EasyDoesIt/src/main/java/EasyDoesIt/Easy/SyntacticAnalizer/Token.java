@@ -12,6 +12,7 @@ final class Token {
 
     private static String[] spellingTable =
             {
+                    // terminals
                     "<int>",
                     "<char>",
                     "<identifier>",

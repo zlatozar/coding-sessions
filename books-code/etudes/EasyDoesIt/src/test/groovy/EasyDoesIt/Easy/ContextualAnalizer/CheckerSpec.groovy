@@ -1,35 +1,26 @@
 package EasyDoesIt.Easy.ContextualAnalizer
 
+import EasyDoesIt.Easy.ASTSpec
 import EasyDoesIt.Easy.AbstractSyntaxTrees.Program
-import EasyDoesIt.Easy.ErrorReporter
 import EasyDoesIt.Easy.SyntacticAnalizer.Parser
-import EasyDoesIt.Easy.SyntacticAnalizer.Scanner
-import EasyDoesIt.Easy.SyntacticAnalizer.SourceFile
+import spock.lang.Ignore
 
-import spock.lang.Specification
+@Ignore
+class CheckerSpec extends ASTSpec {
 
-class CheckerSpec extends Specification {
-
+    // example from the book
     private static final String SIMPLE_TRIANGLE_FILE = 'src/test/resources/example.esy'
 
     def 'How checker works'() {
 
-        given: 'Triangle source file reader, scanner, parser and checker'
-        SourceFile sf = new SourceFile(SIMPLE_TRIANGLE_FILE)
-        Scanner scanner = new Scanner(sf)
-        ErrorReporter errorReporter = new ErrorReporter()
+        given: 'Easy source file reader, scanner, parser and checker'
+        Parser parser = getParserForFile(SIMPLE_TRIANGLE_FILE)
 
-        Parser parser = new Parser(scanner, errorReporter)
-        Checker checker = new Checker(errorReporter)
-
-        when: 'Start reading file, like compiler do'
-
-        then: 'First token should be displayed'
+        when: 'Second pass starts'
         Program programAST = parser.parseProgram()
 
-        checker.check(programAST)
-
+        then: 'AST structure will be traced without error'
+        getChecker().check(programAST)
         assert programAST
     }
-
 }
