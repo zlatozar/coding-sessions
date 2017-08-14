@@ -14,7 +14,7 @@ let
                l.length := l.length + 1
             end;
          geteol()
-         end;
+      end;
 
    proc putreversedline (l: Line) ~
       let var i : Integer
@@ -26,8 +26,8 @@ let
                i := i - 1;
                put(l.content[i])
             end;
-          puteol()
-          end;
+            puteol()
+         end;
 
    var currentline: Line
 

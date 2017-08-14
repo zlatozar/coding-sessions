@@ -16,6 +16,9 @@ package Triangle.AbstractSyntaxTrees;
 
 public interface Visitor {
 
+    // NOTE: Second parameter could be used to pass object(context) from previous visited method
+    // e.g. {@link Checker#visitVarActualParameter}
+
     //_____________________________________________________________________________
     //                                                                    Commands
 

@@ -16,6 +16,11 @@ package Triangle.AbstractSyntaxTrees;
 
 import Triangle.SyntacticAnalyzer.SourcePosition;
 
+/**
+ * Note that in Triangle language there is no ranges
+ * e.g. instead of [1..3] we write [1, 2, 3] but this
+ * is quite flexible twice index 1, then 2, twice index 3 - [1, 1, 2, 3, 3] is also possible.
+ */
 public class MultipleArrayAggregate extends ArrayAggregate {
 
     public Expression E;

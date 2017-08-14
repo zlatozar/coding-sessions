@@ -22,18 +22,18 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 /**
  * p. 136-168
  *
- * Checks whether the source program, represented by its AST, satisfies the
- * language's scope rules and type rules.
+ * 1. Checks whether the source program, represented by its AST, satisfies the
+ *    language's scope rules and type rules.
  *
- * Also decorates the AST as follows:
- *  (a) Each applied occurrence of an identifier or operator is linked to
- *      the corresponding declaration of that identifier or operator.
- *  (b) Each expression and value-or-variable-name is decorated by its type.
- *  (c) Each type identifier is replaced by the type it denotes.
+ * 2. Also decorates the AST as follows:
+ *   (a) Each applied occurrence of an identifier or operator is linked to
+ *       the corresponding declaration of that identifier or operator.
+ *   (b) Each expression and value-or-variable-name is decorated by its type.
+ *   (c) Each type identifier is replaced by the type it denotes.
  *
- * Standard types are represented by small ASTs.
+ * 3. Standard types are represented by small ASTs.
  *
- * Reports that the identifier or operator used at a leaf of the AST has not been declared.
+ * 4. Reports that the identifier or operator used at a leaf of the AST has not been declared.
  */
 public final class Checker implements Visitor {
 
@@ -347,7 +347,7 @@ public final class Checker implements Visitor {
 //_____________________________________________________________________________
 //                                                                DECLARATIONS
 
-    // 1. Always returns null and does not use the given subtree(phrase) 'o'.
+    // 1. Always returns null and does not use the given subtree(phrase)
     // 2. Enters all declared identifiers into the identification table
 
     public Object visitBinaryOperatorDeclaration(BinaryOperatorDeclaration binaryOpDeclaration, Object _) {
@@ -462,7 +462,7 @@ public final class Checker implements Visitor {
         TypeDenoter eType = (TypeDenoter) multiArrayAggregate.E.visit(this, null);
         TypeDenoter elemType = (TypeDenoter) multiArrayAggregate.AA.visit(this, null);
 
-        // number of elements will be needed during code generation
+        // how many elements will be yield p.391
         multiArrayAggregate.elemCount = multiArrayAggregate.AA.elemCount + 1;
 
         if (!eType.equals(elemType)) {
@@ -476,7 +476,7 @@ public final class Checker implements Visitor {
 
         TypeDenoter elemType = (TypeDenoter) singleArrayAggregate.E.visit(this, null);
 
-        // e.g [1]
+        // e.g [5] select 5th element
         singleArrayAggregate.elemCount = 1;
 
         return elemType;
@@ -752,6 +752,7 @@ public final class Checker implements Visitor {
 //_____________________________________________________________________________
 //                                                               TYPE DENOTERS
 
+    // Return denoters (sub-tree)
 
     public Object visitAnyTypeDenoter(AnyTypeDenoter __, Object _) {
         return StdEnvironment.anyType;
@@ -781,7 +782,7 @@ public final class Checker implements Visitor {
     }
 
     // e.g. var currentline: Line
-    // So we have to find using Line the actual type declaraion
+    // So we have to find using Line the actual type declaration
     public Object visitSimpleTypeDenoter(SimpleTypeDenoter simpleTypeDenoter, Object _) {
 
         Declaration binding = (Declaration) simpleTypeDenoter.I.visit(this, null);
@@ -819,9 +820,9 @@ public final class Checker implements Visitor {
         return multiFieldTypeDenoter;
     }
 
-    public Object visitSingleFieldTypeDenoter(SingleFieldTypeDenoter ast, Object _) {
-        ast.T = (TypeDenoter) ast.T.visit(this, null);
-        return ast;
+    public Object visitSingleFieldTypeDenoter(SingleFieldTypeDenoter singleFieldTypeDenoter, Object _) {
+        singleFieldTypeDenoter.T = (TypeDenoter) singleFieldTypeDenoter.T.visit(this, null);
+        return singleFieldTypeDenoter;
     }
 
 //_____________________________________________________________________________
