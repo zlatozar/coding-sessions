@@ -19,7 +19,8 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 public class SequentialCommand extends Command {
 
     // sub-commands
-    public Command C1, C2;
+    public Command C1;
+    public Command C2;
 
     public SequentialCommand(Command c1AST, Command c2AST, SourcePosition thePosition) {
         super(thePosition);

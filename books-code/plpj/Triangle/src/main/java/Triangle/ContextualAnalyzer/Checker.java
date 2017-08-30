@@ -55,6 +55,7 @@ public final class Checker implements Visitor {
     private static TypeDenoter checkFieldIdentifier(FieldTypeDenoter fieldTypeDenoter, Identifier I) {
 
         if (fieldTypeDenoter instanceof MultipleFieldTypeDenoter) {
+
             MultipleFieldTypeDenoter ft = (MultipleFieldTypeDenoter) fieldTypeDenoter;
 
             if (ft.I.spelling.compareTo(I.spelling) == 0) {
@@ -66,6 +67,7 @@ public final class Checker implements Visitor {
             }
 
         } else if (fieldTypeDenoter instanceof SingleFieldTypeDenoter) {
+
             SingleFieldTypeDenoter ft = (SingleFieldTypeDenoter) fieldTypeDenoter;
 
             if (ft.I.spelling.compareTo(I.spelling) == 0) {
@@ -185,7 +187,7 @@ public final class Checker implements Visitor {
 
         IntegerLiteral il = new IntegerLiteral(Integer.toString(arrayExpression.AA.elemCount), arrayExpression.position);
 
-        // V[E] could not be found(dynamic) in the AST so we create one
+        // V[E] could not be found(dynamic) in the AST so we particular one
         arrayExpression.type = new ArrayTypeDenoter(il, elemType, arrayExpression.position);
 
         return arrayExpression.type;
@@ -196,7 +198,7 @@ public final class Checker implements Visitor {
         TypeDenoter e1Type = (TypeDenoter) binaryExpression.E1.visit(this, null);
         TypeDenoter e2Type = (TypeDenoter) binaryExpression.E2.visit(this, null);
 
-        // return pointer to the 'declaration' of O so
+        // return pointer to the 'declaration' of Op so
         Declaration binding = (Declaration) binaryExpression.Op.visit(this, null);
 
         if (binding == null) {
@@ -456,6 +458,8 @@ public final class Checker implements Visitor {
 //_____________________________________________________________________________
 //                                                            ARRAY AGGREGATES
 
+    // 1. Decorate 'elemCount'
+    // 2. Return type
 
     public Object visitMultipleArrayAggregate(MultipleArrayAggregate multiArrayAggregate, Object _) {
 
@@ -494,7 +498,7 @@ public final class Checker implements Visitor {
             reporter.reportError("duplicate field \"%\" in record", multiRecordAggregate.I.spelling, multiRecordAggregate.I.position);
         }
 
-        // number of elements could vary that's why we create a new one
+        // number of elements could vary that's why we create a particular one
         multiRecordAggregate.type = new MultipleFieldTypeDenoter(multiRecordAggregate.I, eType, rType, multiRecordAggregate.position);
 
         return multiRecordAggregate.type;
@@ -510,6 +514,11 @@ public final class Checker implements Visitor {
 
 //_____________________________________________________________________________
 //                                                           FORMAL PARAMETERS
+
+    // Most of them:
+    //
+    // 1. Open scope
+    // 2. Enter parameters in identification table
 
     public Object visitConstFormalParameter(ConstFormalParameter constFormalParam, Object _) {
 
@@ -827,6 +836,8 @@ public final class Checker implements Visitor {
 
 //_____________________________________________________________________________
 //                                         Literals, Identifiers and Operators
+
+    // Return bindings
 
     public Object visitCharacterLiteral(CharacterLiteral __, Object _) {
         return StdEnvironment.charType;

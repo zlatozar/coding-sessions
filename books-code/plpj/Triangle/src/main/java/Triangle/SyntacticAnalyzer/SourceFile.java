@@ -19,24 +19,24 @@ import java.nio.charset.StandardCharsets;
 
 public class SourceFile {
 
-    private boolean debug = false;
-
     public static final char EOL = '\n';      // end of line
     public static final char EOT = '\u0000';  // end of transition
 
     File sourceFile;
-    InputStream source;
+    BufferedInputStream source;
+
     int currentLine;
+    private boolean debug = false;
 
     public SourceFile(String filename) {
 
         try {
             this.sourceFile = new File(filename);
-            this.source = new FileInputStream(sourceFile);
+            this.source = new BufferedInputStream(new FileInputStream(sourceFile));
 
             this.currentLine = 1;
 
-        } catch (IOException s) {
+        } catch (IOException _) {
             this.sourceFile = null;
             this.source = null;
 
@@ -47,12 +47,12 @@ public class SourceFile {
     public SourceFile(String snippet, boolean debug) {
 
         try {
-            this.source = new ByteArrayInputStream(snippet.getBytes(StandardCharsets.UTF_8));
+            this.source = new BufferedInputStream(new ByteArrayInputStream(snippet.getBytes(StandardCharsets.UTF_8)));
             this.currentLine = 1;
 
             this.debug = debug;
 
-        } catch (Exception s) {
+        } catch (Exception _) {
             this.sourceFile = null;
             this.source = null;
 
@@ -79,14 +79,36 @@ public class SourceFile {
             }
 
             if (debug) {
-                System.out.println("source: " + (char) c);
+                System.out.println("symbol: " + (char) c);
             }
 
             return (char) c;
 
-        } catch (IOException s) {
+        } catch (IOException _) {
             return EOT;
         }
+    }
+
+    /**
+     * Just takes the next symbol to check it but do not move the source pointer
+     */
+    char getProbe() throws IOException {
+
+        source.mark(2);
+
+        int c = source.read();
+
+        if (c == -1) {
+            c = EOT;
+        }
+
+        if (debug) {
+            System.out.println("     next char probe: " + (char) c);
+        }
+
+        source.reset();
+
+        return (char) c;
     }
 
     int getCurrentLineNumber() {

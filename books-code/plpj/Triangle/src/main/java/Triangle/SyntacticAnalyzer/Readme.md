@@ -70,7 +70,7 @@ With respect to a particular context-free grammar ```G```:
 - Parsing of an input string is recognition of the input string plus determination of its **phrase structure**.
   The phrase structure can be represented by a syntax tree, or otherwise.
  
-We assume that G is **unambiguous**, i.e., that every sentence of G has exactly one syntax tree.
+We assume that ```G``` is **unambiguous**, i.e., that every sentence of ```G``` has exactly one syntax tree.
 
 - Bottom-up: **LR**
 - Top-down: **Recursive descent**
@@ -91,7 +91,7 @@ A recursive-descent parser can be _systematically_ developed:
 3. Make the parser consist of:
    • a private variable ```currentToken```
    • private parsing methods developed in **step 2**
-   • private auxiliary methods ```accept``` and ```acceptlt```, both of which call the scanner
+   • private auxiliary methods ```accept``` and ```acceptIt```, both of which call the scanner
    • public ```parse``` method that calls ```parseS``` (where ```S``` is the start symbol of the grammar),
      having first called the scanner to store the first input token in ```currentToken```.
      
